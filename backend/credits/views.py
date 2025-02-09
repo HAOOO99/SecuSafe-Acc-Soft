@@ -1,0 +1,98 @@
+import json
+
+from django.shortcuts import render
+from django.http import HttpResponse
+from datetime import datetime
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+
+from django.http import JsonResponse
+from django.db.models import Sum
+
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
+from .models import CN
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def get_CNs(request):
+    response = {}
+    try:
+        current_brand = request.GET.get("brand")
+        year = request.GET.get("year")
+        cns = CN.objects.all().filter(company_name = current_brand, date__year = year).order_by('date')
+        print(cns.values())
+        cn_list = []
+        for each in cns.values():
+            cn_list.append(each)
+        print(cn_list)
+        response["status"] = "success"
+        response["CNs"] = cn_list
+
+    except Exception as e:
+        response["status"] = "failed"
+        response["msg"] = "failed to show"
+        print(e)
+
+    print(response)
+    return JsonResponse(response)
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def get_years(request):
+    response = {}
+    try:
+        current_brand = request.GET.get("brand")
+
+        cns = CN.objects.filter(company_name = current_brand)
+        print(cns.values().count())
+        years_list = []
+        if cns.values().count() != 0:
+            for each in cns.values() :
+                years_list.append(each["date"].year)
+                print(each["date"].year)
+                years_list = list(dict.fromkeys(years_list))
+        else:
+            years_list.append(datetime.now().year)
+        
+        response["status"] = "success"
+        response["total_years"] = years_list
+
+    except Exception as e:
+        response["status"] = "failed"
+        response["msg"] = "failed to show"
+        print(e)
+
+    print(response)
+    return JsonResponse(response)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def updateCN(request):
+    response={}
+    try:
+        payload = json.loads(request.body.decode())
+        print(request.body.decode())
+        current_brand=payload["brand"]
+        supplier=payload["supplier"]
+        id = payload["id"]
+        supplier_cn = payload["supplierCN"]
+        received_amount = payload["received"]
+        currency = payload["currency"]
+        ss_cn = payload["ssCN"]
+        status = payload["status"]
+
+        cn = CN.objects.filter(company_name=current_brand,id=id,supplier=supplier)
+        
+        cn.update(supplier_CN=supplier_cn,received=received_amount,received_currency=currency,ss_CN=ss_cn, status=status)
+        print(cn.values())
+        response["status"] = "success"
+        # response["msg"] = json.dumps(cn.values())
+    except Exception as e:
+        response["status"] = "failed"
+        response["msg"] = "failed to show"
+        print(e)
+
+    print(response)
+    return JsonResponse(response)
