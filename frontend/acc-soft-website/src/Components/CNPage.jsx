@@ -1,0 +1,441 @@
+import { useState,useEffect, useCallback } from 'react'
+import { Table ,Container, Button, Offcanvas, Form ,Row, Col, Modal ,Dropdown ,DropdownButton} from 'react-bootstrap';
+import FilterBar from './FilterBar';
+
+import NavBar from './NavBar';
+import { useParams } from 'react-router-dom';
+
+import { w3cwebsocket as W3CWebSocket } from 'websocket';
+// const client = new W3CWebSocket('ws://127.0.0.1:8000/ws/comments/');
+
+export default function CIPage(){
+    const {name} = useParams();
+    const [flag, setFlag] = useState(false);//state to control flag showing in filter bar
+    const [show, setShow] = useState(false); // State to control offcanvas visibility
+    const [errors, setErrors] = useState({});
+
+
+    const [searchQuery, setSearchQuery] = useState(''); // State to store search query
+    const [years, setYears] = useState([]); // State to store all years
+    const [CNs, setCNs] = useState([]) // State to store CNs
+
+    const [chooseYear, setChooseYear] = useState(new Date().getFullYear()); // State to store selected year
+    const [showModal, setShowModal] = useState(false); // State to control offcanvas visibility
+    // const [selectedRow, setSelectedRow] = useState(null);
+
+    const [supplierCN,setSupplierCN] = useState("");
+    const [received,setReceived] = useState("");
+    const [receivedCurrency, setReceivedCurrency] = useState("AUD");
+    const [ssCN, setSSCN] = useState("");
+    const [status,setStatus] = useState("");
+
+    const [selectedRow, setSelectedRow] = useState({
+        supplier_CN: "",
+        received: "",
+        received_currency: "AUD",
+        ss_CN: "",
+        status: "Bank Transfer"
+    });
+
+    const [suppliers, setSuppliers] = useState([])                                                                                        
+
+    useEffect(() => {
+        fetchCNs();
+        showYears();
+        },[chooseYear]);
+
+    const filteredCNs = CNs.filter((CN) =>
+        CN.supplier.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        // CN.supplier_CN.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        // CI.date.toLowerCase().includes(searchQuery.toLowerCase())  ||
+        CN.description.toLowerCase().includes(searchQuery.toLowerCase()) 
+    );
+
+    const tempUSDEstimate = filteredCNs.reduce((sum,CN)=> sum + (CN.estimate_currency === "USD" ? parseFloat(CN.estimate): 0),0);
+    const tempAUDEstimate = filteredCNs.reduce((sum, CN) => sum + (CN.estimate_currency === "AUD"? parseFloat(CN.estimate):0),0);
+
+    const tempUSDReceived = filteredCNs.reduce((sum,CN)=> sum + (CN.received_currency === "USD" ? parseFloat(CN.received): 0),0);
+    const tempAUDReceived = filteredCNs.reduce((sum, CN) => sum + (CN.received_currency === "AUD"? parseFloat(CN.received):0),0);
+
+
+    async function fetchCNs() {
+        const config = {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+        try{
+            const response = await fetch("http://127.0.0.1:8000/cn?brand="+name+"&year="+chooseYear , config);
+            const data = await response.json();
+            
+            if (data === undefined || data.length === 0){
+                alert("Nothing is found");
+                return;
+            }
+            console.log(data)
+            setCNs(data.CNs)
+            return data;
+        } catch (e){
+            console.log(e);
+        }
+    }
+
+    async function showYears(){
+        const config = {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+        try{
+            const response = await fetch("http://127.0.0.1:8000/cn/years?brand="+name , config);
+            const data = await response.json();
+            
+            if (data === undefined || data.length === 0){
+                alert("Nothing is found");
+                return;
+            }
+            console.log(data)
+            setYears(data["total_years"])
+            return data;
+        } catch (e){
+            console.log(e);
+        }
+    }
+    
+
+    async function update(e){
+        console.log(11111, !selectedRow.received)
+            // Check for empty fields
+        let newErrors = {};
+        if (!selectedRow.supplier_CN) newErrors.supplier_CN = "Supplier CN is required!";
+        if (!selectedRow.received) newErrors.received = "Received Amount is required!";
+
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length === 0) {
+            const config = {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body:JSON.stringify({
+                    brand:name,
+                    id:selectedRow.id,
+                    supplier:selectedRow.supplier,
+                    supplierCN:selectedRow.supplier_CN,
+                    received:selectedRow.received,
+                    currency:selectedRow.received_currency,
+                    ssCN:selectedRow.ss_CN,
+                    status:selectedRow.status,
+                })
+            }
+            try{
+                const response = await fetch("http://127.0.0.1:8000/cn/update" , config);
+                const data = await response.json();
+                
+                if (data === undefined || data.length === 0){
+                    alert("Nothing is found");
+                    return;
+                }
+                console.log(data);
+            
+                setShowModal(false);
+                if(data["status"] === "failed"){
+                    alert("CN fail to be updated");
+                }
+                else{
+                    alert("CN has been updated");
+                }
+                fetchCNs();
+                return data;
+            } catch (e){
+                console.log(e);
+            }
+        }
+    }
+
+    const handleChangeSupplier = (e) =>{
+        // const [name,value] = e.target;
+        setSelectedRow({ ...selectedRow, supplier_CN: e.target.value });
+    }
+
+    const handleChangeaRecevied = (e) => {
+        console.log(e.target.value)
+        
+        setSelectedRow({ ...selectedRow, received: e.target.value });
+    }
+    const handleChangeCurrency = (e) => {
+        console.log(e.target.value)
+        setSelectedRow({ ...selectedRow, received_currency: e.target.value });
+    }
+    const handleChangeSS = (e) => {
+        // setSSCN(e.target.value)
+        setSelectedRow({ ...selectedRow, ss_CN: e.target.value });
+    }
+    const handleChangeStatus = (e) => {
+        console.log(e.target.value)
+        // setStatus(e.target.value)
+        setSelectedRow({ ...selectedRow, status: e.target.value });
+    }
+
+    const handleClose = () => (setShow(false));
+    const handleShow = () => (setShow(true));
+    const handleRowClick = (row) => {
+        setSelectedRow(row);
+        setShowModal(true);
+    };
+
+    return (
+        <main className="py-1">
+            <div style={{display: 'flex'}}> 
+                <NavBar />
+                <div  style={{ flex: 1, padding: '20px', overflowY: 'auto', marginLeft: '250px' }}>
+                    <Container>
+                    <h3 key="title" className="text-center mb-5">CN Information for {name}</h3>
+                    <FilterBar 
+                    years = {years} 
+                    chooseYear={chooseYear} 
+                    setChooseYear={setChooseYear}
+                    searchQuery={searchQuery} 
+                    setSearchQuery={setSearchQuery}
+                    flag={flag}/>
+                    
+                    <hr />
+
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                            <th>Date</th>
+                            <th>Supplier</th>
+                            <th>Description</th>
+                            <th>CN Estimate</th>
+                            <th>Supplier CN </th>
+                            <th>Received</th>
+                            <th>SS CN</th>
+                            <th>Status</th>
+                            {/* <th>Note</th> */}
+                            {/* <th>Cr Type</th> */}
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {filteredCNs.map((CN) => (
+                            <tr key={CN.id} >
+                                <td style={{ whiteSpace: "nowrap" }}>{CN.date}</td>
+                                <td>{CN.supplier}</td>
+                                <td>{CN.description}</td>
+                                <td>{CN.estimate} {CN.estimate_currency}</td>
+                                {CN.supplier_CN === null || CN.supplier_CN.length===0 ? <td onClick={()=>handleRowClick(CN)}>{CN.supplier_CN}</td> : <td>{CN.supplier_CN}</td>}
+                                {CN.received === null || CN.received.length===0? <td onClick={()=>handleRowClick(CN)}>{CN.received}</td> : <td >{CN.received} {CN.received_currency}</td> }
+                                {CN.ss_CN === null || CN.ss_CN.length===0 ? <td onClick={()=>handleRowClick(CN)}>{CN.ss_CN}</td> : <td>{CN.ss_CN}</td>}
+                                {CN.status === null || CN.status.length===0? <td onClick={()=>handleRowClick(CN)}>{CN.status}</td> :<td>{CN.status}</td> }
+                            </tr>
+                         ))} 
+                        </tbody>
+                        
+                        </Table>
+
+                        <Row>
+                            <Col md={{ span: 2, offset: 2 }}>
+                                <h5>Total Estimate:</h5>
+                                <h5>Total Received: </h5>
+                            </Col>
+                            <Col md={{ span: 3 }}>
+                                <h5>${tempUSDEstimate} USD</h5>
+                                <h5>${tempUSDReceived} USD</h5>
+                            </Col>
+                            <Col md={{ span: 3, offset: 0 }}>
+                                <h5>${tempAUDEstimate}AUD</h5>
+                                <h5>${tempAUDReceived} AUD</h5>
+                            </Col>
+                        </Row>
+
+                        <Modal show={showModal} onHide={() => setShowModal(false)}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Item Details</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                {selectedRow ? (
+                                    <>
+                                        <p><strong>Description:</strong> {selectedRow.description}</p>
+                                        <p><strong>Supplier:</strong> {selectedRow.supplier}</p>
+                                        <p><strong>ID:</strong> {selectedRow.id}</p>
+                                        <div><strong>Supplier CN:</strong> 
+                                        <Form.Control  
+                                        required  
+                                        type="text" 
+                                        placeholder="Supplier Credit Number" 
+                                        onChange={(e)=>handleChangeSupplier(e)} 
+                                        className={errors.supplier_CN ? "is-invalid" : ""}
+                                        value={selectedRow.supplier_CN}/>
+                                        {errors.supplier_CN && <div className="invalid-feedback">{errors.supplier_CN}</div>} 
+                                        </div>
+                                        <Row>
+                                            <Col><div><strong>Received Amount:</strong> 
+                                            <Form.Control 
+                                            required 
+                                            type="number" 
+                                            value={selectedRow.received}
+                                            className={errors.received ? "is-invalid" : ""}
+                                            onChange={(e)=>handleChangeaRecevied(e)}/>
+                                            {errors.received && <div className="invalid-feedback">{errors.received}</div>} 
+                                            </div></Col>
+                                            <Col> <p><strong>Currency Type:</strong> <Form.Select required defaultValue={"AUD"} value={selectedRow.received_currency} name='currency'
+                                                         onChange={(e)=>handleChangeCurrency(e)} >
+
+                                                    <option key={0} value="AUD">AUD</option>
+                                                    <option key={1} value="USD">USD</option>
+                                                 </Form.Select></p></Col>
+                                        </Row> 
+                                       
+                                        <div><strong>SS CN:</strong> 
+                                        <Form.Control 
+                                        required 
+                                        type="text" 
+                                        placeholder="Secusafe Credit Number" 
+                                        onChange={(e)=>handleChangeSS(e)} value={selectedRow.ss_CN}/>  
+                                        </div>
+                                        <p><strong>Status:</strong> 
+                                            <Form.Select required defaultValue={""} name='status' value={selectedRow.status}
+                                                        onChange={(e)=>handleChangeStatus(e)} >
+                                                    <option key={0} value="">-------</option>
+                                                    <option key={1} value="Bank Transfer">Bank Transfer</option>
+                                                    <option key={2} value="Offset Statement">Offset Statement</option>
+                                                    <option key={3} value="Pending">Pending</option>
+                                                 </Form.Select>
+                                            </p>
+                                    </>
+                                ) : (
+                                    <p>No item selected.</p>
+                                )}
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={(e) => update(e)}>Update</Button>
+                            </Modal.Footer>
+                        </Modal>
+                    
+                     <div className="text-center mb-5">
+                        <Offcanvas show={show} onHide={handleClose} placement={"end"}>
+                            <Offcanvas.Header closeButton>
+                            <Offcanvas.Title>Add New CN </Offcanvas.Title>
+                            </Offcanvas.Header>
+                            <Offcanvas.Body>
+                                {/* <Form>
+                                    <Row >
+                                        <Col >
+                                        <Form.Label column >Supplier</Form.Label>
+                                        </Col>
+                                        <Col xs={9}>
+                                        <Form.Select defaultValue={formData.supplier} name='supplier_name'
+                                                    onChange={handleChange} >
+                                        {suppliers.map((supplier, index) => (
+                                                
+                                                <option key={index} value={supplier}>{supplier}</option>
+                                            ))}
+                                                 </Form.Select>
+                                        </Col>
+                                        
+                                    </Row>
+                                    <br />
+
+                                    <Row >
+                                    <Col >
+                                    <Form.Label column >PO Number</Form.Label>
+                                    </Col>
+                                    <Col xs={8}>
+                                        <Form.Control 
+                                        type="text" 
+                                        name='PO_number' 
+                                        placeholder="Enter PO number" 
+                                        value={formData.PO_number}
+                                        onChange={handleChange}
+                                        />
+                                    </Col>
+                                    
+                                </Row>
+                                <br />
+                                <Row >
+                                    <Col >
+                                    <Form.Label column >CI Number</Form.Label>
+                                    </Col>
+                                    <Col xs={8}>
+                                        <Form.Control 
+                                        type="text" 
+                                        name='CI_number' 
+                                        placeholder="Enter CI number" 
+                                        value={formData.CI_number}
+                                        onChange={handleChange}
+                                        />
+                                    </Col>
+                                    
+                                </Row>
+                                <br />
+                                <Row>
+                                    <Form.Label column md={2}>Date </Form.Label>
+                                    <Col xs={5}><Form.Control type="date" 
+                                    name="date"
+                                    value={formData.date}
+                                    onChange={handleChange}
+                                    /></Col>
+                                </Row>
+                                <br />
+                                <Row>
+                                    <Form.Label column md={3}>Value(USD)</Form.Label>
+                                    <Col xs={4}>
+                                    <Form.Control 
+                                    type="number" 
+                                    name="USD"  
+                                    placeholder="0"
+                                    value={formData.USD}
+                                    onChange={handleChange}
+                                    /></Col>
+                                    
+                                </Row>
+                                <br />
+                                <Row>
+                                    <Form.Label column md={3}>Value(AUD)</Form.Label>
+                                    <Col xs={4}>
+                                    <Form.Control 
+                                    type="number"
+                                    name="AUD"  
+                                    placeholder='0' 
+                                    value={formData.AUD}
+                                    onChange={handleChange}
+                                    /></Col>
+                                </Row>
+                                <br />
+                                <Row>
+                                    <Form.Label column md={2}>Freight </Form.Label>
+                                    <Col xs={4}>
+                                    <Form.Control 
+                                    type="number" 
+                                    name="Freight" 
+                                    placeholder='0'  
+                                    value={formData.Freight}
+                                    onChange={handleChange}
+                                    />
+                                    </Col>
+                                   
+                                </Row>
+                                <br />
+ 
+                                <Button variant="primary" type="submit" onClick={addNewCI}>
+                                    ADD
+                                </Button>
+                                </Form> */}
+                            </Offcanvas.Body>
+                        </Offcanvas>
+                        <Button onClick={handleShow} >Add new CN</Button>
+                    </div> 
+                    </Container>
+                </div>
+            </div>
+        </main>
+
+    );
+
+}

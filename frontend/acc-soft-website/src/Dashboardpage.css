@@ -1,0 +1,17 @@
+/* .custom-progress-bar .progress-bar {
+  position: relative;
+  
+} */
+
+
+
+
+div.custom-progress-bar {
+  /* content: attr(aria-label); */
+  /* position: absolute; */
+  /* top: 50%; */
+  /* left: 50%; */
+  /* transform: translate(-50%, -50%);  */
+  color: black; /* Change the label text color to black */
+  font-weight: bold;
+  }
