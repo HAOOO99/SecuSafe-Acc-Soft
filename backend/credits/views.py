@@ -96,3 +96,56 @@ def updateCN(request):
 
     print(response)
     return JsonResponse(response)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def add_CN(request):
+    response = {}
+    print(request.body.decode())
+    try:
+        if request.content_type == 'application/json':
+            payload = json.loads(request.body.decode())
+        
+        #     print("Payload:", payload)  # Debugging statement
+
+        #     company_name = payload["company_name"]
+        #     supplier_name = payload["supplier"]
+        #     date = payload['date']
+        #     desciption = payload['description']
+            
+            
+        # else:
+            company_name = payload["company_name"]
+            supplier_name = payload["supplier_name"]
+            date = payload["date"]
+            description =payload["description"]
+            estimate = payload["estimateCN"]           
+            estimateCurrency =payload["estimateCurrency"]
+            type = payload["CNType"]
+        
+        CN.objects.create(
+            company_name=company_name,
+            supplier=supplier_name,
+            date=date,
+            description=description,
+            estimate=estimate,
+            estimate_currency=estimateCurrency,
+            type=type,
+            
+        )
+        print(payload)
+        # print(CN.objects.all().filter(company_name = company_name, date__year = date).order_by('date'))
+        response["status"] = "success"
+        response["msg"] = "CN added"
+    except json.JSONDecodeError as e:
+        response["status"] = "failed"
+        response["msg"] = "Invalid JSON"
+        print("JSONDecodeError:", e)
+    except Exception as e:
+        response["status"] = "failed"
+        response["msg"] = "failed to add CN"
+        print(e)
+
+    print(response)
+    return JsonResponse(response)

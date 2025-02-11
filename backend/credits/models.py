@@ -29,7 +29,7 @@ class CN(models.Model):
     estimate_currency = models.CharField(max_length=100,choices=CURRENCYS,default="AUD")
     supplier_CN = models.CharField(max_length=100, null=True,blank=True)
     received = models.DecimalField(max_digits=10,decimal_places=2,null=True, blank=True)
-    received_currency = models.CharField(max_length=100,null=True, choices=CURRENCYS,blank=True)
+    received_currency = models.CharField(max_length=100,null=True, default="AUD",choices=CURRENCYS,blank=True)
 
     ss_CN = models.CharField(max_length=100,null=True,blank=True)
     status = models.CharField(max_length=100,null=True,choices=ALL_STATUS,blank=True)
