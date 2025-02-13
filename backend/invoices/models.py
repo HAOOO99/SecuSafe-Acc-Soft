@@ -1,6 +1,6 @@
 from django.db import models
 from brands.common import get_brands
-
+from remittances.models import Remittance
 # Create your models here.
 class CI(models.Model):
     company_name = models.CharField(max_length=100,choices=get_brands(),default=next(iter(get_brands())))
@@ -13,6 +13,14 @@ class CI(models.Model):
     freight = models.DecimalField(max_digits=10, decimal_places=2,default=0)
     isComplete = models.BooleanField(default=False)
 
-    
+    remittance = models.ForeignKey(
+        Remittance,  # ✅ Link to Remittance Model
+        on_delete=models.CASCADE,
+        related_name="invoices",
+        null=True,
+        blank=True
+    )
+
     def __str__(self):
         return f"{self.company_name} - {self.CI_no}"
+    

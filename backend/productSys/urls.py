@@ -27,4 +27,5 @@ urlpatterns = [
     path('supplier/', include('suppliers.urls')),
     path('ci/', include('invoices.urls')),
     path('cn/',include('credits.urls')),
+    path('remittance/',include('remittances.urls')),
 ]
