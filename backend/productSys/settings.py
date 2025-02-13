@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'suppliers',
     'invoices',
     'credits',
-    'remittances',
     
 ]
 
