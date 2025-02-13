@@ -344,14 +344,17 @@ export default function CNPage(){
                             <Col md={{ span: 2, offset: 2 }}>
                                 <h5>Total Estimate:</h5>
                                 <h5>Total Received: </h5>
+                                <h5>Balance: </h5>
                             </Col>
                             <Col md={{ span: 3 }}>
                                 <h5>${tempUSDEstimate} USD</h5>
                                 <h5>${tempUSDReceived} USD</h5>
+                                <h5>${tempUSDReceived - tempUSDEstimate } USD</h5>
                             </Col>
                             <Col md={{ span: 3, offset: 0 }}>
                                 <h5>${tempAUDEstimate} AUD</h5>
                                 <h5>${tempAUDReceived} AUD</h5>
+                                <h5>${tempAUDReceived - tempAUDEstimate} AUD</h5>
                             </Col>
                         </Row>
 

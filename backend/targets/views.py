@@ -24,10 +24,9 @@ def get_targets(request):
 
         PItargetA = target.values()[0].get("PI_targetA")
         PItargetB = target.values()[0].get("PI_targetB")
-        CItargetA = target.values()[0].get("CI_targetA")
-        CItargetB = target.values()[0].get("CI_targetB")
+        currency = target.values()[0].get("default_currency")
         target_list = []
-        target_list.append({"PItargetA":PItargetA,"PItargetB":PItargetB,"CItargetA":CItargetA,"CItargetB":CItargetB})
+        target_list.append({"PItargetA":PItargetA,"PItargetB":PItargetB,"defaultCurrency":currency})
         response["status"] = "success"
         response["targets"] = target_list
 

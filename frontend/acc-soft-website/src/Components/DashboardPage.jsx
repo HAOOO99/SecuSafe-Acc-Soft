@@ -1,6 +1,7 @@
 
 import { useState,useEffect } from 'react'
-import { Container, Row, Col, ProgressBar } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
+import { Progress } from "antd";
 
 import NavBar from './NavBar';
 import { useParams } from 'react-router-dom';
@@ -10,10 +11,11 @@ export default function DashboardPage(){
     const {name}  = useParams();
     const [PItargetA,setPItargetA] = useState(0)
     const [PItargetB,setPItargetB] = useState(0)
-    const [CItargetA,setCItargetA] = useState(0)
-    const [CItargetB,setCItargetB] = useState(0)
+    
     const [currentPI, setCurrentPI] = useState(0)
     const [currentCI, setCurrentCI] = useState(0)
+
+    const [currency,setCurrency] = useState("")
 
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear()); // State to store current year
     
@@ -27,8 +29,7 @@ export default function DashboardPage(){
         {
           title: 'Total CI this year',
           current: 0,
-          targetA: 0,
-          targetB: 0,
+          target:0,
         },
       ]);
 
@@ -57,11 +58,10 @@ export default function DashboardPage(){
             {
             title: 'Total CI this year',
             current: currentCI,
-            targetA: CItargetA,
-            targetB: CItargetB,
+            target: currentPI,
             },
         ]);
-        }, [currentPI,currentCI,PItargetA, PItargetB, CItargetA, CItargetB]);
+        }, [currentPI,currentCI,PItargetA, PItargetB]);
 
     async function getPIValues(){
         const config = {
@@ -126,8 +126,7 @@ export default function DashboardPage(){
             
             setPItargetA(data.targets[0].PItargetA)
             setPItargetB(data.targets[0].PItargetB)
-            setCItargetA(data.targets[0].CItargetA)
-            setCItargetB(data.targets[0].CItargetB)
+            setCurrency(data.targets[0].defaultCurrency)
 
             console.log(data.targets[0]["PItargetA"])
             
@@ -153,54 +152,80 @@ export default function DashboardPage(){
                 <Container>
                 <h3 key="title" className="text-center mb-5">Dashboard for {name}</h3>
                 
-                    {progressData.map((item, index) => (
+                    
                         <Row
-                            key={index}
+                            key={0}
                             className="my-4 p-3 border rounded shadow-sm"
                             style={{ backgroundColor: '#f8f9fa' }}
                         >
                             <Col xs={12}>
-                                <h6>{item.title}</h6>
+                                <h6>Total PI this year</h6>
                                 <div className="d-flex align-items-center justify-content-between">
                                     <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
-                                        ${item.current}
+                                    {currency}$ {currentPI}
                                     </div>
                                     <div style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>
-                                        Target A: ${item.targetA} &nbsp; Target B: ${item.targetB}
+                                        Target A: ${PItargetA} &nbsp; Target B: ${PItargetB}
                                     </div>
                                 </div>
                                 
-                                {item.current< item.targetA ? 
-                                    <ProgressBar className="my-2">
-                                       <ProgressBar
-                                       now={(item.current / item.targetA) * 100}
-                                       variant="primary"
-                                    //    label={`Target A: ${((item.current / item.targetA) * 100).toFixed(1)}%`}
-                                       key={1}
-                                       className="custom-progress-bar"
-                                     /> 
-                                     </ProgressBar> :  
-                                     <ProgressBar className="my-2">
-                                     <ProgressBar
-                                        now={(item.targetA/ item.targetB) * 100}
-                                        variant="primary"
-                                        label={`Target A 100% `}s
-                                        key={2}
-                                        className="custom-progress-bar"
-                                    />
-                                    <ProgressBar
-                                        now={((item.current - item.targetA) / item.targetB) * 100}
-                                        variant="info"
-                                        // label={`Target B: ${((item.current / item.targetB) * 100).toFixed(1)}%`}
-                                        key={3}
-                                        className="custom-progress-bar"
-                                    />
-                                    </ProgressBar>
-                                    
-                                }
+                                {currentPI < PItargetA ? 
+                                    <Progress
+                                    percent={((currentPI/PItargetA)*100).toFixed(2) }
+                                    format={() => ` Target A: ${((currentPI  / PItargetB)*100).toFixed(2)}% (${(currentPI - PItargetA)})`}
+                                    percentPosition={{
+                                        align: 'center',
+                                        type: 'outer',
+                                    }}
+                                    size={[400, 15]}
+                                  />
+                                    :
+                                    <Progress
+                                    percent={((currentPI  / PItargetB)*100).toFixed(2)}
+                                    success={{
+                                      percent: (PItargetA / PItargetB)*100,
+                                    }}
+                                    format={() => ` Target A: 100 % -- Target B: ${(((currentPI-PItargetA)  / (PItargetB-PItargetA))*100).toFixed(2)}% (${(currentPI - PItargetB)})`}
+                                    percentPosition={{
+                                        align: 'center',
+                                        type: 'outer',
+                                    }}
+                                    size={[400, 15]}
+                                  />
+                                    }
                             </Col>
                         </Row>
-                    ))}
+
+                        <Row
+                            key={0}
+                            className="my-4 p-3 border rounded shadow-sm"
+                            style={{ backgroundColor: '#f8f9fa' }}
+                        >
+                            <Col xs={12}>
+                                <h6>Total CI this year</h6>
+                                <div className="d-flex align-items-center justify-content-between">
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+                                        {currency}$ {currentCI}
+                                    </div>
+                                    
+                                    <div style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>
+                                        Target : $ {currentPI}
+                                    </div>
+                                </div>
+                                <Progress
+                                    percent={((currentCI / currentPI)*100).toFixed(2)}
+                                    format={() => ` ${((currentCI / currentPI)*100).toFixed(2)}% (${(currentCI - currentPI)})`}
+                                    percentPosition={{
+                                        align: 'center',
+                                        type: 'outer',
+                                    }}
+                                    size={[400, 15]}
+                                    />
+                                    {/* <span style={{ fontSize: 14, fontWeight: "bold" }}>{1}% Completed</span> */}
+                            </Col>
+                        </Row>
+                    
+                    
                 </Container>
 
                 </div>

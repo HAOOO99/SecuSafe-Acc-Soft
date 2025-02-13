@@ -6,8 +6,8 @@ class Target(models.Model):
     year = models.IntegerField(null=False, blank=False)
     PI_targetA = models.IntegerField(null=False, blank=False)
     PI_targetB = models.IntegerField(null=False, blank=False)
-    CI_targetA = models.IntegerField(null=False, blank=False)
-    CI_targetB = models.IntegerField(null=False, blank=False)
+    
+    default_currency = models.CharField(max_length=10,null=False,blank=False,default="")
 
     def __str__(self):
         return f"{self.company_name}"
