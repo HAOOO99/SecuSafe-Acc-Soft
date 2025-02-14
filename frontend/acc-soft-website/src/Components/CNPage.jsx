@@ -116,6 +116,8 @@ export default function CNPage(){
     }
     
     async function update(e){
+        e.preventDefault();
+
         console.log(11111, selectedRow)
             // Check for empty fields
         let newErrors = {};
@@ -191,6 +193,8 @@ export default function CNPage(){
     }
 
     const addNewCN = async (e) =>  {
+        e.preventDefault();
+
         let NewCNErrors = {};
         e.preventDefault();
 

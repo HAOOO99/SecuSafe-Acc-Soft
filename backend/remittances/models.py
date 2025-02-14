@@ -15,7 +15,7 @@ class Remittance(models.Model):
         "Pending" : "Pending",
     }
     id = models.AutoField(primary_key=True)
-    company_name = models.CharField(max_length=100,choices=get_brands(),default=next(iter(get_brands())))
+    brand = models.CharField(max_length=100,choices=get_brands(),default=next(iter(get_brands())))
     date = models.DateField()
     bank = models.CharField(max_length=100,null=True,blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -23,5 +23,5 @@ class Remittance(models.Model):
     status = models.CharField(max_length=100,choices=ALL_STATUS)
 
     def __str__(self):
-        return f"{self.company_name} - {self.id}"
+        return f"{self.brand} - {self.id}"
     

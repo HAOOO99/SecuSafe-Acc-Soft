@@ -20,7 +20,7 @@ class CN(models.Model):
         "Discount":"Discount",
     }
 
-    company_name = models.CharField(max_length=100,choices=get_brands(),default=next(iter(get_brands())))
+    brand = models.CharField(max_length=100,choices=get_brands(),default=next(iter(get_brands())))
     date = models.DateField()
     supplier = models.CharField(max_length=100)
     description = models.CharField(max_length=1000)

@@ -50,7 +50,6 @@ export default function Brands(){
         navigate('/dashboard/'+ brandName);
     }
 
-
     return (
         <main className="py-1">
             {/* <div style={{display: 'flex'}}> */}
@@ -75,7 +74,7 @@ export default function Brands(){
                         )} */}
                         <div style={{display:'flex',justifyContent: 'center'}}>
                         <Button variant="primary" className="mt-3"
-                        onClick = {()=> handleClick(brand.name)}>Go somewhere</Button>
+                        onClick = {()=> handleClick(brand.name)}>Jump to {brand.name} Page</Button>
                         </div>
                         
                         </Card.Body>

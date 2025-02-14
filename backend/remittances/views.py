@@ -21,7 +21,7 @@ def get_remittances(request):
     try:
         current_brand = request.GET.get("brand")
         year = request.GET.get("year")
-        remittances = Remittance.objects.all().filter(company_name = current_brand, date__year = year).order_by('date')
+        remittances = Remittance.objects.all().filter(brand = current_brand, date__year = year).order_by('date')
         print(remittances.values())
         re_list = []
         for each in remittances.values():
@@ -47,7 +47,7 @@ def get_years(request):
     try:
         current_brand = request.GET.get("brand")
 
-        res = Remittance.objects.filter(company_name = current_brand)
+        res = Remittance.objects.filter(brand = current_brand)
         print(res.values().count())
         years_list = []
         if res.values().count() != 0:

@@ -3,7 +3,7 @@ from brands.common import get_brands
 from remittances.models import Remittance
 # Create your models here.
 class CI(models.Model):
-    company_name = models.CharField(max_length=100,choices=get_brands(),default=next(iter(get_brands())))
+    brand = models.CharField(max_length=100,choices=get_brands(),default=next(iter(get_brands())))
     PO_no = models.CharField(primary_key=True, unique = True,max_length=100)
     CI_no = models.CharField(max_length=100)
     supplier = models.CharField(max_length=100)
@@ -20,7 +20,7 @@ class CI(models.Model):
         null=True,
         blank=True
     )
-
+          
     def __str__(self):
-        return f"{self.company_name} - {self.CI_no}"
+        return f"{self.brand} - {self.CI_no}"
     

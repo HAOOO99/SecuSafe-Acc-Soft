@@ -128,7 +128,7 @@ export default function DashboardPage(){
             setPItargetB(data.targets[0].PItargetB)
             setCurrency(data.targets[0].defaultCurrency)
 
-            console.log(data.targets[0]["PItargetA"])
+            console.log(data.targets[0])
             
             if (data === undefined || data.length === 0){
                 alert("Nothing is found");
@@ -209,7 +209,7 @@ export default function DashboardPage(){
                                     </div>
                                     
                                     <div style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>
-                                        Target : $ {currentPI}
+                                        Current PI : $ {currentPI}
                                     </div>
                                 </div>
                                 <Progress
@@ -224,8 +224,6 @@ export default function DashboardPage(){
                                     {/* <span style={{ fontSize: 14, fontWeight: "bold" }}>{1}% Completed</span> */}
                             </Col>
                         </Row>
-                    
-                    
                 </Container>
 
                 </div>

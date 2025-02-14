@@ -24,10 +24,10 @@ def get_CIs(request):
         year = request.GET.get("year")
         if request.GET.get("CI_no") == None or request.GET.get("CI_no")=="":
             
-            cis = CI.objects.all().filter(company_name = current_brand, date__year = year).order_by('date')
+            cis = CI.objects.all().filter(brand = current_brand, date__year = year).order_by('date')
         else:
             ci = request.GET.get("CI_no")
-            cis = CI.objects.all().filter(company_name = current_brand, date__year = year,CI_no=ci).order_by('date')
+            cis = CI.objects.all().filter(brand = current_brand, date__year = year,CI_no=ci).order_by('date')
 
         print(cis.values())
         ci_list = []
@@ -52,7 +52,7 @@ def get_total_values(request):
     try:
         current_brand = request.GET.get("brand")
         year = request.GET.get("year")
-        current_year_cis = CI.objects.filter(company_name = current_brand, date__year = year)
+        current_year_cis = CI.objects.filter(brand = current_brand, date__year = year)
         total_usd = current_year_cis.aggregate(total_usd=Sum('value_USD'))
         total_aud = current_year_cis.aggregate(total_aud=Sum('value_AUD'))
 
@@ -82,7 +82,7 @@ def get_years(request):
     try:
         current_brand = request.GET.get("brand")
 
-        cis = CI.objects.filter(company_name = current_brand)
+        cis = CI.objects.filter(brand = current_brand)
         print(cis.values().count())
         years_list = []
         if cis.values().count() != 0:
@@ -112,7 +112,7 @@ def category_cis(request):
     try:
         current_brand = request.GET.get("brand")
         year = request.GET.get("year")
-        cis = CI.objects.all().filter(company_name = current_brand,date__year = year)
+        cis = CI.objects.all().filter(brand = current_brand,date__year = year)
         print(cis.values())
         cis_list = []
         if cis.values().count() != 0:
@@ -140,7 +140,7 @@ def select_cis(request):
         current_brand = request.GET.get("brand")
         year = request.GET.get("year")
         chosen_Ci = request.GET.get("ciNo")
-        cis = CI.objects.all().filter(company_name = current_brand,date__year = year,CI_no=chosen_Ci)
+        cis = CI.objects.all().filter(brand = current_brand,date__year = year,CI_no=chosen_Ci)
         print(cis.values())
         cis_list = []
         for each in cis.values():
@@ -194,7 +194,7 @@ def add_CI(request):
 
 
         CI.objects.create(
-            company_name=company_name,
+            brand=company_name,
             supplier=supplier_name,
             PO_no=PO_number,
             CI_no=CI_number,
@@ -204,7 +204,7 @@ def add_CI(request):
             freight=freight
             
         )
-        print(CI.objects.filter(company_name = company_name).values())
+        print(CI.objects.filter(brand = company_name).values())
         response["status"] = "success"
         response["msg"] = "CI added"
     except json.JSONDecodeError as e:

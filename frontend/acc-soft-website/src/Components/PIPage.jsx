@@ -35,7 +35,7 @@ export default function PIPage(){
         PI_number: '',
         date: new Date().toISOString().split('T')[0],
         USD: 0,
-        AUD: 0,
+        // AUD: 0,
         AUD_local: 0,
         AUD_counted: false,
         discount: 0,
@@ -214,7 +214,7 @@ export default function PIPage(){
 
     // Function to handle adding a new PI
     const addNewPI = async (e) => {
-        // e.preventDefault();
+        e.preventDefault();
 
         // console.log(form)
         const config = {
@@ -249,7 +249,7 @@ export default function PIPage(){
         PI_number: '',
         date: new Date().toISOString().split('T')[0],
         USD: 0,
-        AUD: 0,
+        // AUD: 0,
         AUD_local: 0,
         AUD_counted: false,
         discount: 0,
@@ -290,7 +290,7 @@ export default function PIPage(){
     );
 
     const tempUSDAmount = filteredPIs.reduce((sum, PI) => sum + parseFloat(PI.USD)-parseFloat(PI.discount), 0);
-    const tempAUDAmount = filteredPIs.reduce((sum, PI) => sum + parseFloat(PI.AUD) + (PI.AUD_counted ? parseFloat(PI.AUD_local): 0) , 0);
+    const tempAUDAmount = filteredPIs.reduce((sum, PI) => sum +  (PI.AUD_counted ? parseFloat(PI.AUD_local): 0) , 0);
 
     console.log(tempAUDAmount);
 
@@ -319,8 +319,8 @@ export default function PIPage(){
                             <th>PI Number</th>
                             <th>PI Date</th>
                             <th>USD </th>
-                            <th>AUD </th>
-                            <th>AUD(local)</th>
+                            {/* <th>AUD </th> */}
+                            <th>AUD</th>
                             <th>Discount</th>
                             <th>Comment</th>
                             <th>Link</th>
@@ -334,8 +334,8 @@ export default function PIPage(){
                             <td>{PI.PI_number}</td>
                             <td style={{ whiteSpace: "nowrap" }}>{PI.date}</td>
                             <td>{PI.discount > 0 ? `${PI.USD} - ${PI.discount}` : PI.USD}</td>
-                            <td>{PI.AUD}</td>
-                            {PI.AUD_counted ? <td style={{ color: '#00cc00' }}>{PI.AUD_local}</td> :<td >{PI.AUD_local}</td>}
+                            {/* <td>{PI.AUD}</td> */}
+                            {PI.AUD_counted || PI.AUD_local == 0 ? <td >{PI.AUD_local}</td> :<td style={{ color: 'blue' }}>{PI.AUD_local}</td>}
                             <td>{PI.discount}</td>
                             <td > <div className="d-flex align-items-center mb-1">
                                     <Form.Control as="textarea" value={comments[PI.PI_number]} className="me-2"
@@ -428,7 +428,7 @@ export default function PIPage(){
                                     </Form.Control></Col>
                                 </Row>
                                 <br />
-                                <Row>
+                                {/* <Row>
                                     <Form.Label column md={2}>AUD</Form.Label>
                                     <Col xs={4}>
                                     <Form.Control 
@@ -439,9 +439,9 @@ export default function PIPage(){
                                     onChange={handleChange}/></Col>
                                     
                                 </Row>
-                                <br />
+                                <br /> */}
                                 <Row>
-                                    <Form.Label column md={4}>AUD from local </Form.Label>
+                                    <Form.Label column md={2}>AUD </Form.Label>
                                     <Col xs={4}>
                                     <Form.Control 
                                     type="number" 

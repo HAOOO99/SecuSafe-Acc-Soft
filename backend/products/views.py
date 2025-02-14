@@ -21,7 +21,7 @@ def get_PIs(request):
     try:
         current_brand = request.GET.get("brand")
         year = request.GET.get("year")
-        pis = PI.objects.all().filter(company_name = current_brand, date__year = year).order_by('date')
+        pis = PI.objects.all().filter(brand = current_brand, date__year = year).order_by('date')
         print(pis.values())
         pi_list = []
         for each in pis.values() :
@@ -45,18 +45,19 @@ def get_total_values(request):
     try:
         current_brand = request.GET.get("brand")
         year = request.GET.get("year")
-        current_year_pis = PI.objects.filter(company_name = current_brand, date__year = year)
+        current_year_pis = PI.objects.filter(brand = current_brand, date__year = year)
         total_usd = current_year_pis.aggregate(total_usd=Sum('USD'))
-        total_aud = current_year_pis.aggregate(total_aud=Sum('AUD'))
+        # total_aud = current_year_pis.aggregate(total_aud=Sum('AUD'))
         total_aud_local = current_year_pis.filter(AUD_counted = True).aggregate(total_aud_local=Sum('AUD_local'))
         total_discount = current_year_pis.aggregate(total_discount=Sum('discount'))
 
         usd_value = total_usd["total_usd"] - total_discount["total_discount"]
-        if total_aud_local["total_aud_local"] == None:
-            aud_value = total_aud["total_aud"]
-        else:
-            aud_value = total_aud["total_aud"] + total_aud_local["total_aud_local"]
-
+        aud_value = total_aud_local["total_aud_local"]
+        # if total_aud_local["total_aud_local"] == None:
+        #     aud_value = total_aud["total_aud"]
+        # else:
+        #     aud_value = total_aud["total_aud"] + total_aud_local["total_aud_local"]
+ 
         values_map = [{"USD":usd_value,"AUD":aud_value}]
 
         response["status"] = "success"
@@ -79,7 +80,7 @@ def get_years(request):
     try:
         current_brand = request.GET.get("brand")
 
-        pis = PI.objects.filter(company_name = current_brand)
+        pis = PI.objects.filter(brand = current_brand)
         print(pis.values().count())
         years_list = []
         if pis.values().count() != 0:
@@ -176,7 +177,7 @@ def add_PI(request):
             PI_number = payload["PI_number"]
             date = payload["date"]
             USD = payload["USD"]
-            AUD = payload["AUD"]
+            # AUD = payload["AUD"]
             AUD_local = payload["AUD_local"]
             AUD_counted = payload["AUD_counted"]
             if AUD_counted == "true":
@@ -192,7 +193,7 @@ def add_PI(request):
             PI_number = request.POST.get("PI_number")
             date = request.POST.get("date")
             USD = request.POST.get("USD")
-            AUD = request.POST.get("AUD")
+            # AUD = request.POST.get("AUD")
             AUD_local = request.POST.get("AUD_local")
             AUD_counted = request.POST.get("AUD_counted")
             if AUD_counted == "true":
@@ -206,19 +207,19 @@ def add_PI(request):
         print(PI_number)
 
         PI.objects.create(
-            company_name=company_name,
+            brand=company_name,
             supplier_name=supplier_name,
             PI_number=PI_number,
             date=date,
             USD=USD,
-            AUD=AUD,
+            # AUD=AUD,
             AUD_local=AUD_local,
             AUD_counted=AUD_counted,
             discount=discount,
             comment=comment,
             link=link,
         )
-        print(PI.objects.filter(company_name = company_name).values())
+        print(PI.objects.filter(brand = company_name).values())
         response["status"] = "success"
         response["msg"] = "PI added"
     except json.JSONDecodeError as e:

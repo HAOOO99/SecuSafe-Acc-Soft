@@ -18,7 +18,7 @@ def get_targets(request):
         targets = Target.objects.all()
         current_brand = request.GET.get("brand")
         current_year = datetime.now().year
-        target = Target.objects.all().filter(company_name = current_brand,year = current_year)
+        target = Target.objects.all().filter(brand = current_brand,year = current_year)
         print(target.values()[0])
         # for each in target :
 

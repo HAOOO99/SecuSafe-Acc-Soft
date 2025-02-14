@@ -21,7 +21,7 @@ def get_CNs(request):
     try:
         current_brand = request.GET.get("brand")
         year = request.GET.get("year")
-        cns = CN.objects.all().filter(company_name = current_brand, date__year = year).order_by('date')
+        cns = CN.objects.all().filter(brand = current_brand, date__year = year).order_by('date')
         print(cns.values())
         cn_list = []
         for each in cns.values():
@@ -45,7 +45,7 @@ def get_years(request):
     try:
         current_brand = request.GET.get("brand")
 
-        cns = CN.objects.filter(company_name = current_brand)
+        cns = CN.objects.filter(brand = current_brand)
         print(cns.values().count())
         years_list = []
         if cns.values().count() != 0:
@@ -83,7 +83,7 @@ def updateCN(request):
         ss_cn = payload["ssCN"]
         status = payload["status"]
 
-        cn = CN.objects.filter(company_name=current_brand,id=id,supplier=supplier)
+        cn = CN.objects.filter(brand=current_brand,id=id,supplier=supplier)
         
         cn.update(supplier_CN=supplier_cn,received=received_amount,received_currency=currency,ss_CN=ss_cn, status=status)
         print(cn.values())
@@ -125,7 +125,7 @@ def add_CN(request):
             type = payload["CNType"]
         
         CN.objects.create(
-            company_name=company_name,
+            brand=company_name,
             supplier=supplier_name,
             date=date,
             description=description,
