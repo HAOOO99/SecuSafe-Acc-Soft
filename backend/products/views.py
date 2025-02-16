@@ -53,11 +53,11 @@ def get_total_values(request):
 
         usd_value = total_usd["total_usd"] - total_discount["total_discount"]
         aud_value = total_aud_local["total_aud_local"]
-        # if total_aud_local["total_aud_local"] == None:
-        #     aud_value = total_aud["total_aud"]
+        if total_aud_local["total_aud_local"] == None:
+            aud_value = 0
         # else:
         #     aud_value = total_aud["total_aud"] + total_aud_local["total_aud_local"]
- 
+        print(total_aud_local)
         values_map = [{"USD":usd_value,"AUD":aud_value}]
 
         response["status"] = "success"

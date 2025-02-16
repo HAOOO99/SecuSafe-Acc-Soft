@@ -8,6 +8,7 @@ import Dashboard from './Components/DashboardPage';
 import PIPage from './Components/PIPage';
 import CIPage from './Components/CIPage';
 import CNPage from './Components/CNPage';
+import RemittancePage from './Components/RemittancePage';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/pi/:name" element= {<ProtectedRoute> <PIPage /></ProtectedRoute>} />
         <Route path="/ci/:name" element= {<ProtectedRoute> <CIPage /></ProtectedRoute>} />
         <Route path="/cn/:name" element= {<ProtectedRoute> <CNPage /></ProtectedRoute>}/>
+        <Route path="/remittance/:name" element= {<ProtectedRoute> <RemittancePage /></ProtectedRoute>}/>
 
       </Routes>
 

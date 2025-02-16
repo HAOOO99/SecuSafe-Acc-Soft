@@ -5,7 +5,6 @@ import { Progress } from "antd";
 
 import NavBar from './NavBar';
 import { useParams } from 'react-router-dom';
-import '../Dashboardpage.css'; // Import the CSS file
 
 export default function DashboardPage(){
     const {name}  = useParams();
@@ -80,7 +79,14 @@ export default function DashboardPage(){
                 return;
             }
             console.log(data.total_values)
-            setCurrentPI(data.total_values[0].USD)
+            // majority value takes the default currency type 
+            if(data.total_values[0].USD > data.total_values[0].AUD){
+                setCurrentPI(data.total_values[0].USD)
+            }
+            else{
+                setCurrentPI(data.total_values[0].AUD)
+            }
+            
             return data;
         } catch (e){
             console.log(e);
@@ -143,6 +149,10 @@ export default function DashboardPage(){
 
     }
 
+    const amoutFormat = (number) => {
+
+    }
+
     return (
         <main className="py-1">
             <div style={{display: 'flex'}}> 
@@ -162,10 +172,10 @@ export default function DashboardPage(){
                                 <h6>Total PI this year</h6>
                                 <div className="d-flex align-items-center justify-content-between">
                                     <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
-                                    {currency}$ {currentPI}
+                                    {currency}$ {Number(currentPI).toLocaleString()}
                                     </div>
                                     <div style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>
-                                        Target A: ${PItargetA} &nbsp; Target B: ${PItargetB}
+                                        Target A: ${PItargetA.toLocaleString()} &nbsp; Target B: ${PItargetB.toLocaleString()}
                                     </div>
                                 </div>
                                 
@@ -185,7 +195,7 @@ export default function DashboardPage(){
                                     success={{
                                       percent: (PItargetA / PItargetB)*100,
                                     }}
-                                    format={() => ` Target A: 100 % -- Target B: ${(((currentPI-PItargetA)  / (PItargetB-PItargetA))*100).toFixed(2)}% (${(currentPI - PItargetB)})`}
+                                    format={() => ` Target A: 100 % -- Target B: ${(((currentPI-PItargetA)  / (PItargetB-PItargetA))*100).toFixed(2)}% (${(currentPI - PItargetB).toFixed(2)})`}
                                     percentPosition={{
                                         align: 'center',
                                         type: 'outer',
@@ -205,11 +215,11 @@ export default function DashboardPage(){
                                 <h6>Total CI this year</h6>
                                 <div className="d-flex align-items-center justify-content-between">
                                     <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
-                                        {currency}$ {currentCI}
+                                        {currency}$ {Number(currentCI).toLocaleString()}
                                     </div>
                                     
                                     <div style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>
-                                        Current PI : $ {currentPI}
+                                        Current PI : $ {Number(currentPI).toLocaleString()}
                                     </div>
                                 </div>
                                 <Progress

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector",
+    "antd": "^5.24.0",
     "bootstrap": "^5.3.3",
     "cra-template": "1.2.0",
     "firebase": "^11.1.0",

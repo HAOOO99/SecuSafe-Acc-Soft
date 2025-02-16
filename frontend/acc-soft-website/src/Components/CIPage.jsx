@@ -328,14 +328,14 @@ export default function CIPage(){
                                 <h5>GAP: </h5>
                             </Col>
                             <Col md={{ span: 3 }}>
-                                <h5>${piUSD} USD</h5>
-                                <h5>${tempUSDCI.toFixed(2)} USD</h5>
-                                <h5>${piUSD-tempUSDCI} USD</h5>
+                                <h5>${Number(piUSD).toLocaleString()} USD</h5>
+                                <h5>${Number(tempUSDCI.toFixed(2)).toLocaleString()} USD</h5>
+                                <h5>${Number(piUSD-tempUSDCI).toLocaleString()} USD</h5>
                             </Col>
                             <Col md={{ span: 3, offset: 0 }}>
-                                <h5>${piAUD} AUD</h5>
-                                <h5>${tempAUDCI.toFixed(2)} AUD</h5>
-                                <h5>${piAUD-tempAUDCI} AUD</h5>
+                                <h5>${Number(piAUD).toLocaleString()} AUD</h5>
+                                <h5>${Number(tempAUDCI.toFixed(2)).toLocaleString()} AUD</h5>
+                                <h5>${Number(piAUD-tempAUDCI).toLocaleString()} AUD</h5>
                             </Col>
                         </Row>
                     

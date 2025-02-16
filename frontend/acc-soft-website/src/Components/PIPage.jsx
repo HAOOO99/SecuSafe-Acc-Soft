@@ -21,7 +21,6 @@ export default function PIPage(){
 
     // const [tempUSD,setTempUSD] = useState(0);
     
-
     const [searchQuery, setSearchQuery] = useState(''); // State to store search query
     const [years, setYears] = useState([]); // State to store years
     const [chooseYear, setChooseYear] = useState(new Date().getFullYear()); // State to store selected year
@@ -43,14 +42,12 @@ export default function PIPage(){
         link: '',
     })
 
-    
     useEffect(() => {
 
         showPI();
         getValues();
         showYears();
         
-
         // Set up polling to fetch data every 10 seconds
         // const interval = setInterval(() => {
         //     showPI();
@@ -294,8 +291,6 @@ export default function PIPage(){
 
     console.log(tempAUDAmount);
 
-    
-
     return (
         <main className="py-1">
             <div style={{display: 'flex'}}> 
@@ -331,7 +326,7 @@ export default function PIPage(){
                             
                             <tr>
                             <td>{PI.supplier_name}</td>
-                            <td>{PI.PI_number}</td>
+                            <td style={{ whiteSpace: "nowrap" }}>{PI.PI_number}</td>
                             <td style={{ whiteSpace: "nowrap" }}>{PI.date}</td>
                             <td>{PI.discount > 0 ? `${PI.USD} - ${PI.discount}` : PI.USD}</td>
                             {/* <td>{PI.AUD}</td> */}
@@ -356,9 +351,9 @@ export default function PIPage(){
                         
                         </Table>
                         <div className="text-center mt-3">
-                        <h5>Total USD Value: ${tempUSDAmount.toFixed(2)}</h5>
+                        <h5>Total USD Value: ${Number(tempUSDAmount.toFixed(2)).toLocaleString()}</h5>
                         {/* <h5>Test: ${tempUSDAmount}</h5>s */}
-                        <h5>Total AUD Value: ${tempAUDAmount.toFixed(2)}</h5>
+                        <h5>Total AUD Value: ${Number(tempAUDAmount.toFixed(2)).toLocaleString()}</h5>
                         </div>
                     <div className="text-center mb-5">
                         <Offcanvas show={show} onHide={handleClose} placement={"end"}>

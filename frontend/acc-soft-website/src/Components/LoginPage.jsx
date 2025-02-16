@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Container, Form, Button, Card } from 'react-bootstrap'
-import { auth } from "../firebase-config";
+// import { auth } from "../firebase-config";
 import { useNavigate } from "react-router-dom";
 
 import {

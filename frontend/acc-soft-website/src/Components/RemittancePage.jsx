@@ -140,8 +140,8 @@ export default function RemittancePage(){
                     </Table>
                     
                     <div className="text-center mt-3">
-                    <h5>Total USD Value: ${tempUSD.toFixed(2)}</h5>
-                    <h5>Total AUD Value: ${tempAUD.toFixed(2)}</h5>
+                    <h5>Total USD Value: ${Number(tempUSD.toFixed(2)).toLocaleString()}</h5>
+                    <h5>Total AUD Value: ${Number(tempAUD.toFixed(2)).toLocaleString()}</h5>
 
                     <Modal show={showModal} onHide={() => setShowModal(false)}>
                             <Modal.Header closeButton>

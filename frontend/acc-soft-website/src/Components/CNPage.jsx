@@ -351,14 +351,14 @@ export default function CNPage(){
                                 <h5>Balance: </h5>
                             </Col>
                             <Col md={{ span: 3 }}>
-                                <h5>${tempUSDEstimate} USD</h5>
-                                <h5>${tempUSDReceived} USD</h5>
-                                <h5>${tempUSDReceived - tempUSDEstimate } USD</h5>
+                                <h5>${tempUSDEstimate.toLocaleString()} USD</h5>
+                                <h5>${tempUSDReceived.toLocaleString()} USD</h5>
+                                <h5>${(tempUSDReceived - tempUSDEstimate).toLocaleString()} USD</h5>
                             </Col>
                             <Col md={{ span: 3, offset: 0 }}>
-                                <h5>${tempAUDEstimate} AUD</h5>
-                                <h5>${tempAUDReceived} AUD</h5>
-                                <h5>${tempAUDReceived - tempAUDEstimate} AUD</h5>
+                                <h5>${tempAUDEstimate.toLocaleString()} AUD</h5>
+                                <h5>${tempAUDReceived.toLocaleString()} AUD</h5>
+                                <h5>${(tempAUDReceived - tempAUDEstimate).toLocaleString()} AUD</h5>
                             </Col>
                         </Row>
 
