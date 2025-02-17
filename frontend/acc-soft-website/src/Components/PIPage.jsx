@@ -249,7 +249,7 @@ export default function PIPage(){
         }
     }
 
-    const handleClose = () => (setShow(false),setFormData({
+    const handleClose = () => (setShow(false), setFormData({
         company_name: name,
         supplier_name: name,
         PI_number: '',
@@ -261,8 +261,8 @@ export default function PIPage(){
         discount: 0,
         comment: '',
         link: '',
-    }) ,setError({}));
-    const handleShow = () => (setShow(true),showSuppliers());
+    }), setError({}));
+    const handleShow = () => (setShow(true), showSuppliers());
 
     async function showSuppliers() {
         const config = {
@@ -339,7 +339,7 @@ export default function PIPage(){
                             <td style={{ whiteSpace: "nowrap" }}>{PI.date}</td>
                             <td>{PI.discount > 0 ? `${PI.USD} - ${PI.discount}` : PI.USD}</td>
                             {/* <td>{PI.AUD}</td> */}
-                            {PI.AUD_counted || PI.AUD_local == 0 ? <td >{PI.AUD_local}</td> :<td style={{ color: 'blue' }}>{PI.AUD_local}</td>}
+                            {PI.AUD_counted || PI.AUD_local === 0 ? <td >{PI.AUD_local}</td> :<td style={{ color: 'blue' }}>{PI.AUD_local}</td>}
                             <td>{PI.discount}</td>
                             <td > <div className="d-flex align-items-center mb-1">
                                     <Form.Control as="textarea" value={comments[PI.PI_number]} className="me-2"
