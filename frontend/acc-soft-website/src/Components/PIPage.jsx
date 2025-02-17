@@ -15,6 +15,7 @@ export default function PIPage(){
     const [flag, setFlag] = useState(false); // state to control flag showing in filter bar
 
     const [PIs, setPIs] = useState([]);
+    const [error, setError] = useState({});
     
     const [totalUSD, setTotalUSD] = useState(0);
     const [totalAUD, setTotalAUD] = useState(0);
@@ -32,7 +33,7 @@ export default function PIPage(){
         company_name: name,
         supplier_name: name,
         PI_number: '',
-        date: new Date().toISOString().split('T')[0],
+        date: "",
         USD: 0,
         // AUD: 0,
         AUD_local: 0,
@@ -213,30 +214,38 @@ export default function PIPage(){
     const addNewPI = async (e) => {
         e.preventDefault();
 
-        // console.log(form)
-        const config = {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-        };
+        let NewErrors = {};
 
-        try {
-        const response = await fetch("http://127.0.0.1:8000/pi/add?brand="+name, config);
-        const data = await response.json();
-        console.log(1111111,data)
-        if (data.status === 'success') {
-            alert("New Pi added successfully!")
-            showPI(); // Re-fetch PI data
-            getValues(); // Re-fetch total values
-            handleClose();
-        } else {
-            alert(data.msg);
-        }
-        } catch (e) {
-        console.log(e);
+        if (!formData.PI_number)  NewErrors.pi="PI is required!";
+        if (!formData.date)  NewErrors.date="Date is required!";
+
+        setError(NewErrors);
+        // console.log(NewErrors)
+        if (Object.keys(NewErrors).length === 0){
+            const config = {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+            };
+
+            try {
+            const response = await fetch("http://127.0.0.1:8000/pi/add?brand="+name, config);
+            const data = await response.json();
+            console.log(1111111,data)
+            if (data.status === 'success') {
+                alert("New Pi added successfully!")
+                showPI(); // Re-fetch PI data
+                getValues(); // Re-fetch total values
+                handleClose();
+            } else {
+                alert(data.msg);
+            }
+            } catch (e) {
+            console.log(e);
+            }
         }
     }
 
@@ -244,7 +253,7 @@ export default function PIPage(){
         company_name: name,
         supplier_name: name,
         PI_number: '',
-        date: new Date().toISOString().split('T')[0],
+        date: "",
         USD: 0,
         // AUD: 0,
         AUD_local: 0,
@@ -252,7 +261,7 @@ export default function PIPage(){
         discount: 0,
         comment: '',
         link: '',
-    }));
+    }) ,setError({}));
     const handleShow = () => (setShow(true),showSuppliers());
 
     async function showSuppliers() {
@@ -366,7 +375,8 @@ export default function PIPage(){
                                         <Col >
                                         <Form.Label column >Supplier</Form.Label>
                                         </Col>
-                                        <Col xs={9}>
+                                        <Col xs={8}>
+                                        {console.log(formData.supplier_name)}
                                         <Form.Select defaultValue={formData.supplier_name} name='supplier_name'
                                                     onChange={handleChange} >
                                         {suppliers.map((supplier, index) => (
@@ -383,27 +393,32 @@ export default function PIPage(){
                                     <Col >
                                     <Form.Label column >PI Number</Form.Label>
                                     </Col>
+                                    {console.log(error)}
                                     <Col xs={8}>
                                         <Form.Control 
                                         type="text" 
                                         name='PI_number' 
                                         placeholder="Enter PI number" 
+                                        className={error.pi ? "is-invalid" : ""}
                                         value={formData.PI_number}
                                         onChange={handleChange}/>
+                                    {error.pi && <div className="invalid-feedback">{error.pi}</div>} 
+
                                     </Col>
-                                    
                                 </Row>
                                 <br />
                                 <Row>
-                                    <Form.Label column md={2}>Date </Form.Label>
-                                    <Col xs={5}><Form.Control type="date" 
+                                    <Form.Label column >Date </Form.Label>
+                                    <Col xs={8}><Form.Control type="date" 
                                     name="date"
                                     value={formData.date}
-                                    onChange={handleChange}/></Col>
+                                    className={error.date ? "is-invalid" : ""}
+                                    onChange={handleChange}/>
+                                    {error.date && <div className="invalid-feedback">{error.date}</div>} </Col>
                                 </Row>
                                 <br />
                                 <Row>
-                                    <Form.Label column md={1}>USD</Form.Label>
+                                    <Form.Label column md={2}>USD</Form.Label>
                                     <Col xs={4}>
                                     <Form.Control 
                                     type="number" 
@@ -445,7 +460,7 @@ export default function PIPage(){
                                     value={formData.AUD_local}
                                     onChange={handleChange}/>
                                     </Col>
-                                    <Col xs={4}>
+                                    <Col xs={6}>
                                     <Form.Check 
                                     type="checkbox" 
                                     label="Counted to Target"

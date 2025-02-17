@@ -20,6 +20,7 @@ export default function CNPage(){
     const [searchQuery, setSearchQuery] = useState(''); // State to store search query
     const [years, setYears] = useState([]); // State to store all years
     const [CNs, setCNs] = useState([]) // State to store CNs
+    const [currency,setCurrency] = useState("");
 
     const [chooseYear, setChooseYear] = useState(new Date().getFullYear()); // State to store selected year
     const [showModal, setShowModal] = useState(false); // State to control offcanvas visibility
@@ -35,7 +36,7 @@ export default function CNPage(){
         
         supplier_CN: "",
         received: "",
-        received_currency: "AUD",
+        received_currency: "",
         ss_CN: "",
         status: "",
     });
@@ -45,13 +46,14 @@ export default function CNPage(){
         date:"",
         description:"",
         estimateCN:"",
-        estimateCurrency:"AUD",
+        estimateCurrency:"",
         CNType:"Compensation",
     }); // State to store form data
 
     useEffect(() => {
         fetchCNs();
         showYears();
+        getCurrency();
         },[chooseYear]);
 
     const filteredCNs = CNs.filter((CN) =>
@@ -115,6 +117,42 @@ export default function CNPage(){
         }
     }
     
+    async function getCurrency() {
+        const config = {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+
+        try{
+            const response = await fetch("http://127.0.0.1:8000/target?brand=" + name , config);
+            const data = await response.json();
+            
+            
+            setFormData({company_name:name,
+                supplier_name:name,
+                date:"",
+                description:"",
+                estimateCN:"",
+                estimateCurrency:data.targets[0].defaultCurrency,
+                CNType:"Compensation",})
+
+            // console.log(formData.estimateCurrency)
+            
+            if (data === undefined || data.length === 0){
+                alert("Nothing is found");
+                return;
+            } 
+            
+            return data;
+           
+        } catch (e){
+            console.log(e);
+        }
+    }
+
     async function update(e){
         e.preventDefault();
 
@@ -273,7 +311,7 @@ export default function CNPage(){
         description:"",
         date:"",
         estimateCN:"",
-        estimateCurrency:"AUD",
+        estimateCurrency:formData.estimateCurrency,
         CNType:"Compensation"
     }),setErrors({}),setCheckInput({}));
 
@@ -395,7 +433,7 @@ export default function CNPage(){
                                             <Col> <p><strong>Currency Type:</strong> 
                                             <Form.Select 
                                             required 
-                                            value={selectedRow.received_currency || "AUD"} 
+                                            value={selectedRow.received_currency || formData.estimateCurrency} 
                                             name='received_currency'
                                             onChange={(e)=>handleChangeCurrency(e)} >
 
@@ -441,7 +479,7 @@ export default function CNPage(){
                                         <Col >
                                         <Form.Label column >Supplier</Form.Label>
                                         </Col>
-                                        <Col xs={9}>
+                                        <Col xs={8}>
                                         <Form.Select defaultValue={formData.supplier} name='supplier_name'
                                                     onChange={handleChangeForm} required>
                                         {suppliers.map((supplier, index) => (
@@ -455,8 +493,8 @@ export default function CNPage(){
                                     <br />
 
                                     <Row>
-                                    <Form.Label column md={2}>Date </Form.Label>
-                                    <Col xs={6}><Form.Control type="date" 
+                                    <Form.Label column >Date </Form.Label>
+                                    <Col xs={8}><Form.Control type="date" 
                                     name="date"
                                     value={formData.date}
                                     onChange={handleChangeForm}
@@ -467,10 +505,10 @@ export default function CNPage(){
                                 </Row>
                                 <br />
                                 <Row>
-                                    <Col column md={3}>
+                                    <Col column>
                                     <Form.Label column>Description</Form.Label>
                                     </Col>
-                                    <Col xs={9}>
+                                    <Col xs={8}>
                                         <Form.Control
                                         as="textarea"
                                         name="description"
@@ -501,7 +539,7 @@ export default function CNPage(){
                                 <Row>
                                 <Form.Label column md={4}>Currency Type</Form.Label>
                                 <Col xs={4}>
-                                <Form.Select required defaultValue={"AUD"} value={formData.estimateCurrency} name='estimateCurrency'
+                                <Form.Select required  value={formData.estimateCurrency} name='estimateCurrency'
                                             onChange={handleChangeForm} >
 
                                     <option key={0} value="AUD">AUD</option>
@@ -513,7 +551,7 @@ export default function CNPage(){
                                 <br />
 
                                 <Row>
-                                <Form.Label column md={3}>CN Type</Form.Label>
+                                <Form.Label column md={4}>CN Type</Form.Label>
                                 <Col xs={6}>
                                 <Form.Select required defaultValue={"Compensation"} value={formData.CNType} name='CNType'
                                             onChange={handleChangeForm} >

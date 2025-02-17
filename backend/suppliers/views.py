@@ -17,8 +17,11 @@ def get_suppliers(request):
         print(suppliers.values())
         supplier_list = []
         for each in suppliers.values():
-            supplier_list.append(each["supplier_name"])
-        
+            if (each["supplier_name"] == current_brand):
+                supplier_list.insert(0,each["supplier_name"])
+            else:
+                supplier_list.append(each["supplier_name"])
+            
         print(supplier_list)
         response["status"] = "success"
         response["suppliers"] = supplier_list

@@ -12,6 +12,7 @@ export default function CIPage(){
     const {name} = useParams();
     const [flag, setFlag] = useState(true);//state to control flag showing in filter bar
     const [show, setShow] = useState(false); // State to control offcanvas visibility
+    const [error, setError] = useState({}); 
 
     const [searchQuery, setSearchQuery] = useState(''); // State to store search query
     const [years, setYears] = useState([]); // State to store all years
@@ -32,7 +33,7 @@ export default function CIPage(){
         supplier:name,
         PO_number:"",
         CI_number:"",
-        date:new Date().toISOString().split('T')[0],
+        date:"",
         USD:0,
         AUD:0,
         Freight:0
@@ -97,7 +98,7 @@ export default function CIPage(){
                 alert("Nothing is found");
                 return;
             }
-            // console.log(123123123123,data)
+
             setciFilters(data.category_cis)
             return data;
         } catch (e){
@@ -122,7 +123,7 @@ export default function CIPage(){
                 alert("Nothing is found");
                 return;
             }
-            // console.log(11111111,data.CIs);
+
             setCIs(data.CIs);
             
             return data;
@@ -182,7 +183,6 @@ export default function CIPage(){
                 alert("Nothing is found");
                 return;
             }
-            // console.log(22222222,data.total_CI);
 
             setCIUSD(data.total_CI[0].total_usd);
             setCIAUD(data.total_CI[1].total_aud);
@@ -222,11 +222,12 @@ export default function CIPage(){
         supplier:name,
         PO_number:"",
         CI_number:"",
-        date:new Date().toISOString().split('T')[0],
+        date:"",
         USD:0,
         AUD:0,
-        Freight:0
-    }));
+        Freight:0,
+    }),setError({}));
+
     const handleShow = () => (setShow(true),showSuppliers());
 
     const handleChange = (e) => {          
@@ -239,38 +240,43 @@ export default function CIPage(){
         
     }
 
-    const showForm=() => {
-        alert(JSON.stringify(formData))
-    }
-
     const addNewCI = async (e) =>  {
 
         e.preventDefault();
+        let newErrors ={}
+        if (!formData.PO_number)  newErrors.po="PO is required!";
+        if (!formData.date)  newErrors.date="Date is required!";
+        if (!formData.CI_number) newErrors.ci = "CI is required";
+        
+        setError(newErrors);
+        // console.log(NewErrors)
+        if (Object.keys(newErrors).length === 0){
         // console.log(form)
-        const config = {
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-            };
-    
-            try {
-            const response = await fetch("http://127.0.0.1:8000/ci/addCI?brand="+name, config);
-            const data = await response.json();
-            console.log(data)
-            if (data.status === 'success') {
-                alert("New CI added successfully!");
-                fetchCIs();
-                fetchCIValues();
-                handleClose();
-            } else {
-                alert("Failed to add new CI");
-            }
-            } catch (e) {
-            console.log(e);
-            }
+            const config = {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+                };
+        
+                try {
+                const response = await fetch("http://127.0.0.1:8000/ci/addCI?brand="+name, config);
+                const data = await response.json();
+                console.log(data)
+                if (data.status === 'success') {
+                    alert("New CI added successfully!");
+                    fetchCIs();
+                    fetchCIValues();
+                    handleClose();
+                } else {
+                    alert("Failed to add new CI");
+                }
+                } catch (e) {
+                console.log(e);
+                }
+        }
   };
  
     return (
@@ -350,7 +356,7 @@ export default function CIPage(){
                                         <Col >
                                         <Form.Label column >Supplier</Form.Label>
                                         </Col>
-                                        <Col xs={9}>
+                                        <Col xs={8}>
                                         <Form.Select defaultValue={formData.supplier} name='supplier_name'
                                                     onChange={handleChange} >
                                         {suppliers.map((supplier, index) => (
@@ -373,8 +379,9 @@ export default function CIPage(){
                                         name='PO_number' 
                                         placeholder="Enter PO number" 
                                         value={formData.PO_number}
+                                        className={error.po ? "is-invalid" : ""}
                                         onChange={handleChange}
-                                        />
+                                        />{error.po && <div className="invalid-feedback">{error.po}</div>} 
                                     </Col>
                                     
                                 </Row>
@@ -388,20 +395,24 @@ export default function CIPage(){
                                         type="text" 
                                         name='CI_number' 
                                         placeholder="Enter CI number" 
+                                        className={error.ci ? "is-invalid" : ""}
                                         value={formData.CI_number}
                                         onChange={handleChange}
-                                        />
+                                        />{error.ci && <div className="invalid-feedback">{error.ci}</div>} 
                                     </Col>
                                     
                                 </Row>
                                 <br />
                                 <Row>
-                                    <Form.Label column md={2}>Date </Form.Label>
-                                    <Col xs={5}><Form.Control type="date" 
+                                    <Form.Label column>Date </Form.Label>
+                                    <Col xs={8}><Form.Control type="date" 
                                     name="date"
                                     value={formData.date}
+                                    className={error.date ? "is-invalid" : ""}
                                     onChange={handleChange}
-                                    /></Col>
+                                    />
+                                    {error.date && <div className="invalid-feedback">{error.date}</div>} 
+                                    </Col>
                                 </Row>
                                 <br />
                                 <Row>
@@ -430,7 +441,7 @@ export default function CIPage(){
                                 </Row>
                                 <br />
                                 <Row>
-                                    <Form.Label column md={2}>Freight </Form.Label>
+                                    <Form.Label column md={3}>Freight </Form.Label>
                                     <Col xs={4}>
                                     <Form.Control 
                                     type="number" 
