@@ -1,5 +1,6 @@
 import { useState,useEffect } from 'react'
-import { Table ,Container, Button, Offcanvas, Form ,Row, Col, Modal} from 'react-bootstrap';
+import { Container, Button, Offcanvas, Form ,Row, Col, Modal} from 'react-bootstrap';
+import { Table } from 'antd';
 import FilterBar from './FilterBar';
 
 import NavBar from './NavBar';
@@ -7,16 +8,22 @@ import { useParams } from 'react-router-dom';
 
 
 export default function RemittancePage(){  
+    const { Column } = Table;
+
     const {name}  = useParams();
     const [show, setShow] = useState(false); // State to control offcanvas visibility
     const [flag, setFlag] = useState(false); // state to control flag showing in filter bar
     const [showModal, setShowModal] = useState(false); // State to control offcanvas visibility
+    const [Pos,setPos] = useState([]);
 
 
     const [searchQuery, setSearchQuery] = useState(''); // State to store search query
     const [years, setYears] = useState([]); // State to store all years
     const [chooseYear, setChooseYear] = useState(new Date().getFullYear()); // State to store selected year
     const [Remittances,setRemittances] = useState([])
+
+    const [selectedTableRow, setselectedTableRow] = useState([]); // state to store selected POs for each remittance
+
 
     const [selectedRow, setSelectedRow] = useState({});
     
@@ -83,18 +90,94 @@ export default function RemittancePage(){
             console.log(e);
         }
     }
+    const getAllPos = async () => {
+        const config = {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+        try{
+            const response = await fetch("http://127.0.0.1:8000/ci?brand="+name +"&year="+chooseYear, config);
+            const data = await response.json();
+            console.log(data)
+            if (data === undefined || data.length === 0){
+                alert("Nothing is found");
+                return;
+            }
 
-    async function update(e){
+            let arrays = data.CIwithPOs
+            const POarrays = arrays.map((item, index) => ({
+                key: index + 1, // Key starts from 1
+                po: item.PO_no
+              }))
+
+            setPos(POarrays)
+            
+            return data;
+        } catch (e){
+            console.log(e);
+        }
+
+    }
+
+    async function add(row) {
+
+        const config = {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body:{id:row.id}
+        }
+        console.log(row.id)
+        // try{
+        //     const response = await fetch("http://127.0.0.1:8000/remittance/addPos/", config);
+        //     const data = await response.json();
+        //     console.log(data)
+        //     if (data === undefined || data.length === 0){
+        //         alert("Nothing is found");
+        //         return;
+        //     }
+
+        //     let arrays = data.CIwithPOs
+        //     const POarrays = arrays.map((item, index) => ({
+        //         key: index + 1, // Key starts from 1
+        //         po: item.PO_no
+        //       }))
+
+        //     setPos(POarrays)
+            
+        //     return data;
+        // } catch (e){
+        //     console.log(e);
+        // }
+
 
     }
 
     const handleShow = () => (setShow(true));
-    const handleClose = () => (setShow(false));
+    const handleClose = () => (setShow(false), setselectedTableRow([]));
 
     const handleRowClick = (row) => {
+        getAllPos()
         setSelectedRow(row);
         setShowModal(true);
     };
+
+    const onSelectChange = (newSelectedRowKeys) => {
+        console.log('selectedRowKeys changed: ', newSelectedRowKeys);
+        setselectedTableRow(newSelectedRowKeys);
+      };
+    const rowSelection = {
+        selectedTableRow,
+        onChange: onSelectChange,
+    };
+    const hasSelected = selectedTableRow.length > 0;
+
+    console.log(selectedTableRow)
 
     return (
         <main className="py-1">
@@ -111,83 +194,59 @@ export default function RemittancePage(){
                 setSearchQuery={setSearchQuery}
                 flag={flag}/>
                 <hr />
- 
-                 <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                        <th>Date</th>
-                        <th>Bank Account</th>
-                        <th>Amount </th>
-                        <th>Currency </th>
-                        <th>Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                    {filteredREs.map((Re) => (
-                        
-                        <tr onClick={()=>handleRowClick(Re)}>
-                        <td style={{ whiteSpace: "nowrap" }}>{Re.date}</td>
-                        <td>{Re.bank}</td>
-                        <td>{Re.amount }</td>
-                        <td>{Re.currency}</td>
-                        <td>{Re.status}</td>
-                        </tr>
-
-                    ))}
-                    </tbody>
+                <Table dataSource={filteredREs}
+                    rowKey={(record) => (record.id)} // ✅ Ensure each row has a unique ke
+                    onRow={(record) => ({
+                        onClick: () => handleRowClick(record), 
+                    })}
+                    expandable={{
+                        expandedRowRender: (record) => (
+                            <p style={{margin: 0,}}>
+                            Related POs : {record.PO}
+                            </p>
+                        ),
+                        rowExpandable: (record) => record.PO !== '',
+                    }}
                     
-                    </Table>
+                    >
+                    <Column title="Date" dataIndex="date" key="date" style={{ whiteSpace: "nowrap" }}/>
+                    <Column title="Bank Account" dataIndex="bank" key="bank" />
+                    <Column title="Amount" dataIndex="amount" key="amount" />
+                    <Column title="Currency" dataIndex="currency" key="currency" />
+                    <Column title="Status" dataIndex="status" key="status" />
                     
+                </Table>                    
                     <div className="text-center mt-3">
                     <h5>Total USD Value: ${Number(tempUSD.toFixed(2)).toLocaleString()}</h5>
                     <h5>Total AUD Value: ${Number(tempAUD.toFixed(2)).toLocaleString()}</h5>
-
-                    <Modal show={showModal} onHide={() => setShowModal(false)}>
+                    {selectedRow ? (
+                        <Modal show={showModal} onHide={() => setShowModal(false)}>
                             <Modal.Header closeButton>
                                 <Modal.Title>Item Details</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                                {selectedRow ? (
+                                
                                     <>
                                         <p><strong>Description:</strong> {selectedRow.status}</p>
                                         <div>
-                                            <Table striped bordered hover>
-                                                <thead>
-                                                    <tr>
-                                                    <th>PO Number</th>
-                                                    <th>Value_USD</th>
-                                                    <th>Value_AUD </th>
-                                                    </tr>
-                                                </thead>
-                                                
-                                                <tbody>
-                                                {/* {filteredREs.map((Re) => (
-                                                    
-                                                    <tr onClick={()=>handleRowClick(Re)}>
-                                                    <td style={{ whiteSpace: "nowrap" }}>{Re.date}</td>
-                                                    <td>{Re.bank}</td>
-                                                    <td>{Re.amount }</td>
-                                                    <td>{Re.currency}</td>
-                                                    <td>{Re.status}</td>
-                                                    </tr>
-
-                                                ))} */}
-                                                </tbody>
-                                                
-                                                </Table>
-                                        
+                                            {selectedRow.id}
+                                            <Table dataSource={Pos} rowSelection={rowSelection}  >
+                                            <Column title="PO Number" dataIndex="po" key="po" style={{ whiteSpace: "nowrap" }}/>
+                                            </Table>
                                         </div>
                                     </>
-                                ) : (
-                                    <p>No item selected.</p>
-                                )}
-                            </Modal.Body>
+
+                                    </Modal.Body>
                             <Modal.Footer>
-                                <Button variant="secondary" onClick={(e) => update(e)}>Add</Button>
+                            {hasSelected ? `Selected ${selectedTableRow.length} items` : null}
+                                <Button variant="secondary" onClick={(selectedRow) => add(selectedRow)}>Add</Button>
+                                
                             </Modal.Footer>
                         </Modal>
-                    
+                                ) : (
+                                    <p>No item selected.</p>
+                                ) }
+
                     </div>
                     
                 <div className="text-center mb-5">

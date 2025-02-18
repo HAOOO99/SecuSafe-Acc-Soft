@@ -69,3 +69,29 @@ def get_years(request):
 
     print(response)
     return JsonResponse(response)
+
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def add_Pos(request):
+    response = {}
+    try:
+        payload = json.loads(request.body.decode())
+        print(payload)
+        id = payload.get("id")
+
+        res = Remittance.objects.filter(id = id)
+        pos = payload.get("pos")
+        res.update(PO=pos)
+        print(Remittance.objects.filter(id=id))
+        response["status"] = "success"
+        # response["total_years"] = res.values()
+
+    except Exception as e:
+        response["status"] = "failed"
+        response["msg"] = "failed to show"
+        print(e)
+
+    print(response)
+    return JsonResponse(response)

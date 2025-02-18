@@ -33,13 +33,20 @@ def get_CIs(request):
         ci_list = []
         for each in cis.values():
             ci_list.append(each)
+        
+        ciWithpos = []
+        newCis = cis.filter(remittance_id = None)
+        for each in newCis.values():
+            ciWithpos.append(each)
+
         print(ci_list)
         response["status"] = "success"
         response["CIs"] = ci_list
+        response["CIwithPOs"] = ciWithpos
 
     except Exception as e:
         response["status"] = "failed"
-        response["msg"] = "failed to show"
+        response["msg"] = "failed to show ci "
         print(e)
 
     print(response)

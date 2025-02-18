@@ -21,6 +21,7 @@ class Remittance(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     currency = models.CharField(max_length=100, default="AUD",choices=CURRENCYS)
     status = models.CharField(max_length=100,choices=ALL_STATUS)
+    PO = models.TextField(default="")
 
     def __str__(self):
         return f"{self.brand} - {self.id}"
