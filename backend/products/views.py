@@ -21,7 +21,12 @@ def get_PIs(request):
     try:
         current_brand = request.GET.get("brand")
         year = request.GET.get("year")
-        pis = PI.objects.all().filter(brand = current_brand, date__year = year).order_by('date')
+        if(request.GET.get("brand") == 'UNV'):
+            brands_name = ['UNV', 'Uniview']
+            pis = PI.objects.all().filter(brand__in = brands_name, date__year = year).order_by('date')
+
+        else:
+            pis = PI.objects.all().filter(brand = current_brand, date__year = year).order_by('date')
         print(pis.values())
         pi_list = []
         for each in pis.values() :
@@ -45,7 +50,12 @@ def get_total_values(request):
     try:
         current_brand = request.GET.get("brand")
         year = request.GET.get("year")
-        current_year_pis = PI.objects.filter(brand = current_brand, date__year = year)
+
+        if(request.GET.get("brand") == 'UNV'):
+            brands_name = ['UNV', 'Uniview']
+            current_year_pis = PI.objects.filter(brand__in = brands_name, date__year = year)
+        else:
+            current_year_pis = PI.objects.filter(brand = current_brand, date__year = year)
         total_usd = current_year_pis.aggregate(total_usd=Sum('USD'))
         # total_aud = current_year_pis.aggregate(total_aud=Sum('AUD'))
         total_aud_local = current_year_pis.filter(AUD_counted = True).aggregate(total_aud_local=Sum('AUD_local'))
@@ -79,8 +89,11 @@ def get_years(request):
     response = {}
     try:
         current_brand = request.GET.get("brand")
-
-        pis = PI.objects.filter(brand = current_brand)
+        if(request.GET.get("brand") == 'UNV'):
+            brands_name = ['UNV', 'Uniview']
+            pis = PI.objects.filter(brand__in = brands_name)
+        else:
+            pis = PI.objects.filter(brand = current_brand)
         print(pis.values().count())
         years_list = []
         if pis.values().count() != 0:

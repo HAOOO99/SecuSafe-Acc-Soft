@@ -15,6 +15,7 @@ export default function RemittancePage(){
     const [flag, setFlag] = useState(false); // state to control flag showing in filter bar
     const [showModal, setShowModal] = useState(false); // State to control offcanvas visibility
     const [Pos,setPos] = useState([]);
+    const [error, setError]= useState("")
 
 
     const [searchQuery, setSearchQuery] = useState(''); // State to store search query
@@ -24,8 +25,15 @@ export default function RemittancePage(){
 
     const [selectedTableRow, setselectedTableRow] = useState([]); // state to store selected POs for each remittance
 
-
     const [selectedRow, setSelectedRow] = useState({});
+    const [formData,setFormData] = useState({
+        brand:name,
+        date:"",
+        amount:0,
+        currency:"",
+        status:"",
+        bank:""
+    })
     
     const filteredREs = Remittances.filter((Re) =>
         Re.status.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -109,7 +117,7 @@ export default function RemittancePage(){
 
             let arrays = data.CIwithPOs
             const POarrays = arrays.map((item, index) => ({
-                key: index + 1, // Key starts from 1
+                key: index, // Key starts from 1
                 po: item.PO_no
               }))
 
@@ -122,44 +130,81 @@ export default function RemittancePage(){
 
     }
 
-    async function add(row) {
-
+   const addPO = async (e,row) => {
+        e.preventDefault();
+        const values = selectedTableRow.map(key => Pos[key]);
+        const pos = values.reduce((list,item) => {list.push(item["po"]);return list},[])
         const config = {
             method: 'POST',
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body:{id:row.id}
+            body:JSON.stringify({brand:name,id:row.id,pos:pos})
         }
-        console.log(row.id)
-        // try{
-        //     const response = await fetch("http://127.0.0.1:8000/remittance/addPos/", config);
-        //     const data = await response.json();
-        //     console.log(data)
-        //     if (data === undefined || data.length === 0){
-        //         alert("Nothing is found");
-        //         return;
-        //     }
+        try{
+            const response = await fetch("http://127.0.0.1:8000/remittance/addPo/", config);
+            const data = await response.json();
+            console.log(data)
+            if (data === undefined || data.length === 0){
+                alert("Nothing is found");
+                return;
+            }
 
-        //     let arrays = data.CIwithPOs
-        //     const POarrays = arrays.map((item, index) => ({
-        //         key: index + 1, // Key starts from 1
-        //         po: item.PO_no
-        //       }))
-
-        //     setPos(POarrays)
+            setShowModal(false);
+            setselectedTableRow([]);
+            fetchRe();
             
-        //     return data;
-        // } catch (e){
-        //     console.log(e);
-        // }
+            return data;
+        } catch (e){
+            console.log(e);
+        }
+    }
 
-
+    const addNew = async (e) => {
+        e.preventDefault();
+        if (!formData.date){
+                setError("date is required!");}
+        else{
+            const config = {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body:JSON.stringify(formData)
+            }
+        
+            try{
+                const response = await fetch("http://127.0.0.1:8000/remittance/addRe/", config);
+                const data = await response.json();
+                console.log(formData)
+                if (data === undefined || data.length === 0){
+                    alert("Nothing is found");
+                    return;
+                }
+                alert(data.msg)
+                handleClose();
+                
+                fetchRe();
+                
+                return data;
+            } catch (e){
+                console.log(e);
+            }
+        }
+        
     }
 
     const handleShow = () => (setShow(true));
-    const handleClose = () => (setShow(false), setselectedTableRow([]));
+    const handleClose = () => (setShow(false), setError(""),
+                                setselectedTableRow([]),
+                                setFormData({ brand:name,
+                                    date:"",
+                                    amount:0,
+                                    currency:"",
+                                    status:"",
+                                    bank:""}));
 
     const handleRowClick = (row) => {
         getAllPos()
@@ -177,7 +222,16 @@ export default function RemittancePage(){
     };
     const hasSelected = selectedTableRow.length > 0;
 
-    console.log(selectedTableRow)
+
+    const handleChange = (e) => {          
+        const { name, value } = e.target;
+        console.log(name, value,)
+        setFormData({
+        ...formData,
+        [name]:  value,
+        });
+        
+    }
 
     return (
         <main className="py-1">
@@ -239,7 +293,7 @@ export default function RemittancePage(){
                                     </Modal.Body>
                             <Modal.Footer>
                             {hasSelected ? `Selected ${selectedTableRow.length} items` : null}
-                                <Button variant="secondary" onClick={(selectedRow) => add(selectedRow)}>Add</Button>
+                                <Button variant="secondary" onClick={() => addPO(selectedRow)}>Add</Button>
                                 
                             </Modal.Footer>
                         </Modal>
@@ -255,132 +309,77 @@ export default function RemittancePage(){
                         <Offcanvas.Title>Add New Remittance </Offcanvas.Title>
                         </Offcanvas.Header>
                         <Offcanvas.Body>
-                            {/* <Form>
-                                <Row >
-                                    <Col >
-                                    <Form.Label column >Supplier</Form.Label>
-                                    </Col>
-                                    <Col xs={9}>
-                                    <Form.Select defaultValue={formData.supplier_name} name='supplier_name'
-                                                onChange={handleChange} >
-                                    {suppliers.map((supplier, index) => (
-                                            
-                                            <option key={index} value={supplier}>{supplier}</option>
-                                            
-                                        ))}
-                                            </Form.Select>
-                                    </Col>
-                                    
-                                </Row>
-                                <br />
-                            <Row >
-                                <Col >
-                                <Form.Label column >PI Number</Form.Label>
-                                </Col>
-                                <Col xs={8}>
-                                    <Form.Control 
-                                    type="text" 
-                                    name='PI_number' 
-                                    placeholder="Enter PI number" 
-                                    value={formData.PI_number}
-                                    onChange={handleChange}/>
-                                </Col>
+                            <Form>
                                 
-                            </Row>
                             <br />
                             <Row>
-                                <Form.Label column md={2}>Date </Form.Label>
-                                <Col xs={5}><Form.Control type="date" 
+                                <Form.Label column md={3}>Date </Form.Label>
+                                <Col xs={6}><Form.Control type="date" 
                                 name="date"
                                 value={formData.date}
-                                onChange={handleChange}/></Col>
-                            </Row>
-                            <br />
-                            <Row>
-                                <Form.Label column md={1}>USD</Form.Label>
-                                <Col xs={4}>
-                                <Form.Control 
-                                type="number" 
-                                name="USD"  
-                                placeholder="0"
-                                value={formData.USD}
-                                onChange={handleChange}/></Col>
-                                <Form.Label column md={2}>Discount</Form.Label>
-                                <Col xs={4}>
-                                <Form.Control
-                                type="number"
-                                name="discount"
-                                placeholder='0' 
-                                value={formData.discount}
-                                onChange={handleChange}>
-
-                                </Form.Control></Col>
-                            </Row>
-                            <br />
-                            <Row>
-                                <Form.Label column md={2}>AUD</Form.Label>
-                                <Col xs={4}>
-                                <Form.Control 
-                                type="number"
-                                name="AUD"  
-                                placeholder='0' 
-                                value={formData.AUD}
-                                onChange={handleChange}/></Col>
-                                
-                            </Row>
-                            <br />
-                            <Row>
-                                <Form.Label column md={4}>AUD from local </Form.Label>
-                                <Col xs={4}>
-                                <Form.Control 
-                                type="number" 
-                                name="AUD_local" 
-                                placeholder='0'  
-                                value={formData.AUD_local}
+                                className={error ? "is-invalid" : ""}
                                 onChange={handleChange}/>
-                                </Col>
-                                <Col xs={4}>
-                                <Form.Check 
-                                type="checkbox" 
-                                label="Counted to Target"
-                                name="AUD_counted" 
-                                value={formData.AUD_counted}
-                                onChange={handleChange}/></Col>
+                                {error && <div className="invalid-feedback">{error}</div>} </Col>
+                                
+
                             </Row>
                             <br />
-
                             <Row>
-                            <Col>
-                                <Form.Label column>Comment :</Form.Label>
-                                </Col>
-                                <Col xs={8}>
-                                    <Form.Control
-                                    as="textarea"
-                                    name="comment"
-                                    placeholder="Enter Comment"
-                                    value={formData.comment}
-                                    onChange={handleChange}
-                                    />
-                                </Col>
-                                </Row>
-                        <br />
-                        <Row >
-                                <Col >
-                                <Form.Label column >PI Link :</Form.Label>
-                                </Col>
-                                <Col xs={8}>
-                                    <Form.Control type="text" name="link"
-                                                placeholder="Enter Link"
-                                                value={formData.link}
-                                    onChange={handleChange}/>
-                                </Col>
+                                <Form.Label column md={3}>Bank Account</Form.Label>
+                                <Col xs={6}>
+                                <Form.Control 
+                                type="text" 
+                                name="bank"  
+                                placeholder=""
+                                value={formData.bank}
+                                onChange={handleChange}/></Col>
                                 
                             </Row>
                             <br />
-                            <Button variant="primary" type="submit" onClick={addNewPI}>
+                            <Row>
+                                <Form.Label column md={4}>Amount</Form.Label>
+                                <Col xs={4}>
+                                <Form.Control 
+                                type="number" 
+                                name="amount"  
+                                placeholder="0"
+                                value={formData.amount}
+                                onChange={handleChange}/></Col>
+                                
+                            </Row>
+                            <br />
+                            <Row>
+                                <Form.Label column md={4}>Currency</Form.Label>
+                                <Col xs={4}>
+                                <Form.Select required  value={formData.currency} name='currency'
+                                            onChange={handleChange} >
+
+                                    <option key={0} value="AUD">AUD</option>
+                                    <option key={1} value="USD">USD</option>
+                                    </Form.Select>
+                                </Col>
+
+                                </Row>
+                              
+                            <br />
+                            <Row>
+                                <Form.Label column md={4}>Status </Form.Label>
+                                <Col xs={5}>
+                                <Form.Select required  value={formData.status} name='status'
+                                            onChange={handleChange} >
+                                    <option key={0} value="prepaid">prepaid</option>
+                                    <option key={1} value="wait">waiting</option>
+                                    <option key={2} value="paid">paid</option>
+                                    </Form.Select>
+                                </Col>
+                            </Row>
+                            <br />
+
+                        
+                            <Button variant="primary" type="submit" onClick={(e)=>addNew(e)} >
                                 ADD
                             </Button>
-                            </Form> */}
+                            </Form>
                         </Offcanvas.Body>
                     </Offcanvas>
                     <Button onClick={handleShow} >Add new Payment</Button>

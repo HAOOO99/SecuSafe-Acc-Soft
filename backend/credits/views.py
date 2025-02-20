@@ -21,7 +21,12 @@ def get_CNs(request):
     try:
         current_brand = request.GET.get("brand")
         year = request.GET.get("year")
-        cns = CN.objects.all().filter(brand = current_brand, date__year = year).order_by('date')
+        if(request.GET.get("brand") == 'UNV'):
+            brands_name = ['UNV', 'Uniview']
+            cns = CN.objects.all().filter(brand__in = brands_name, date__year = year).order_by('date')
+
+        else:
+            cns = CN.objects.all().filter(brand = current_brand, date__year = year).order_by('date')
         print(cns.values())
         cn_list = []
         for each in cns.values():
@@ -44,8 +49,12 @@ def get_years(request):
     response = {}
     try:
         current_brand = request.GET.get("brand")
+        if(request.GET.get("brand") == 'UNV'):
+            brands_name = ['UNV', 'Uniview']
+            cns = CN.objects.filter(brand__in = brands_name)
 
-        cns = CN.objects.filter(brand = current_brand)
+        else:
+            cns = CN.objects.filter(brand = current_brand)
         print(cns.values().count())
         years_list = []
         if cns.values().count() != 0:

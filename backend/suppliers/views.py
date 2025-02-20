@@ -13,7 +13,11 @@ def get_suppliers(request):
     response = {}
     try:
         current_brand = request.GET.get("brand")
-        suppliers = Supplier.objects.all().filter(brand_name = current_brand)
+        if(request.GET.get("brand") == 'UNV'):
+            brands_name = ['UNV', 'Uniview']
+            suppliers = Supplier.objects.all().filter(brand_name__in = brands_name)
+        else:
+            suppliers = Supplier.objects.all().filter(brand_name = current_brand)
         print(suppliers.values())
         supplier_list = []
         for each in suppliers.values():

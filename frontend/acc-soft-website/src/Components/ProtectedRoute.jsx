@@ -59,7 +59,7 @@ const ProtectedRoute = ({ children }) => {
     //     return () => clearInterval(interval); // Cleanup interval on component unmount
     // }, []);
     const token = localStorage.getItem('access_token');
-    console.log(token);
+    // console.log(token);
     return token ? children : <Navigate to="/login" />;
 };
 

@@ -123,6 +123,7 @@ export default function CIPage(){
                 alert("Nothing is found");
                 return;
             }
+            console.log(data)
 
             setCIs(data.CIs);
             
@@ -312,8 +313,9 @@ export default function CIPage(){
                         </thead>
                         <tbody>
                         {filteredCIs.map((CI) => (
+                            (CI.remittance_id === null ) ? 
                             
-                            <tr>
+                            (<tr key={CI.PO_no} >
                             <td>{CI.PO_no}</td>
                             <td>{CI.CI_no}</td>
                             <td>{CI.supplier}</td>
@@ -321,7 +323,16 @@ export default function CIPage(){
                             <td>{CI.value_USD}</td>
                             <td>{CI.value_AUD}</td>
                             <td>{CI.freight}</td>
-                            </tr>
+                            </tr>)  : 
+                            (<tr key={CI.PO_no}style = {{opacity:0.5}}>
+                            <td>{CI.PO_no}</td>
+                            <td>{CI.CI_no}</td>
+                            <td>{CI.supplier}</td>
+                            <td style={{ whiteSpace: "nowrap" }}>{CI.date}</td>
+                            <td>{CI.value_USD}</td>
+                            <td>{CI.value_AUD}</td>
+                            <td>{CI.freight}</td>
+                            </tr>)
 
                          ))} 
                         </tbody>

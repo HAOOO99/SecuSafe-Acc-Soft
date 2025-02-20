@@ -5,5 +5,6 @@ from . import views
 urlpatterns = [
     path('', views.get_remittances, name='getRemittances'),
     path('years/', views.get_years, name='getYears'),
-    path('addPo/',views.add_Pos,name='AddPOs')
+    path('addPo/',views.add_Pos,name='AddPOs'),
+    path('addRe/',views.add_Re,name="addNewRemittance")
 ]

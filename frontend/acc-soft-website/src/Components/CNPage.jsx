@@ -63,12 +63,12 @@ export default function CNPage(){
         CN.description.toLowerCase().includes(searchQuery.toLowerCase()) 
     );
     
-    const tempUSDEstimate = filteredCNs.reduce((sum,CN)=> sum + (CN.estimate_currency.trim() === "USD" ? parseFloat(CN.estimate): 0),0);
-    const tempAUDEstimate = filteredCNs.reduce((sum, CN) => sum + (CN.estimate_currency.trim() === "AUD" ? parseFloat(CN.estimate):0),0);
+    const tempUSDEstimate = filteredCNs.reduce((sum,CN)=> sum + (CN.estimate_currency.trim() === "USD" && CN.estimate != null? parseFloat(CN.estimate): 0),0);
+    const tempAUDEstimate = filteredCNs.reduce((sum, CN) => sum + (CN.estimate_currency.trim() === "AUD" && CN.estimate != null ? parseFloat(CN.estimate):0),0);
 
-    const tempUSDReceived = filteredCNs.reduce((sum,CN)=> sum + (CN.received_currency !== null ? (CN.received_currency.trim() === "USD" ? parseFloat(CN.received): 0) :0),0);
-    const tempAUDReceived = filteredCNs.reduce((sum, CN) => sum + (CN.received_currency !== null ? (CN.received_currency.trim() === "AUD" ? parseFloat(CN.received):0):0),0);
-
+    const tempUSDReceived = filteredCNs.reduce((sum,CN)=> sum + (CN.received_currency !== null ? (CN.received_currency.trim() === "USD" && CN.received != null? parseFloat(CN.received): 0) :0),0);
+    const tempAUDReceived = filteredCNs.reduce((sum, CN) => sum + (CN.received_currency !== null ? (CN.received_currency.trim() === "AUD"&& CN.received != null ? parseFloat(CN.received):0):0),0);   
+    
     async function fetchCNs() {
         const config = {
             method: 'GET',
@@ -366,15 +366,16 @@ export default function CNPage(){
                                 {CN.status === null || CN.status.length===0? <td onClick={()=>handleRowClick(CN)}>{CN.status}</td> :<td>{CN.status}</td> }
                             </tr>
                             :
+                            //when record staus is applied it become grey it will not be allowed to add new data
                             <tr key={CN.id} style = {{opacity:0.5}}> 
                             <td style={{ whiteSpace: "nowrap" }}>{CN.date}</td>
                                 <td>{CN.supplier}</td>
                                 <td>{CN.description}</td>
                                 <td style={{ whiteSpace: "nowrap" }}>{CN.estimate} {CN.estimate_currency}</td>
-                                {CN.supplier_CN === null || CN.supplier_CN.length===0 ? <td onClick={()=>handleRowClick(CN)}>{CN.supplier_CN}</td> : <td>{CN.supplier_CN}</td>}
-                                {CN.received === null || CN.received.length===0? <td onClick={()=>handleRowClick(CN)}>{CN.received}</td> : <td style={{ whiteSpace: "nowrap" }}>{CN.received} {CN.received_currency}</td> }
-                                {CN.ss_CN === null || CN.ss_CN.length===0 ? <td onClick={()=>handleRowClick(CN)}>{CN.ss_CN}</td> : <td>{CN.ss_CN}</td>}
-                                {CN.status === null || CN.status.length===0? <td onClick={()=>handleRowClick(CN)}>{CN.status}</td> :<td>{CN.status}</td> }
+                                {CN.supplier_CN === null || CN.supplier_CN.length===0 ? <td >{CN.supplier_CN}</td> : <td>{CN.supplier_CN}</td>}
+                                {CN.received === null || CN.received.length===0? <td o>{CN.received}</td> : <td style={{ whiteSpace: "nowrap" }}>{CN.received} {CN.received_currency}</td> }
+                                {CN.ss_CN === null || CN.ss_CN.length===0 ? <td >{CN.ss_CN}</td> : <td>{CN.ss_CN}</td>}
+                                {CN.status === null || CN.status.length===0? <td >{CN.status}</td> :<td>{CN.status}</td> }
                             </tr>
                             
                          ))} 

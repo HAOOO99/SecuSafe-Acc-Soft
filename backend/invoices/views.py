@@ -22,12 +22,22 @@ def get_CIs(request):
     try:
         current_brand = request.GET.get("brand")
         year = request.GET.get("year")
-        if request.GET.get("CI_no") == None or request.GET.get("CI_no")=="":
-            
-            cis = CI.objects.all().filter(brand = current_brand, date__year = year).order_by('date')
+        if(request.GET.get("brand") == 'UNV'):
+            brands_name = ['UNV', 'Uniview']
+
+            if request.GET.get("CI_no") == None or request.GET.get("CI_no")=="":
+                
+                cis = CI.objects.all().filter(brand__in = brands_name, date__year = year).order_by('date')
+            else:
+                ci = request.GET.get("CI_no")
+                cis = CI.objects.all().filter(brand__in = brands_name, date__year = year,CI_no=ci).order_by('date')
         else:
-            ci = request.GET.get("CI_no")
-            cis = CI.objects.all().filter(brand = current_brand, date__year = year,CI_no=ci).order_by('date')
+            if request.GET.get("CI_no") == None or request.GET.get("CI_no")=="":
+                
+                cis = CI.objects.all().filter(brand = current_brand, date__year = year).order_by('date')
+            else:
+                ci = request.GET.get("CI_no")
+                cis = CI.objects.all().filter(brand = current_brand, date__year = year,CI_no=ci).order_by('date')
 
         print(cis.values())
         ci_list = []
@@ -59,7 +69,12 @@ def get_total_values(request):
     try:
         current_brand = request.GET.get("brand")
         year = request.GET.get("year")
-        current_year_cis = CI.objects.filter(brand = current_brand, date__year = year)
+        if(request.GET.get("brand") == 'UNV'):
+            brands_name = ['UNV', 'Uniview']
+            current_year_cis = CI.objects.filter(brand__in = brands_name, date__year = year)
+        else:
+
+            current_year_cis = CI.objects.filter(brand = current_brand, date__year = year)
         total_usd = current_year_cis.aggregate(total_usd=Sum('value_USD'))
         total_aud = current_year_cis.aggregate(total_aud=Sum('value_AUD'))
 
@@ -88,8 +103,11 @@ def get_years(request):
     response = {}
     try:
         current_brand = request.GET.get("brand")
-
-        cis = CI.objects.filter(brand = current_brand)
+        if(request.GET.get("brand") == 'UNV'):
+            brands_name = ['UNV', 'Uniview']
+            cis = CI.objects.filter(brand__in = brands_name)
+        else:
+            cis = CI.objects.filter(brand = current_brand)
         print(cis.values().count())
         years_list = []
         if cis.values().count() != 0:
@@ -119,7 +137,12 @@ def category_cis(request):
     try:
         current_brand = request.GET.get("brand")
         year = request.GET.get("year")
-        cis = CI.objects.all().filter(brand = current_brand,date__year = year)
+
+        if(request.GET.get("brand") == 'UNV'):
+            brands_name = ['UNV', 'Uniview']
+            cis = CI.objects.filter(brand__in = brands_name, date__year = year)
+        else:
+            cis = CI.objects.all().filter(brand = current_brand,date__year = year)
         print(cis.values())
         cis_list = []
         if cis.values().count() != 0:

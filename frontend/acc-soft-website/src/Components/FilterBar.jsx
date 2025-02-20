@@ -9,7 +9,7 @@ export default function FilterBar({years,chooseYear,setChooseYear,CIs,chooseCI,s
       setSearchQuery(e.target.value);
     };
     const yearFilter = (year) => {
-        console.log(year)
+        // console.log(year)
         setChooseYear(year);
         if(flag){
             setChooseCi("");
@@ -24,6 +24,7 @@ export default function FilterBar({years,chooseYear,setChooseYear,CIs,chooseCI,s
         // setChooseYear("");
         if(flag){
             setChooseCi("");
+            
         }
     }
 
@@ -62,7 +63,8 @@ export default function FilterBar({years,chooseYear,setChooseYear,CIs,chooseCI,s
                         </NavDropdown>: null
                     
                     }
-                    <Nav.Link onClick={() => reset()}>Reset</Nav.Link>
+                    {!flag ?<></>:<Nav.Link onClick={() => reset()}>Reset</Nav.Link>}
+                    
                     
                 </Nav>
             </Col>
