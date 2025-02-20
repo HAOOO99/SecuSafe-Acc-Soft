@@ -197,17 +197,18 @@ export default function RemittancePage(){
     }
 
     const handleShow = () => (setShow(true));
-    const handleClose = () => (setShow(false), setError(""),
-                                setselectedTableRow([]),
+    const handleClose = () => {setShow(false); 
+                                setError("");
+                                setselectedTableRow([]);
                                 setFormData({ brand:name,
                                     date:"",
                                     amount:0,
                                     currency:"",
                                     status:"",
-                                    bank:""}));
+                                    bank:""});};
 
     const handleRowClick = (row) => {
-        getAllPos()
+        getAllPos();
         setSelectedRow(row);
         setShowModal(true);
     };

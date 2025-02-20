@@ -44,6 +44,9 @@ export default function DashboardPage(){
     
         // // Clear interval on component unmount
         // return () => clearInterval(interval);
+        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+
         }, []);
     
     useEffect(() => {

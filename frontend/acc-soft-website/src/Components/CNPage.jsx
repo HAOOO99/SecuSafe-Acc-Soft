@@ -1,11 +1,11 @@
-import { useState,useEffect, useCallback } from 'react'
-import { Table ,Container, Button, Offcanvas, Form ,Row, Col, Modal ,Dropdown ,DropdownButton} from 'react-bootstrap';
+import { useState,useEffect } from 'react'
+import { Table ,Container, Button, Offcanvas, Form ,Row, Col, Modal} from 'react-bootstrap';
 import FilterBar from './FilterBar';
 
 import NavBar from './NavBar';
 import { useParams } from 'react-router-dom';
 
-import { w3cwebsocket as W3CWebSocket } from 'websocket';
+// import { w3cwebsocket as W3CWebSocket } from 'websocket';
 // const client = new W3CWebSocket('ws://127.0.0.1:8000/ws/comments/');
 
 export default function CNPage(){
@@ -20,17 +20,17 @@ export default function CNPage(){
     const [searchQuery, setSearchQuery] = useState(''); // State to store search query
     const [years, setYears] = useState([]); // State to store all years
     const [CNs, setCNs] = useState([]) // State to store CNs
-    const [currency,setCurrency] = useState("");
+    // const [currency,setCurrency] = useState("");
 
     const [chooseYear, setChooseYear] = useState(new Date().getFullYear()); // State to store selected year
     const [showModal, setShowModal] = useState(false); // State to control offcanvas visibility
     // const [selectedRow, setSelectedRow] = useState(null);
 
-    const [supplierCN,setSupplierCN] = useState("");
-    const [received,setReceived] = useState("");
-    const [receivedCurrency, setReceivedCurrency] = useState("AUD");
-    const [ssCN, setSSCN] = useState("");
-    const [status,setStatus] = useState("");
+    // const [supplierCN,setSupplierCN] = useState("");
+    // const [received,setReceived] = useState("");
+    // const [receivedCurrency, setReceivedCurrency] = useState("AUD");
+    // const [ssCN, setSSCN] = useState("");
+    // const [status,setStatus] = useState("");
 
     const [selectedRow, setSelectedRow] = useState({
         
@@ -54,6 +54,7 @@ export default function CNPage(){
         fetchCNs();
         showYears();
         getCurrency();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         },[chooseYear]);
 
     const filteredCNs = CNs.filter((CN) =>
@@ -305,17 +306,20 @@ export default function CNPage(){
         setSelectedRow({ ...selectedRow, status: e.target.value });
     }
 
-    const handleClose = () => (setShow(false),setFormData({
-        company_name:name,
-        supplier_name:name,
-        description:"",
-        date:"",
-        estimateCN:"",
-        estimateCurrency:formData.estimateCurrency,
-        CNType:"Compensation"
-    }),setErrors({}),setCheckInput({}));
+    const handleClose = () => {setShow(false);
+                setFormData({
+                    company_name:name,
+                    supplier_name:name,
+                    description:"",
+                    date:"",
+                    estimateCN:"",
+                    estimateCurrency:formData.estimateCurrency,
+                    CNType:"Compensation"
+                });
+                setErrors({});
+                setCheckInput({});};
 
-    const handleShow = () => (setShow(true),showSuppliers());
+    const handleShow = () => {setShow(true);showSuppliers();};
     const handleRowClick = (row) => {
         setSelectedRow(row);
         setShowModal(true);

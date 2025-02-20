@@ -249,20 +249,22 @@ export default function PIPage(){
         }
     }
 
-    const handleClose = () => (setShow(false), setFormData({
-        company_name: name,
-        supplier_name: name,
-        PI_number: '',
-        date: "",
-        USD: 0,
-        // AUD: 0,
-        AUD_local: 0,
-        AUD_counted: false,
-        discount: 0,
-        comment: '',
-        link: '',
-    }), setError({}));
-    const handleShow = () => (setShow(true), showSuppliers());
+    const handleClose = () => {setShow(false);
+         setFormData({
+            company_name: name,
+            supplier_name: name,
+            PI_number: '',
+            date: "",
+            USD: 0,
+            // AUD: 0,
+            AUD_local: 0,
+            AUD_counted: false,
+            discount: 0,
+            comment: '',
+            link: '',
+        });
+         setError({});};
+    const handleShow = () => {setShow(true); showSuppliers()};
 
     async function showSuppliers() {
         const config = {

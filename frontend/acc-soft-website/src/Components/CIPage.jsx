@@ -5,8 +5,8 @@ import FilterBar from './FilterBar';
 import NavBar from './NavBar';
 import { useParams } from 'react-router-dom';
 
-import { w3cwebsocket as W3CWebSocket } from 'websocket';
-const client = new W3CWebSocket('ws://127.0.0.1:8000/ws/comments/');
+// import { w3cwebsocket as W3CWebSocket } from 'websocket';
+// const client = new W3CWebSocket('ws://127.0.0.1:8000/ws/comments/');
 
 export default function CIPage(){
     const {name} = useParams();
@@ -55,6 +55,7 @@ export default function CIPage(){
         getPIValues();
         showYears();
         selectCIs();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [chooseYear,chooseCi]);
 
     async function showYears(){
@@ -218,18 +219,22 @@ export default function CIPage(){
         }
     }
 
-    const handleClose = () => (setShow(false),setFormData({
-        company_name:name,
-        supplier:name,
-        PO_number:"",
-        CI_number:"",
-        date:"",
-        USD:0,
-        AUD:0,
-        Freight:0,
-    }),setError({}));
+    const handleClose = () => {setShow(false);
+         setFormData({
+            company_name:name,
+            supplier:name,
+            PO_number:"",
+            CI_number:"",
+            date:"",
+            USD:0,
+            AUD:0,
+            Freight:0,
+        });
+        setError({});
+    };
 
-    const handleShow = () => (setShow(true),showSuppliers());
+    const handleShow = () => {setShow(true);
+                                 showSuppliers();};
 
     const handleChange = (e) => {          
         const { name, value } = e.target;

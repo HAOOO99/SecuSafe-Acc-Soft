@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Button } from 'react-bootstrap'
+import React, { useState } from 'react';
+import { Container } from 'react-bootstrap'
 
 import { Card } from 'antd';
 
@@ -38,6 +38,7 @@ export default function Brands(){
             case 'VIVOTEK':  return <img src={VIVOTECK} alt="VIVOTECK"/>
             case 'WI-TEK':  return <img src={WITEK} alt="WITEK"/>
             case 'ZKTeco':  return <img src={ZKTECO} alt="ZKTECO"/>
+            default: <></>
         }
 
     }
