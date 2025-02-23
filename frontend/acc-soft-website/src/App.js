@@ -9,24 +9,30 @@ import PIPage from './Components/PIPage';
 import CIPage from './Components/CIPage';
 import CNPage from './Components/CNPage';
 import RemittancePage from './Components/RemittancePage';
+import useAutoLogout from "./Components/AutoLogout";
+
 
 function App() {
   return (
-    <Router>
-      
-      <Routes>
-        {/* <Route path="/" element={<MainHome></MainHome>}></Route> */}
-        <Route path="/login" element={<IsAuthenticate> <LoginPage /> </IsAuthenticate> } />
-        <Route path="/" element={<ProtectedRoute> <Brands /> </ProtectedRoute>} />
-        <Route path="/dashboard/:name" element= {<ProtectedRoute> <Dashboard /></ProtectedRoute>} />
-        <Route path="/pi/:name" element= {<ProtectedRoute> <PIPage /></ProtectedRoute>} />
-        <Route path="/ci/:name" element= {<ProtectedRoute> <CIPage /></ProtectedRoute>} />
-        <Route path="/cn/:name" element= {<ProtectedRoute> <CNPage /></ProtectedRoute>}/>
-        <Route path="/remittance/:name" element= {<ProtectedRoute> <RemittancePage /></ProtectedRoute>}/>
-
-      </Routes>
-
+    <Router> {/* ✅ Wrap the whole app inside <Router> */}
+        <MainComponent />
     </Router>
+  );
+  }
+
+function MainComponent() {
+  useAutoLogout(); // ✅ Call useAutoLogout() inside a component wrapped in <Router>
+
+  return (
+      <Routes>
+          <Route path="/login" element={<IsAuthenticate><LoginPage /></IsAuthenticate>} />
+          <Route path="/" element={<ProtectedRoute><Brands /></ProtectedRoute>} />
+          <Route path="/dashboard/:name" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/pi/:name" element={<ProtectedRoute><PIPage /></ProtectedRoute>} />
+          <Route path="/ci/:name" element={<ProtectedRoute><CIPage /></ProtectedRoute>} />
+          <Route path="/cn/:name" element={<ProtectedRoute><CNPage /></ProtectedRoute>} />
+          <Route path="/remittance/:name" element={<ProtectedRoute><RemittancePage /></ProtectedRoute>} />
+      </Routes>
   );
 }
 

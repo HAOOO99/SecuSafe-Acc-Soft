@@ -11,13 +11,12 @@ import {
 } from "firebase/auth";
 
 export default function LoginPage() {
-
   const [formData, setFormData] = useState({
     username: '',
     password: ''
   })
   const navigate = useNavigate();
-  
+
   const handleChange = (e) => {
     const {name, value} = e.target
     console.log(name,value)
@@ -56,8 +55,14 @@ export default function LoginPage() {
     console.log(data)
     if (data.status === "success") {
       console.log('Navigating to / ...');
+      // ✅ Set token with expiration timestamp (30 seconds)
+      const now = new Date();
+      const expiryDate = new Date(now.getTime() + 90* 24*60*60 * 1000); // 30 seconds from now
+
       localStorage.setItem("access_token", data.token);
-      localStorage.setItem("user",data.user.username);
+      localStorage.setItem("user", data.user.username);
+      localStorage.setItem("token_expiry", expiryDate.toISOString());
+
       navigate('/');
       // window.history.replaceState(null, '', '/'); // Replace the current entry in the history stack
       console.log(localStorage);
