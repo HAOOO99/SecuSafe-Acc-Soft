@@ -101,13 +101,24 @@ CHANNEL_LAYERS = {
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mysql.connector.django',
+#         'NAME': 'system',
+#         'USER': 'root',
+#         'PASSWORD': 'King123',
+#         'HOST': '127.0.0.1',
+#         'PORT': '3306',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'mysql.connector.django',
-        'NAME': 'system',
+        'ENGINE': 'mysql://root:SutypJRbeXHQnVNpxpHLnCYXXWVIUOnx@mysql.railway.internal:3306/railway',
+        'NAME': 'railway',
         'USER': 'root',
-        'PASSWORD': 'King123',
-        'HOST': '127.0.0.1',
+        'PASSWORD': 'SutypJRbeXHQnVNpxpHLnCYXXWVIUOnx',
+        'HOST': 'mysql.railway.internal',
         'PORT': '3306',
     }
 }
