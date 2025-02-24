@@ -7,4 +7,5 @@ urlpatterns = [
     path('years/',views.get_years,name='getYears'),
     path('update',views.updateCN,name='updateCN'),
     path('addCN',views.add_CN,name='addNewCN'),
+    path('marketing/',views.get_marketing,name="getMarketingCN"),
 ]

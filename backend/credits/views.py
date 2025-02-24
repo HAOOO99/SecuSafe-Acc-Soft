@@ -158,3 +158,41 @@ def add_CN(request):
 
     print(response)
     return JsonResponse(response)
+
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def get_marketing(request):
+    response = {}
+    print(request.body.decode())
+    try:
+        
+        current_brand = request.GET.get("brand")
+        year = request.GET.get("year")
+        if(request.GET.get("brand") == 'UNV'):
+            brands_name = ['UNV', 'Uniview']
+            cns = CN.objects.all().filter(brand__in = brands_name, date__year = year,type="marketing").order_by('date')
+
+        else:
+            cns = CN.objects.all().filter(brand = current_brand, date__year = year,type="marketing").order_by('date')
+        
+        print(12313123,CN.objects.filter(brand = current_brand, date__year = year,type="marketing").order_by('date'))
+
+        cn_list = []
+        for each in cns.values():
+            cn_list.append(each)
+        print(cn_list)
+        # print(CN.objects.all().filter(company_name = company_name, date__year = date).order_by('date'))
+        response["status"] = "success"
+        response["msg"] = cn_list
+    except json.JSONDecodeError as e:
+        response["status"] = "failed"
+        response["msg"] = "Invalid JSON"
+        print("JSONDecodeError:", e)
+    except Exception as e:
+        response["status"] = "failed"
+        response["msg"] = "failed to get marketing CN"
+        print(e)
+
+    print(response)
+    return JsonResponse(response)

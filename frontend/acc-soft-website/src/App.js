@@ -10,7 +10,7 @@ import CIPage from './Components/CIPage';
 import CNPage from './Components/CNPage';
 import RemittancePage from './Components/RemittancePage';
 import useAutoLogout from "./Components/AutoLogout";
-
+import MarketPage from "./Components/MarketingPage";
 
 function App() {
   return (
@@ -32,6 +32,7 @@ function MainComponent() {
           <Route path="/ci/:name" element={<ProtectedRoute><CIPage /></ProtectedRoute>} />
           <Route path="/cn/:name" element={<ProtectedRoute><CNPage /></ProtectedRoute>} />
           <Route path="/remittance/:name" element={<ProtectedRoute><RemittancePage /></ProtectedRoute>} />
+          <Route path="/market/:name" element={<ProtectedRoute>< MarketPage /></ProtectedRoute>} />
       </Routes>
   );
 }

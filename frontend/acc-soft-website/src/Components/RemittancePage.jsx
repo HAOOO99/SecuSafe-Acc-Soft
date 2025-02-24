@@ -254,6 +254,7 @@ export default function RemittancePage(){
                     onRow={(record) => ({
                         onClick: () => handleRowClick(record), 
                     })}
+                    small
                     expandable={{
                         expandedRowRender: (record) => (
                             <p style={{margin: 0,}}>
@@ -262,7 +263,9 @@ export default function RemittancePage(){
                         ),
                         rowExpandable: (record) => record.PO !== '',
                     }}
-                    
+                    pagination={{
+                        position: ['none', 'none'],
+                      }}
                     >
                     <Column title="Date" dataIndex="date" key="date" style={{ whiteSpace: "nowrap" }}/>
                     <Column title="Bank Account" dataIndex="bank" key="bank" />

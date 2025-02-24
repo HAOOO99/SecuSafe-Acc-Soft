@@ -22,6 +22,11 @@ export default function NavBar(){
         navigate('/remittance/'+ brandName);
     };
 
+    const handleMarketNavigation = (brandName) => {
+        navigate('/market/'+ brandName);
+    };
+    
+
     const handleBrandsNavigation = () => {
         navigate('/');
     };
@@ -52,6 +57,9 @@ export default function NavBar(){
                 </Nav.Link>
                 <Nav.Link onClick={() => handleRemittanceNavigation(name)} className="py-2">
                     Remittance
+                </Nav.Link>
+                <Nav.Link onClick={() => handleMarketNavigation(name)} className="py-2">
+                    Marketing
                 </Nav.Link>
             </Nav>
             <Nav className="flex-column mt-auto">
