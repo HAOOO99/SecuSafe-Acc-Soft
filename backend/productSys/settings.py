@@ -118,8 +118,8 @@ DATABASES = {
         'NAME': 'railway',
         'USER': 'root',
         'PASSWORD': 'King123',
-        'HOST': 'turntable.proxy.rlwy.net',
-        'PORT': '34975',
+        'HOST': 'mysql.railway.internal',
+        'PORT': '3306',
     }
 }
 
