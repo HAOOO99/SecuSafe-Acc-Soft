@@ -10,7 +10,7 @@ import { useParams } from 'react-router-dom';
 
 export default function CIPage(){
     const {name} = useParams();
-    const [flag, setFlag] = useState(true);//state to control flag showing in filter bar
+    const [flag] = useState(true);//state to control flag showing in filter bar
     const [show, setShow] = useState(false); // State to control offcanvas visibility
     const [error, setError] = useState({}); 
 
@@ -23,8 +23,8 @@ export default function CIPage(){
     
     const [piUSD, setPIUSD] = useState(0);
     const [piAUD, setPIAUD] = useState(0);
-    const [ciUSD, setCIUSD] = useState(0);
-    const [ciAUD, setCIAUD] = useState(0);
+    const [, setCIUSD] = useState(0);
+    const [, setCIAUD] = useState(0);
 
     const [suppliers, setSuppliers] = useState([])
     

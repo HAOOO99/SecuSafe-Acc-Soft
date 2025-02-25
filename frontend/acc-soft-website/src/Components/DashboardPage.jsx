@@ -1,5 +1,5 @@
 
-import { useState,useEffect } from 'react'
+import { useState,useEffect, useCallback } from 'react'
 import { Container, Row, Col } from 'react-bootstrap';
 import { Progress } from "antd";
 
@@ -16,9 +16,9 @@ export default function DashboardPage(){
 
     const [currency,setCurrency] = useState("")
 
-    const [currentYear, setCurrentYear] = useState(new Date().getFullYear()); // State to store current year
+    const [currentYear] = useState(new Date().getFullYear()); // State to store current year
     
-    const [progressData, setProgressData] = useState([
+    const [ ,setProgressData] = useState([
         {
           title: 'Total PI this year',
           current: 0,
@@ -32,22 +32,7 @@ export default function DashboardPage(){
         },
       ]);
 
-    useEffect(() => {
-        
-        showTargets();
-        getPIValues();
-        getCIValues();
-
-        // const interval = setInterval(() => {
-        //     getValues();
-        // }, 5000); // 10 seconds
     
-        // // Clear interval on component unmount
-        // return () => clearInterval(interval);
-        
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-
-        }, []);
     
     useEffect(() => {
         setProgressData([
@@ -65,7 +50,7 @@ export default function DashboardPage(){
         ]);
         }, [currentPI,currentCI,PItargetA, PItargetB]);
 
-    async function getPIValues(){
+    const getPIValues = useCallback(async()=>{
         const config = {
             method: 'GET',
             mode: 'cors',
@@ -94,9 +79,9 @@ export default function DashboardPage(){
         } catch (e){
             console.log(e);
         }
-    }
+    },[name,currentYear]);
 
-    async function getCIValues(){
+    const getCIValues = useCallback(async () =>{
         const config = {
             method: 'GET',
             mode: 'cors',
@@ -118,9 +103,9 @@ export default function DashboardPage(){
         } catch (e){
             console.log(e);
         }
-    }
+    },[name,currentYear]);
 
-    async function showTargets() {
+    const showTargets = useCallback( async() => {
         const config = {
             method: 'GET',
             mode: 'cors',
@@ -150,11 +135,25 @@ export default function DashboardPage(){
             console.log(e);
         }
 
-    }
+    },[name]);
 
-    const amoutFormat = (number) => {
+    
+    useEffect(() => {
+        
+        showTargets();
+        getPIValues();
+        getCIValues();
 
-    }
+        // const interval = setInterval(() => {
+        //     getValues();
+        // }, 5000); // 10 seconds
+    
+        // // Clear interval on component unmount
+        // return () => clearInterval(interval);
+        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+
+        }, [showTargets,getPIValues,getCIValues]);
 
     return (
         <main className="py-1">

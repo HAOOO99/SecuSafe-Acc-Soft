@@ -1,4 +1,4 @@
-import { useState,useEffect } from 'react'
+import { useState,useEffect, useCallback } from 'react'
 import { Table ,Container, Button, Offcanvas, Form ,Row, Col,  } from 'react-bootstrap';
 import FilterBar from './FilterBar';
 
@@ -12,13 +12,13 @@ export default function PIPage(){
     
     const {name}  = useParams();
     const [show, setShow] = useState(false); // State to control offcanvas visibility
-    const [flag, setFlag] = useState(false); // state to control flag showing in filter bar
+    const [flag] = useState(false); // state to control flag showing in filter bar
 
     const [PIs, setPIs] = useState([]);
     const [error, setError] = useState({});
     
-    const [totalUSD, setTotalUSD] = useState(0);
-    const [totalAUD, setTotalAUD] = useState(0);
+    const [setTotalUSD] = useState(0);
+    const [setTotalAUD] = useState(0);
 
     // const [tempUSD,setTempUSD] = useState(0);
     
@@ -43,21 +43,7 @@ export default function PIPage(){
         link: '',
     })
 
-    useEffect(() => {
-
-        showPI();
-        getValues();
-        showYears();
-        
-        // Set up polling to fetch data every 10 seconds
-        // const interval = setInterval(() => {
-        //     showPI();
-        //     getValues();
-        // }, 5000); // 10 seconds
-
-        // // Clear interval on component unmount
-        // return () => clearInterval(interval);
-        }, [chooseYear,dataChanged]);
+    
     
     const handleUpdate = (piNumber, comment) => {
         updateComment(piNumber, comment);
@@ -112,7 +98,7 @@ export default function PIPage(){
         });
       };
 
-    async function showYears(){
+    const showYears = useCallback(async ()=>{
         const config = {
             method: 'GET',
             mode: 'cors',
@@ -134,9 +120,9 @@ export default function PIPage(){
         } catch (e){
             console.log(e);
         }
-    }
+    },[name]);
 
-    async function getValues(){
+    const getValues = useCallback ( async () =>{
         const config = {
             method: 'GET',
             mode: 'cors',
@@ -167,9 +153,9 @@ export default function PIPage(){
         } catch (e){
             console.log(e);
         }
-    }
+    },[name, chooseYear,setTotalAUD,setTotalUSD]);
 
-    async function showPI() {
+    const showPI = useCallback(async () => {
         const config = {
             method: 'GET',
             mode: 'cors',
@@ -198,7 +184,24 @@ export default function PIPage(){
         } catch (e){
             console.log(e);
         }
-    }
+    },[name, chooseYear]);
+
+
+    useEffect(() => {
+
+        showPI();
+        getValues();
+        showYears();
+        
+        // Set up polling to fetch data every 10 seconds
+        // const interval = setInterval(() => {
+        //     showPI();
+        //     getValues();
+        // }, 5000); // 10 seconds
+
+        // // Clear interval on component unmount
+        // return () => clearInterval(interval);
+        }, [chooseYear,dataChanged,showPI,getValues,showYears]);
     
     const handleChange = (e) => {          
         const { name, value, type, checked } = e.target;

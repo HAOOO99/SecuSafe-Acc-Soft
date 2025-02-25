@@ -1,4 +1,4 @@
-import { Nav, Navbar, Offcanvas } from 'react-bootstrap';
+import { Nav, Navbar } from 'react-bootstrap';
 import { useNavigate, useParams} from 'react-router-dom';
 
 

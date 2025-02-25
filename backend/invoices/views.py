@@ -39,7 +39,8 @@ def get_CIs(request):
                 ci = request.GET.get("CI_no")
                 cis = CI.objects.all().filter(brand = current_brand, date__year = year,CI_no=ci).order_by('date')
 
-        print(cis.values())
+        print(cis. values())
+
         ci_list = []
         for each in cis.values():
             ci_list.append(each)
@@ -118,7 +119,6 @@ def get_years(request):
         else:
             years_list.append(datetime.now().year)
 
-        
         response["status"] = "success"
         response["total_years"] = years_list
 
@@ -170,7 +170,11 @@ def select_cis(request):
         current_brand = request.GET.get("brand")
         year = request.GET.get("year")
         chosen_Ci = request.GET.get("ciNo")
-        cis = CI.objects.all().filter(brand = current_brand,date__year = year,CI_no=chosen_Ci)
+        if(request.GET.get("brand") == 'UNV'):
+            brands_name = ['UNV', 'Uniview']
+            cis = CI.objects.all().filter(brand__in = brands_name,date__year = year,CI_no=chosen_Ci)
+        else:
+            cis = CI.objects.all().filter(brand = current_brand,date__year = year,CI_no=chosen_Ci)
         print(cis.values())
         cis_list = []
         for each in cis.values():

@@ -1,5 +1,5 @@
 import { useState,useEffect } from 'react'
-import { Table ,Container, Button, Offcanvas, Form ,Row, Col, Modal} from 'react-bootstrap';
+import { Table ,Container, Button, Form ,Row, Col, Modal} from 'react-bootstrap';
 import FilterBar from './FilterBar';
 
 import NavBar from './NavBar';
@@ -10,11 +10,8 @@ import { useParams } from 'react-router-dom';
 
 export default function CNPage(){
     const {name} = useParams();
-    const [flag, setFlag] = useState(false);//state to control flag showing in filter bar
-    const [show, setShow] = useState(false); // State to control offcanvas visibility
+    const [flag, ] = useState(false);//state to control flag showing in filter bar
     const [errors, setErrors] = useState({});
-    const [suppliers,setSuppliers] = useState([])
-    const [checkInput,setCheckInput] = useState({})
 
     const [searchQuery, setSearchQuery] = useState(''); // State to store search query
     const [years, setYears] = useState([]); // State to store all years
@@ -32,7 +29,7 @@ export default function CNPage(){
         ss_CN: "",
         status: "",
     });
-    const [formData, setFormData] = useState({
+    const [formData] = useState({
         company_name:name,
         supplier_name:name,
         date:"",
@@ -202,29 +199,7 @@ export default function CNPage(){
         }
     }
 
-    async function showSuppliers() {
-        const config = {
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }
-        try{
-            const response = await fetch (`http://127.0.0.1:8000/supplier?brand=${name}`,config);
-            const data = await response.json();
-            console.log(11111111,data["suppliers"]);
-            if (data === undefined || data.length === 0){
-                alert("Nothing is found");
-                return;
-            }
-            setSuppliers(data["suppliers"]);
-            return data
-        }
-        catch (e){
-            console.log(e);
-        }
-    }
+   
 
     const handleChangeSupplier = (e) =>{
         // const [name,value] = e.target;
@@ -252,20 +227,6 @@ export default function CNPage(){
         setSelectedRow({ ...selectedRow, status: e.target.value });
     }
 
-    // const handleClose = () => {setShow(false);
-    //             setFormData({
-    //                 company_name:name,
-    //                 supplier_name:name,
-    //                 description:"",
-    //                 date:"",
-    //                 estimateCN:"",
-    //                 estimateCurrency:formData.estimateCurrency,
-    //                 CNType:"Compensation"
-    //             });
-    //             setErrors({});
-    //             setCheckInput({});};
-
-    // const handleShow = () => {setShow(true);showSuppliers();};
     const handleRowClick = (row) => {
         setSelectedRow(row);
         setShowModal(true);

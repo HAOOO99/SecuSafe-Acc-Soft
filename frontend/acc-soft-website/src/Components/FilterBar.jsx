@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Form, FormControl, Button, Row,Col, Nav, NavDropdown}  from 'react-bootstrap';
+import { Form, FormControl, Row,Col, Nav, NavDropdown}  from 'react-bootstrap';
 
 
 export default function FilterBar({years,chooseYear,setChooseYear,CIs,chooseCI,setChooseCi, searchQuery, setSearchQuery, flag}) {

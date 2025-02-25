@@ -1,4 +1,4 @@
-import { useState,useEffect } from 'react'
+import { useState,useEffect, useCallback  } from 'react'
 import { Container, Button, Offcanvas, Form ,Row, Col, Modal} from 'react-bootstrap';
 import { Table } from 'antd';
 import FilterBar from './FilterBar';
@@ -12,7 +12,7 @@ export default function RemittancePage(){
 
     const {name}  = useParams();
     const [show, setShow] = useState(false); // State to control offcanvas visibility
-    const [flag, setFlag] = useState(false); // state to control flag showing in filter bar
+    const [flag] = useState(false); // state to control flag showing in filter bar
     const [showModal, setShowModal] = useState(false); // State to control offcanvas visibility
     const [Pos,setPos] = useState([]);
     const [error, setError]= useState("")
@@ -44,12 +44,9 @@ export default function RemittancePage(){
     const tempUSD = filteredREs.reduce((sum,Re)=> sum + (Re.currency.trim() === "USD" ? parseFloat(Re.amount): 0),0);
     const tempAUD = filteredREs.reduce((sum, Re) => sum + (Re.currency.trim() === "AUD" ? parseFloat(Re.amount):0),0);
 
-    useEffect(() => {
-        fetchRe();
-        fetchYears();
-    }, [chooseYear]);
+    
 
-    async function fetchRe(){
+    const fetchRe =  useCallback(async() => {
         const config = {
             method: 'GET',
             mode: 'cors',
@@ -73,9 +70,13 @@ export default function RemittancePage(){
             console.log(e);
         }
 
-    }
+    }, [name,chooseYear]);
 
-    async function fetchYears(){
+    // async function fetchRe(){
+
+    // }
+
+    const fetchYears = useCallback(async () => {
         const config = {
             method: 'GET',
             mode: 'cors',
@@ -97,7 +98,14 @@ export default function RemittancePage(){
         } catch (e){
             console.log(e);
         }
-    }
+    }, [name]);
+
+
+    useEffect(() => {
+        fetchRe();
+        fetchYears();
+    }, [chooseYear,fetchRe,fetchYears]);
+
     const getAllPos = async () => {
         const config = {
             method: 'GET',

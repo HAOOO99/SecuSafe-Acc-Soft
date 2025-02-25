@@ -101,27 +101,27 @@ CHANNEL_LAYERS = {
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'mysql.connector.django',
-#         'NAME': 'system',
-#         'USER': 'root',
-#         'PASSWORD': 'King123',
-#         'HOST': '127.0.0.1',
-#         'PORT': '3306',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'railway',
+        'ENGINE': 'mysql.connector.django',
+        'NAME': 'system',
         'USER': 'root',
         'PASSWORD': 'King123',
-        'HOST': 'mysql.railway.internal',
+        'HOST': '127.0.0.1',
         'PORT': '3306',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'railway',
+#         'USER': 'root',
+#         'PASSWORD': 'King123',
+#         'HOST': 'mysql.railway.internal',
+#         'PORT': '3306',
+#     }
+# }
 
 
 # Password validation

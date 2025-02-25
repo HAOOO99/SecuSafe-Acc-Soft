@@ -10,7 +10,7 @@ import { useParams } from 'react-router-dom';
 
 export default function CNPage(){
     const {name} = useParams();
-    const [flag, setFlag] = useState(false);//state to control flag showing in filter bar
+    const [flag] = useState(false);//state to control flag showing in filter bar
     const [show, setShow] = useState(false); // State to control offcanvas visibility
     const [errors, setErrors] = useState({});
     const [suppliers,setSuppliers] = useState([])
