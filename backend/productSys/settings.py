@@ -117,9 +117,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'railway',
         'USER': 'root',
-        'PASSWORD': 'SutypJRbeXHQnVNpxpHLnCYXXWVIUOnx',
-        'HOST': 'mysql.railway.internal',
-        'PORT': '3306',
+        'PASSWORD': 'King123',
+        'HOST': 'turntable.proxy.rlwy.net',
+        'PORT': '34975',
     }
 }
 

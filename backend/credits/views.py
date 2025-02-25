@@ -116,15 +116,7 @@ def add_CN(request):
         if request.content_type == 'application/json':
             payload = json.loads(request.body.decode())
         
-        #     print("Payload:", payload)  # Debugging statement
-
-        #     company_name = payload["company_name"]
-        #     supplier_name = payload["supplier"]
-        #     date = payload['date']
-        #     desciption = payload['description']
-            
-            
-        # else:
+       
             company_name = payload["company_name"]
             supplier_name = payload["supplier_name"]
             date = payload["date"]
@@ -176,7 +168,7 @@ def get_marketing(request):
         else:
             cns = CN.objects.all().filter(brand = current_brand, date__year = year,type="marketing").order_by('date')
         
-        print(12313123,CN.objects.filter(brand = current_brand, date__year = year,type="marketing").order_by('date'))
+        print(12313123, CN.objects.filter(brand = current_brand, date__year = year,type="marketing").order_by('date'))
 
         cn_list = []
         for each in cns.values():
