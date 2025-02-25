@@ -1,28 +1,28 @@
-import React , { useEffect }from 'react';
+import React from 'react';
 import { Navigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
+// import {jwtDecode} from 'jwt-decode';
 
 
-const checkAuthenticated = () => {
-    const token = sessionStorage.getItem('access_token');
-    console.log(token);
-    if (!token) return false;
+// const checkAuthenticated = () => {
+//     const token = sessionStorage.getItem('access_token');
+//     console.log(token);
+//     if (!token) return false;
 
-    const decodedToken = jwtDecode(token);
-    console.log("token is ", decodedToken)
-    try {
+//     const decodedToken = jwtDecode(token);
+//     console.log("token is ", decodedToken)
+//     try {
 
-        const now = Math.floor(Date.now() / 1000); // Current time in seconds
-        if (decodedToken.exp > now) {
-            return true; // Token is valid
-        } else {
-            alert("Your session has expired. Please log in again.");
-            return false; // Token is expired
-        }
-    } catch (err) {
-        return false;
-    }
-};
+//         const now = Math.floor(Date.now() / 1000); // Current time in seconds
+//         if (decodedToken.exp > now) {
+//             return true; // Token is valid
+//         } else {
+//             alert("Your session has expired. Please log in again.");
+//             return false; // Token is expired
+//         }
+//     } catch (err) {
+//         return false;
+//     }
+// };
 
 
 // const refreshToken = async () => {
