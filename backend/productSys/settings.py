@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -101,27 +101,27 @@ CHANNEL_LAYERS = {
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'mysql.connector.django',
-        'NAME': 'system',
-        'USER': 'root',
-        'PASSWORD': 'King123',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'railway',
+#         'ENGINE': 'mysql.connector.django',
+#         'NAME': 'system',
 #         'USER': 'root',
 #         'PASSWORD': 'King123',
-#         'HOST': 'mysql.railway.internal',
+#         'HOST': '127.0.0.1',
 #         'PORT': '3306',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ["MYSQLDATABASE"],
+        'USER': os.environ["MYSQLUSER"],
+        'PASSWORD': os.environ["MYSQLPASSWORD"],
+        'HOST': os.environ["MYSQLHOST"],
+        'PORT': os.environ["MYSQLPORT"],
+    }
+}
 
 
 # Password validation
