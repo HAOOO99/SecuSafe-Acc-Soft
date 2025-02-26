@@ -167,6 +167,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS  = True
+CSRF_TRUSTED_ORIGINS = [
+    "https://secusafe-backend-production.up.railway.app",  # ✅ Add your Railway domain
+]
 
 # CORS_ALLOW_HEADERS = [
 #     'content-type',
