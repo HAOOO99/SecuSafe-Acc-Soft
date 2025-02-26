@@ -68,7 +68,7 @@ export default function CNPage(){
             },
         }
         try{
-            const response = await fetch("http://127.0.0.1:8000/cn/marketing/?brand="+name+"&year="+chooseYear , config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/cn/marketing/?brand="+name+"&year="+chooseYear , config);
             const data = await response.json();
             
             if (data === undefined || data.msg.length === 0){
@@ -96,7 +96,7 @@ export default function CNPage(){
             },
         }
         try{
-            const response = await fetch("http://127.0.0.1:8000/cn/years?brand="+name , config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/cn/years?brand="+name , config);
             const data = await response.json();
             
             if (data === undefined || data.total_years.length === 0){
@@ -121,7 +121,7 @@ export default function CNPage(){
         }
 
         try{
-            const response = await fetch("http://127.0.0.1:8000/target?brand=" + name , config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/target?brand=" + name , config);
             const data = await response.json();
 
             // setFormData({company_name:name,

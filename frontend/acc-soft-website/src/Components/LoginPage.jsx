@@ -46,7 +46,7 @@ export default function LoginPage() {
     const form = new FormData();
     form.append('username',formData.username);
     form.append('password',formData.password)
-    const response = await fetch('http://127.0.0.1:8000/login/', {
+    const response = await fetch('https://secusafe-backend-production.up.railway.app/login/', {
       method: 'POST',
       body: form, // Send form data
     });

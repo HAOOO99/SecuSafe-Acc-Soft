@@ -73,7 +73,7 @@ export default function PIPage(){
         };
     
         try {
-            const response = await fetch("http://127.0.0.1:8000/pi/update?brand="+name , config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/pi/update?brand="+name , config);
             const data = await response.json();
         
             if (data === undefined || data.length === 0){
@@ -107,7 +107,7 @@ export default function PIPage(){
             },
         }
         try{
-            const response = await fetch("http://127.0.0.1:8000/pi/years?brand="+name , config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/pi/years?brand="+name , config);
             const data = await response.json();
             
             if (data === undefined || data.length === 0){
@@ -132,7 +132,7 @@ export default function PIPage(){
         }
         try{
             
-            const response = await fetch("http://127.0.0.1:8000/pi/values?brand="+name+"&year="+chooseYear , config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/pi/values?brand="+name+"&year="+chooseYear , config);
             const data = await response.json();
             
             if (data === undefined || data.length === 0){
@@ -165,7 +165,7 @@ export default function PIPage(){
         }
         try{
             console.log(name, chooseYear)
-            const response = await fetch("http://127.0.0.1:8000/pi?brand="+name+"&year="+chooseYear, config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/pi?brand="+name+"&year="+chooseYear, config);
             const data = await response.json();
             console.log(data)
             if (data === undefined || data.length === 0){
@@ -235,7 +235,7 @@ export default function PIPage(){
             };
 
             try {
-            const response = await fetch("http://127.0.0.1:8000/pi/add?brand="+name, config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/pi/add?brand="+name, config);
             const data = await response.json();
             console.log(1111111,data)
             if (data.status === 'success') {
@@ -278,7 +278,7 @@ export default function PIPage(){
             },
         }
         try{
-            const response = await fetch (`http://127.0.0.1:8000/supplier?brand=${name}`,config);
+            const response = await fetch (`https://secusafe-backend-production.up.railway.app/supplier?brand=${name}`,config);
             const data = await response.json();
             console.log(data["suppliers"])
             if (data === undefined || data.length === 0){

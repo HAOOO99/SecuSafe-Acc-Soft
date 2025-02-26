@@ -55,7 +55,7 @@ export default function RemittancePage(){
             },
         }
         try{
-            const response = await fetch("http://127.0.0.1:8000/remittance?brand="+name+"&year="+chooseYear, config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/remittance?brand="+name+"&year="+chooseYear, config);
             const data = await response.json();
             
             if (data === undefined || data.length === 0){
@@ -85,7 +85,7 @@ export default function RemittancePage(){
             },
         }
         try{
-            const response = await fetch("http://127.0.0.1:8000/remittance/years?brand="+name , config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/remittance/years?brand="+name , config);
             const data = await response.json();
             
             if (data === undefined || data.length === 0){
@@ -115,7 +115,7 @@ export default function RemittancePage(){
             },
         }
         try{
-            const response = await fetch("http://127.0.0.1:8000/ci?brand="+name +"&year="+chooseYear, config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/ci?brand="+name +"&year="+chooseYear, config);
             const data = await response.json();
             console.log(data)
             if (data === undefined || data.length === 0){
@@ -151,7 +151,7 @@ export default function RemittancePage(){
             body:JSON.stringify({brand:name,id:row.id,pos:pos})
         }
         try{
-            const response = await fetch("http://127.0.0.1:8000/remittance/addPo/", config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/remittance/addPo/", config);
             const data = await response.json();
             console.log(data)
             if (data === undefined || data.length === 0){
@@ -184,7 +184,7 @@ export default function RemittancePage(){
             }
         
             try{
-                const response = await fetch("http://127.0.0.1:8000/remittance/addRe/", config);
+                const response = await fetch("https://secusafe-backend-production.up.railway.app/remittance/addRe/", config);
                 const data = await response.json();
                 console.log(formData)
                 if (data === undefined || data.length === 0){

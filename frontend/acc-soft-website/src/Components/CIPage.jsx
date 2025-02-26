@@ -67,7 +67,7 @@ export default function CIPage(){
             },
         }
         try{
-            const response = await fetch("http://127.0.0.1:8000/ci/years?brand="+name , config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/ci/years?brand="+name , config);
             const data = await response.json();
             
             if (data === undefined || data.length === 0){
@@ -92,7 +92,7 @@ export default function CIPage(){
             },
         }
         try{
-            const response = await fetch("http://127.0.0.1:8000/ci/cis?brand="+name+"&year="+chooseYear , config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/ci/cis?brand="+name+"&year="+chooseYear , config);
             const data = await response.json();
             
             if (data === undefined || data.length === 0){
@@ -117,7 +117,7 @@ export default function CIPage(){
             },
         }
         try{
-            const response = await fetch("http://127.0.0.1:8000/ci?brand="+name+"&year="+chooseYear+"&CI_no="+chooseCi, config);
+            const response = await fetch("hhttps://secusafe-backend-production.up.railway.app/ci?brand="+name+"&year="+chooseYear+"&CI_no="+chooseCi, config);
             const data = await response.json();
             
             if (data === undefined || data.length === 0){
@@ -144,7 +144,7 @@ export default function CIPage(){
             },
         }
         try{
-            const response = await fetch("http://127.0.0.1:8000/pi/values?brand="+name+"&year="+chooseYear , config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/pi/values?brand="+name+"&year="+chooseYear , config);
             const data = await response.json();
             
             if (data === undefined || data.length === 0){
@@ -178,7 +178,7 @@ export default function CIPage(){
 
         try{
             
-            const response = await fetch("http://127.0.0.1:8000/ci/values?brand="+name+"&year="+chooseYear , config);
+            const response = await fetch("hhttps://secusafe-backend-production.up.railway.app/ci/values?brand="+name+"&year="+chooseYear , config);
             const data = await response.json();
             
             if (data === undefined || data.length === 0){
@@ -204,7 +204,7 @@ export default function CIPage(){
             },
         }
         try{
-            const response = await fetch (`http://127.0.0.1:8000/supplier?brand=${name}`,config);
+            const response = await fetch (`https://secusafe-backend-production.up.railway.app/supplier?brand=${name}`,config);
             const data = await response.json();
             console.log(data["suppliers"])
             if (data === undefined || data.length === 0){
@@ -268,7 +268,7 @@ export default function CIPage(){
                 };
         
                 try {
-                const response = await fetch("http://127.0.0.1:8000/ci/addCI?brand="+name, config);
+                const response = await fetch("https://secusafe-backend-production.up.railway.app/ci/addCI?brand="+name, config);
                 const data = await response.json();
                 console.log(data)
                 if (data.status === 'success') {

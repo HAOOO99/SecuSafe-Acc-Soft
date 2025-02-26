@@ -59,7 +59,7 @@ export default function DashboardPage(){
             },
         }
         try{
-            const response = await fetch("http://127.0.0.1:8000/pi/values?brand="+name+"&year="+currentYear , config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/pi/values?brand="+name+"&year="+currentYear , config);
             const data = await response.json();
             
             if (data === undefined || data.length === 0){
@@ -90,7 +90,7 @@ export default function DashboardPage(){
             },
         }
         try{
-            const response = await fetch("http://127.0.0.1:8000/ci/values?brand="+name+"&year="+currentYear , config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/ci/values?brand="+name+"&year="+currentYear , config);
             const data = await response.json();
             
             if (data === undefined || data.length === 0){
@@ -115,7 +115,7 @@ export default function DashboardPage(){
         }
 
         try{
-            const response = await fetch("http://127.0.0.1:8000/target?brand=" + name , config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/target?brand=" + name , config);
             const data = await response.json();
             
             setPItargetA(data.targets[0].PItargetA)
@@ -137,7 +137,7 @@ export default function DashboardPage(){
 
     },[name]);
 
-    
+
     useEffect(() => {
         
         showTargets();
