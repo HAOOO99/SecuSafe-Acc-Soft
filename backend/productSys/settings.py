@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-yqa4!(++4xdaw=79yj=(a@1!-=3qhr(r-x+()^#te^6ezh6qio
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -115,11 +115,11 @@ CHANNEL_LAYERS = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ["MYSQLDATABASE"],
-        'USER': os.environ["MYSQLUSER"],
-        'PASSWORD': os.environ["MYSQLPASSWORD"],
-        'HOST': os.environ["MYSQLHOST"],
-        'PORT': os.environ["MYSQLPORT"],
+        'NAME': "railway",
+        'USER': 'root',
+        'PASSWORD': 'sMCFMDJDhRdUcXrwIMEYVizOVNhjmFHl',
+        'HOST': 'gondola.proxy.rlwy.net',
+        'PORT': '21164',
     }
 }
 

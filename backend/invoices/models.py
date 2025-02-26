@@ -3,7 +3,16 @@ from brands.common import get_brands
 from remittances.models import Remittance
 # Create your models here.
 class CI(models.Model):
-    brand = models.CharField(max_length=100,choices=get_brands(),default=next(iter(get_brands())))
+
+    brand_choices = []  # Empty list initially
+
+    @classmethod
+    def set_choices(cls, brands_dict):
+        """Update brand choices dynamically after migration"""
+        cls.brand_choices = [(k, v) for k, v in brands_dict.items()]
+
+
+    brand = models.CharField(max_length=100,choices=[],default='')
     PO_no = models.CharField(primary_key=True, unique = True,max_length=100)
     CI_no = models.CharField(max_length=100)
     supplier = models.CharField(max_length=100)

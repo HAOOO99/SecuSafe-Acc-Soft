@@ -1,9 +1,9 @@
 from django.db import models
 
 # Create your models here.
-from brands.common import get_brands
 
 class CN(models.Model):
+
     ALL_STATUS = {
         "Bank Transfer" : "Bank Transfer",
         "Offset Statement" : "Offset Statement",
@@ -20,7 +20,15 @@ class CN(models.Model):
         "Discount":"Discount",
     }
 
-    brand = models.CharField(max_length=100,choices=get_brands(),default=next(iter(get_brands())))
+    brand_choices = []  # Empty list initially
+
+    @classmethod
+    def set_choices(cls, brands_dict):
+        """Update brand choices dynamically after migration"""
+        cls.brand_choices = [(k, v) for k, v in brands_dict.items()]
+
+
+    brand = models.CharField(max_length=100,choices=[],default='')
     date = models.DateField()
     supplier = models.CharField(max_length=100)
     description = models.CharField(max_length=1000)

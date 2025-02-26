@@ -14,8 +14,17 @@ class Remittance(models.Model):
         "Offset Statement" : "Offset Statement",
         "Pending" : "Pending",
     }
+
+    brand_choices = []  # Empty list initially
+
+    @classmethod
+    def set_choices(cls, brands_dict):
+        """Update brand choices dynamically after migration"""
+        cls.brand_choices = [(k, v) for k, v in brands_dict.items()]
+
+
     id = models.AutoField(primary_key=True)
-    brand = models.CharField(max_length=100,choices=get_brands(),default=next(iter(get_brands())))
+    brand = models.CharField(max_length=100,choices=[],default='')
     date = models.DateField()
     bank = models.CharField(max_length=100,null=True,blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)

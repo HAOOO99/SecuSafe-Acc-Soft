@@ -2,7 +2,15 @@ from django.db import models
 from brands.common import get_brands
 
 class Target(models.Model):
-    brand = models.CharField(max_length=100,choices=get_brands(),default=next(iter(get_brands())))
+
+    brand_choices = []  # Empty list initially
+
+    @classmethod
+    def set_choices(cls, brands_dict):
+        """Update brand choices dynamically after migration"""
+        cls.brand_choices = [(k, v) for k, v in brands_dict.items()]
+
+    brand = models.CharField(max_length=100,choices=[],default='')
     year = models.IntegerField(null=False, blank=False)
     PI_targetA = models.IntegerField(null=False, blank=False)
     PI_targetB = models.IntegerField(null=False, blank=False)
