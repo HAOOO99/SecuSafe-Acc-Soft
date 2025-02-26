@@ -17,8 +17,8 @@ export default function PIPage(){
     const [PIs, setPIs] = useState([]);
     const [error, setError] = useState({});
     
-    const [setTotalUSD] = useState(0);
-    const [setTotalAUD] = useState(0);
+    const [,setTotalUSD] = useState(0);
+    const [,setTotalAUD] = useState(0);
 
     // const [tempUSD,setTempUSD] = useState(0);
     
