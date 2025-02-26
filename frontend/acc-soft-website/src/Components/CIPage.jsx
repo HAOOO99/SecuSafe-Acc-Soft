@@ -117,7 +117,7 @@ export default function CIPage(){
             },
         }
         try{
-            const response = await fetch("hhttps://secusafe-backend-production.up.railway.app/ci?brand="+name+"&year="+chooseYear+"&CI_no="+chooseCi, config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/ci?brand="+name+"&year="+chooseYear+"&CI_no="+chooseCi, config);
             const data = await response.json();
             
             if (data === undefined || data.length === 0){
@@ -178,7 +178,7 @@ export default function CIPage(){
 
         try{
             
-            const response = await fetch("hhttps://secusafe-backend-production.up.railway.app/ci/values?brand="+name+"&year="+chooseYear , config);
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/ci/values?brand="+name+"&year="+chooseYear , config);
             const data = await response.json();
             
             if (data === undefined || data.length === 0){

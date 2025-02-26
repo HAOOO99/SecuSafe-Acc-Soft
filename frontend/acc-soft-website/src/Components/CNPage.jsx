@@ -130,7 +130,11 @@ export default function CNPage(){
         try{
             const response = await fetch("https://secusafe-backend-production.up.railway.app/target?brand=" + name , config);
             const data = await response.json();
-            
+            if (data === undefined || data.length === 0){
+                alert("Nothing is found");
+                
+                return;
+            } 
             
             setFormData({company_name:name,
                 supplier_name:name,
@@ -138,14 +142,12 @@ export default function CNPage(){
                 description:"",
                 estimateCN:"",
                 estimateCurrency:data.targets[0].defaultCurrency,
-                CNType:"Compensation",})
+                CNType:"Compensation",
+            })
 
             // console.log(formData.estimateCurrency)
             
-            if (data === undefined || data.length === 0){
-                alert("Nothing is found");
-                return;
-            } 
+           
             
             return data;
            
