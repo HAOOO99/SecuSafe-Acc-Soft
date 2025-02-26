@@ -63,7 +63,7 @@ export default function Brands(){
         }
 
         try{
-            const response = await fetch("http://127.0.0.1:8000/brands/", config);
+            const response = await fetch("https://alert-celebration-production.up.railway.app/brands/", config);
             const data = await response.json();
             console.log(data.company)
             if (data === undefined || data.length === 0){
