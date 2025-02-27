@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your models here.
 
@@ -19,16 +20,18 @@ class CN(models.Model):
         "Compensation":"Compensation",
         "Discount":"Discount",
     }
+    HARDCODED_CHOICES = [("AJAX", "AJAX")]
+    brand = models.CharField(max_length=100,choices=HARDCODED_CHOICES, default="AJAX")
 
-    brand_choices = []  # Empty list initially
-
-    @classmethod
-    def set_choices(cls, brands_dict):
-        """Update brand choices dynamically after migration"""
-        cls.brand_choices = [(k, v) for k, v in brands_dict.items()]
-
-
-    brand = models.CharField(max_length=100,choices=[],default='')
+    def __init__(self, *args, **kwargs):
+        """Force brand choices to update at runtime."""
+        super().__init__(*args, **kwargs)
+        try:
+            from brands.models import Brand
+            self._meta.get_field("brand").choices = [(b.company_name, b.company_name) for b in Brand.objects.all()]
+        except ObjectDoesNotExist:
+            pass  # If no data, avoid breaking
+    
     date = models.DateField()
     supplier = models.CharField(max_length=100)
     description = models.CharField(max_length=1000)

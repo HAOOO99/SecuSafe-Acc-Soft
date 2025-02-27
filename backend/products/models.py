@@ -1,12 +1,23 @@
 from django.db import models
+from django.core.exceptions import ObjectDoesNotExist
+
 # from brands.common import get_brands
 # Create your models here.
 class PI(models.Model):
 
-    # brand_choices = []  # Empty list initially
+    HARDCODED_CHOICES = [("AJAX", "AJAX")]
+    brand = models.CharField(max_length=100,choices=HARDCODED_CHOICES, default="AJAX")
+
+    def __init__(self, *args, **kwargs):
+        """Force brand choices to update at runtime."""
+        super().__init__(*args, **kwargs)
+        try:
+            from brands.models import Brand
+            self._meta.get_field("brand").choices = [(b.company_name, b.company_name) for b in Brand.objects.all()]
+        except ObjectDoesNotExist:
+            pass  # If no data, avoid breaking
 
 
-    brand = models.CharField(max_length=100,choices=[],default='')
     supplier_name = models.CharField(max_length=100)
     PI_number = models.CharField(primary_key=True, unique = True,max_length=100)
     date = models.DateField()
@@ -18,12 +29,7 @@ class PI(models.Model):
     comment = models.TextField(null=True, blank=True)
     link = models.CharField(max_length=100)
 
-    def formfield(self, **kwargs):
-        """Dynamically update choices in Django Forms"""
-        from brands.common import get_brands
-        kwargs['choices'] = [(k, v) for k, v in get_brands().items()]
-        return super().formfield(**kwargs)
-
+    
     # class Meta:
     #     ordering = ['date']  # Default ordering by date in ascending order
 
