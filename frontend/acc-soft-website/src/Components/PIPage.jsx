@@ -342,9 +342,9 @@ export default function PIPage(){
                             <td>{PI.supplier_name}</td>
                             <td style={{ whiteSpace: "nowrap" }}>{PI.PI_number}</td>
                             <td style={{ whiteSpace: "nowrap" }}>{PI.date}</td>
-                            <td>{PI.discount > 0 ? `${PI.USD} - ${PI.discount}` : PI.USD}</td>
+                            <td>{PI.discount > 0 ? `${PI.USD} - ${PI.discount}` : (PI.USD).toLocaleString()}</td>
                             {/* <td>{PI.AUD}</td> */}
-                            {PI.AUD_counted || PI.AUD_local === 0 ? <td >{PI.AUD_local}</td> :<td style={{ color: 'blue' }}>{PI.AUD_local}</td>}
+                            {PI.AUD_counted || PI.AUD_local === 0 ? <td >{(PI.AUD_local).toLocaleString()}</td> :<td style={{ color: 'blue' }}>{(PI.AUD_local).toLocaleString()}</td>}
                             <td>{PI.discount}</td>
                             <td > <div className="d-flex align-items-center mb-1">
                                     <Form.Control as="textarea" value={comments[PI.PI_number]} className="me-2"

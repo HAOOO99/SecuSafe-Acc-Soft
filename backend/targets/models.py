@@ -10,7 +10,7 @@ class Target(models.Model):
         """Update brand choices dynamically after migration"""
         cls.brand_choices = [(k, v) for k, v in brands_dict.items()]
 
-    brand = models.CharField(max_length=100,choices=brand_choices,default='')
+    brand = models.CharField(max_length=100,choices=[],default='')
     year = models.IntegerField(null=False, blank=False)
     PI_targetA = models.IntegerField(null=False, blank=False)
     PI_targetB = models.IntegerField(null=False, blank=False)

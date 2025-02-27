@@ -3,13 +3,8 @@ from django.db import models
 # Create your models here.
 class PI(models.Model):
 
+    # brand_choices = []  # Empty list initially
 
-    brand_choices = []  # Empty list initially
-
-    @classmethod
-    def set_choices(cls, brands_dict):
-        """Update brand choices dynamically after migration"""
-        cls.brand_choices = [(k, v) for k, v in brands_dict.items()]
 
     brand = models.CharField(max_length=100,choices=[],default='')
     supplier_name = models.CharField(max_length=100)
@@ -23,8 +18,15 @@ class PI(models.Model):
     comment = models.TextField(null=True, blank=True)
     link = models.CharField(max_length=100)
 
+    def formfield(self, **kwargs):
+        """Dynamically update choices in Django Forms"""
+        from brands.common import get_brands
+        kwargs['choices'] = [(k, v) for k, v in get_brands().items()]
+        return super().formfield(**kwargs)
+
     # class Meta:
     #     ordering = ['date']  # Default ordering by date in ascending order
 
     def __str__(self):
         return  f"{self.brand} - {self.PI_number}"
+    

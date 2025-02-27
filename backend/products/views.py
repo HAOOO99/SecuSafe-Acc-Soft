@@ -60,11 +60,13 @@ def get_total_values(request):
         # total_aud = current_year_pis.aggregate(total_aud=Sum('AUD'))
         total_aud_local = current_year_pis.filter(AUD_counted = True).aggregate(total_aud_local=Sum('AUD_local'))
         total_discount = current_year_pis.aggregate(total_discount=Sum('discount'))
-
-        usd_value = total_usd["total_usd"] - total_discount["total_discount"]
-        aud_value = total_aud_local["total_aud_local"] - total_discount["total_discount"]
         if total_aud_local["total_aud_local"] == None:
+            total_aud_local["total_aud_local"] = 0
             aud_value = "0"
+        
+        usd_value = total_usd["total_usd"] - total_discount["total_discount"]
+        aud_value = total_aud_local["total_aud_local"]- total_discount["total_discount"]
+        
         # else:
         #     aud_value = total_aud["total_aud"] + total_aud_local["total_aud_local"]
         print(total_aud_local)

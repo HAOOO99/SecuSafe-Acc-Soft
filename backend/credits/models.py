@@ -46,3 +46,9 @@ class CN(models.Model):
     def __str__(self):
         return f"{self.supplier}-CN-{self.id}"
     
+    def save(self, *args, **kwargs):
+        """Ensure the default brand is set correctly"""
+        if not self.brand and self.brand_choices:
+            self.brand = self.brand_choices[0][0]  # First available brand
+        super().save(*args, **kwargs)
+    
