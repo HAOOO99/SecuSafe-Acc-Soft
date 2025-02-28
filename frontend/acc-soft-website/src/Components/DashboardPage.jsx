@@ -226,7 +226,7 @@ export default function DashboardPage(){
                                 </div>
                                 <Progress
                                     percent={((currentCI / currentPI)*100).toFixed(2)}
-                                    format={() => ` ${((currentCI / currentPI)*100).toFixed(2)}% (${(currentCI - currentPI)})`}
+                                    format={() => ` ${((currentCI / currentPI)*100).toFixed(2)}% (${Number(currentCI - currentPI).toLocaleString()})`}
                                     percentPosition={{
                                         align: 'center',
                                         type: 'outer',
