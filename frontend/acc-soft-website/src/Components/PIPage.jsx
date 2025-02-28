@@ -343,9 +343,9 @@ export default function PIPage(){
                         <Column title="PI Number" dataIndex="PI_number" key="pi" style={{ whiteSpace: "nowrap" }}/>
                         <Column title="PI Date" dataIndex="date" key="date" style={{ whiteSpace: "nowrap" }}/>
                         <Column title="USD" dataIndex="bank" key="bank" />
-                        <Column title="Amount" dataIndex="amount" key="amount" />
-                        <Column title="Currency" dataIndex="currency" key="currency" />
-                        <Column title="Status" dataIndex="status" key="status" />
+                        <Column title="AUD" dataIndex="amount" key="amount" />
+                        <Column title="Discount" dataIndex="currency" key="currency" />
+                        <Column title="Comment" dataIndex="status" key="status" />
                         
                     </Table>  */}
                     <Table striped bordered hover>
