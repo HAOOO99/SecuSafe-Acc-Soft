@@ -184,7 +184,7 @@ export default function DashboardPage(){
                                 {currentPI < PItargetA ? 
                                     <Progress
                                     percent={((currentPI/PItargetA)*100).toFixed(2) }
-                                    format={() => ` Target A: ${((currentPI  / PItargetB)*100).toFixed(2)}% (${(currentPI - PItargetA)})`}
+                                    format={() => ` Target A: ${((currentPI  / PItargetB)*100).toFixed(2)}% (${Number((currentPI - PItargetA).toFixed(2)).toLocaleString()})`}
                                     percentPosition={{
                                         align: 'center',
                                         type: 'outer',
@@ -197,7 +197,7 @@ export default function DashboardPage(){
                                     success={{
                                       percent: (PItargetA / PItargetB)*100,
                                     }}
-                                    format={() => ` Target A: 100 % -- Target B: ${(((currentPI-PItargetA)  / (PItargetB-PItargetA))*100).toFixed(2)}% (${(currentPI - PItargetB).toFixed(2)})`}
+                                    format={() => ` Target A: 100 % -- Target B: ${(((currentPI-PItargetA)  / (PItargetB-PItargetA))*100).toFixed(2)}% (${Number((currentPI - PItargetB).toFixed(2)).toLocaleString()})`}
                                     percentPosition={{
                                         align: 'center',
                                         type: 'outer',
