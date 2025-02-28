@@ -1,5 +1,6 @@
 import { useState,useEffect, useCallback } from 'react'
 import { Table ,Container, Button, Offcanvas, Form ,Row, Col,  } from 'react-bootstrap';
+import { Table } from 'antd';
 import FilterBar from './FilterBar';
 
 import NavBar from './NavBar';
@@ -320,7 +321,33 @@ export default function PIPage(){
                     setSearchQuery={setSearchQuery}
                     flag={flag}/>
                     <hr />
-
+                    {/* <Table dataSource={filteredPIs}
+                        rowKey={(record) => (record.id)} // ✅ Ensure each row has a unique ke
+                        onRow={(record) => ({
+                            onClick: () => handleRowClick(record), 
+                        })}
+                        small
+                        // expandable={{
+                        //     expandedRowRender: (record) => (
+                        //         <p style={{margin: 0,}}>
+                        //         Related POs : {record.PO}
+                        //         </p>
+                        //     ),
+                        //     rowExpandable: (record) => record.PO !== '',
+                        // }}
+                        pagination={{
+                            position: ['none', 'none'],
+                        }}
+                        >
+                        <Column title="Supplier Name" dataIndex="supplier_name" key="supplier" />
+                        <Column title="PI Number" dataIndex="PI_number" key="pi" style={{ whiteSpace: "nowrap" }}/>
+                        <Column title="PI Date" dataIndex="date" key="date" style={{ whiteSpace: "nowrap" }}/>
+                        <Column title="USD" dataIndex="bank" key="bank" />
+                        <Column title="Amount" dataIndex="amount" key="amount" />
+                        <Column title="Currency" dataIndex="currency" key="currency" />
+                        <Column title="Status" dataIndex="status" key="status" />
+                        
+                    </Table>  */}
                     <Table striped bordered hover>
                         <thead>
                             <tr>

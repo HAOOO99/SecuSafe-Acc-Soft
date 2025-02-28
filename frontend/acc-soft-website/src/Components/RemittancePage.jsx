@@ -30,7 +30,7 @@ export default function RemittancePage(){
         brand:name,
         date:"",
         amount:0,
-        currency:"",
+        currency:"AUD",
         status:"",
         bank:""
     })
@@ -379,9 +379,10 @@ export default function RemittancePage(){
                                 <Col xs={5}>
                                 <Form.Select required  value={formData.status} name='status'
                                             onChange={handleChange} >
-                                    <option key={0} value="prepaid">prepaid</option>
-                                    <option key={1} value="wait">waiting</option>
-                                    <option key={2} value="paid">paid</option>
+                                    <option key={0} value="">------</option>
+                                    <option key={1} value="prepaid">prepaid</option>
+                                    <option key={2} value="wait">waiting</option>
+                                    <option key={3} value="paid">paid</option>
                                     </Form.Select>
                                 </Col>
                             </Row>

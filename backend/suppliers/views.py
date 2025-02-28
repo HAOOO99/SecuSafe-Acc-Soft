@@ -15,9 +15,9 @@ def get_suppliers(request):
         current_brand = request.GET.get("brand")
         if(request.GET.get("brand") == 'UNV'):
             brands_name = ['UNV', 'Uniview']
-            suppliers = Supplier.objects.all().filter(brand_name__in = brands_name)
+            suppliers = Supplier.objects.all().filter(brand__in = brands_name)
         else:
-            suppliers = Supplier.objects.all().filter(brand_name = current_brand)
+            suppliers = Supplier.objects.all().filter(brand = current_brand)
         print(suppliers.values())
         supplier_list = []
         for each in suppliers.values():
