@@ -277,7 +277,8 @@ export default function RemittancePage(){
                     >
                     <Column title="Date" dataIndex="date" key="date" style={{ whiteSpace: "nowrap" }}/>
                     <Column title="Bank Account" dataIndex="bank" key="bank" />
-                    <Column title="Amount" dataIndex="amount" key="amount" />
+                    <Column title="Amount" dataIndex="amount" key="amount" 
+                    render={(text) => Number(text).toLocaleString('en-AU', { minimumFractionDigits: 2 })}/>
                     <Column title="Currency" dataIndex="currency" key="currency" />
                     <Column title="Status" dataIndex="status" key="status" />
                     

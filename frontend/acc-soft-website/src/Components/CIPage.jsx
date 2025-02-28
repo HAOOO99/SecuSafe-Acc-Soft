@@ -325,8 +325,8 @@ export default function CIPage(){
                             <td>{CI.CI_no}</td>
                             <td>{CI.supplier}</td>
                             <td style={{ whiteSpace: "nowrap" }}>{CI.date}</td>
-                            <td>{CI.value_USD}</td>
-                            <td>{CI.value_AUD}</td>
+                            <td>{Number(CI.value_USD).toLocaleString()}</td>
+                            <td>{Number(CI.value_AUD).toLocaleString()}</td>
                             <td>{CI.freight}</td>
                             </tr>)  : 
                             (<tr key={CI.PO_no}style = {{opacity:0.5}}>
@@ -334,8 +334,8 @@ export default function CIPage(){
                             <td>{CI.CI_no}</td>
                             <td>{CI.supplier}</td>
                             <td style={{ whiteSpace: "nowrap" }}>{CI.date}</td>
-                            <td>{CI.value_USD}</td>
-                            <td>{CI.value_AUD}</td>
+                            <td>{Number(CI.value_USD).toLocaleString()}</td>
+                            <td>{Number(CI.value_AUD).toLocaleString()}</td>
                             <td>{CI.freight}</td>
                             </tr>)
 
