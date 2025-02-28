@@ -1,6 +1,6 @@
 import { useState,useEffect, useCallback } from 'react'
 import { Table ,Container, Button, Offcanvas, Form ,Row, Col,  } from 'react-bootstrap';
-import { Table } from 'antd';
+// import { Table } from 'antd';
 import FilterBar from './FilterBar';
 
 import NavBar from './NavBar';
