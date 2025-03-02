@@ -1,14 +1,17 @@
 import { useState,useEffect } from 'react'
-import { Table ,Container, Button, Offcanvas, Form ,Row, Col,  } from 'react-bootstrap';
+import { Container,  Offcanvas, Form ,Row, Col,  } from 'react-bootstrap';
+import {Table,Button} from "antd";
 import FilterBar from './FilterBar';
 
 import NavBar from './NavBar';
 import { useParams } from 'react-router-dom';
+import "./styles.css"; // ✅ Import the CSS file
 
 // import { w3cwebsocket as W3CWebSocket } from 'websocket';
 // const client = new W3CWebSocket('ws://127.0.0.1:8000/ws/comments/');
 
 export default function CIPage(){
+    const {Column} = Table;
     const {name} = useParams();
     const [flag] = useState(true);//state to control flag showing in filter bar
     const [show, setShow] = useState(false); // State to control offcanvas visibility
@@ -304,45 +307,34 @@ export default function CIPage(){
                     flag={flag}/>
                     <hr />
 
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                            <th>PO Number</th>
-                            <th>CI Number</th>
-                            <th>Supplier Name</th>
-                            <th>Date</th>
-                            <th>Value(USD) </th>
-                            <th>Value(AUD) </th>
-                            <th>Freight</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {filteredCIs.map((CI) => (
-                            (CI.remittance_id === null ) ? 
-                            
-                            (<tr key={CI.PO_no} >
-                            <td>{CI.PO_no}</td>
-                            <td>{CI.CI_no}</td>
-                            <td>{CI.supplier}</td>
-                            <td style={{ whiteSpace: "nowrap" }}>{CI.date}</td>
-                            <td>{Number(CI.value_USD).toLocaleString()}</td>
-                            <td>{Number(CI.value_AUD).toLocaleString()}</td>
-                            <td>{CI.freight}</td>
-                            </tr>)  : 
-                            (<tr key={CI.PO_no}style = {{opacity:0.5}}>
-                            <td>{CI.PO_no}</td>
-                            <td>{CI.CI_no}</td>
-                            <td>{CI.supplier}</td>
-                            <td style={{ whiteSpace: "nowrap" }}>{CI.date}</td>
-                            <td>{Number(CI.value_USD).toLocaleString()}</td>
-                            <td>{Number(CI.value_AUD).toLocaleString()}</td>
-                            <td>{CI.freight}</td>
-                            </tr>)
-
-                         ))} 
-                        </tbody>
+                    <Table 
+                        dataSource={filteredCIs} 
+                        rowKey={(record) => record.PO_no} 
+                        bordered
+                        pagination={false} // Disable pagination if not needed
+                        rowClassName={(record) => (record.remittance_id === null ? "" : "faded-row")} // ✅ Apply class if remittance_id is not null
+                    >
+                        <Column title="PO Number" dataIndex="PO_no" key="PO_no" />
+                        <Column title="CI Number" dataIndex="CI_no" key="CI_no" />
+                        <Column title="Supplier Name" dataIndex="supplier" key="supplier" />
+                        <Column title="Date" dataIndex="date" key="date" />
                         
-                        </Table>
+                        <Column 
+                            title="Value (USD)" 
+                            dataIndex="value_USD" 
+                            key="value_USD"
+                            render={(text) => Number(text).toLocaleString()} // ✅ Format number
+                        />
+                        
+                        <Column 
+                            title="Value (AUD)" 
+                            dataIndex="value_AUD" 
+                            key="value_AUD"
+                            render={(text) => Number(text).toLocaleString()} // ✅ Format number
+                        />
+                        
+                        <Column title="Freight" dataIndex="freight" key="freight" />
+                    </Table>
                         <Row>
                             <Col md={{ span: 2, offset: 2 }}>
                                 <h5>Total PI:</h5>
@@ -471,13 +463,13 @@ export default function CIPage(){
                                 </Row>
                                 <br />
  
-                                <Button variant="primary" type="submit" onClick={addNewCI}>
+                                <Button variant="primary"  type="primary" onClick={addNewCI}>
                                     ADD
                                 </Button>
                                 </Form>
                             </Offcanvas.Body>
                         </Offcanvas>
-                        <Button onClick={handleShow} >Add new CI</Button>
+                        <Button onClick={handleShow}  type="primary">Add new CI</Button>
                     </div>
                     </Container>
                 </div>

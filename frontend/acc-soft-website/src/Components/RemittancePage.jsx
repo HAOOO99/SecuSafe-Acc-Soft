@@ -138,8 +138,9 @@ export default function RemittancePage(){
 
     }
 
-   const addPO = async (e,row) => {
-        e.preventDefault();
+   const addPO = async (row) => {
+        // e.preventDefault();
+        console.log(row)
         const values = selectedTableRow.map(key => Pos[key]);
         const pos = values.reduce((list,item) => {list.push(item["po"]);return list},[])
         const config = {

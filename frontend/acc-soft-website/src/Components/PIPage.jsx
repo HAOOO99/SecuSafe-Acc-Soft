@@ -1,6 +1,6 @@
 import { useState,useEffect, useCallback } from 'react'
-import { Table ,Container, Button, Offcanvas, Form ,Row, Col,  } from 'react-bootstrap';
-// import { Table } from 'antd';
+import { Container, Offcanvas, Form ,Row, Col,  } from 'react-bootstrap';
+import { Table, Input, Button } from 'antd';
 import FilterBar from './FilterBar';
 
 import NavBar from './NavBar';
@@ -10,7 +10,7 @@ import { w3cwebsocket as W3CWebSocket } from 'websocket';
 const client = new W3CWebSocket('ws://127.0.0.1:8000/ws/comments/');
 
 export default function PIPage(){
-    
+    const { Column } = Table;
     const {name}  = useParams();
     const [show, setShow] = useState(false); // State to control offcanvas visibility
     const [flag] = useState(false); // state to control flag showing in filter bar
@@ -321,76 +321,81 @@ export default function PIPage(){
                     setSearchQuery={setSearchQuery}
                     flag={flag}/>
                     <hr />
-                    {/* <Table dataSource={filteredPIs}
-                        rowKey={(record) => (record.id)} // ✅ Ensure each row has a unique ke
-                        onRow={(record) => ({
-                            onClick: () => handleRowClick(record), 
-                        })}
-                        small
-                        // expandable={{
-                        //     expandedRowRender: (record) => (
-                        //         <p style={{margin: 0,}}>
-                        //         Related POs : {record.PO}
-                        //         </p>
-                        //     ),
-                        //     rowExpandable: (record) => record.PO !== '',
-                        // }}
-                        pagination={{
-                            position: ['none', 'none'],
-                        }}
-                        >
-                        <Column title="Supplier Name" dataIndex="supplier_name" key="supplier" />
-                        <Column title="PI Number" dataIndex="PI_number" key="pi" style={{ whiteSpace: "nowrap" }}/>
-                        <Column title="PI Date" dataIndex="date" key="date" style={{ whiteSpace: "nowrap" }}/>
-                        <Column title="USD" dataIndex="bank" key="bank" />
-                        <Column title="AUD" dataIndex="amount" key="amount" />
-                        <Column title="Discount" dataIndex="currency" key="currency" />
-                        <Column title="Comment" dataIndex="status" key="status" />
+                    <Table 
+                        dataSource={filteredPIs} 
+                        rowKey={(record) => record.PI_number} 
+                        bordered
+                        pagination={false} // Remove pagination if not needed
+                        scroll={{ x: "max-content" }} // Ensure table is responsive
+                    >
+                        <Column title="Supplier Name" dataIndex="supplier_name" key="supplier_name" />
+                        <Column title="PI Number" dataIndex="PI_number" key="PI_number" />
+                        <Column title="PI Date" dataIndex="date" key="date" />
                         
-                    </Table>  */}
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                            <th>Supplier Name</th>
-                            <th>PI Number</th>
-                            <th>PI Date</th>
-                            <th>USD </th>
-                            {/* <th>AUD </th> */}
-                            <th>AUD</th>
-                            <th>Discount</th>
-                            <th>Comment</th>
-                            <th>Link</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {filteredPIs.map((PI) => (
-                            
-                            <tr>
-                            <td>{PI.supplier_name}</td>
-                            <td style={{ whiteSpace: "nowrap" }}>{PI.PI_number}</td>
-                            <td style={{ whiteSpace: "nowrap" }}>{PI.date}</td>
-                            <td>{PI.discount > 0 ? `${Number(PI.USD).toLocaleString()} - ${PI.discount}` : Number(PI.USD).toLocaleString()}</td>
-                            {/* <td>{PI.AUD}</td> */}
-                            {PI.AUD_counted || PI.AUD_local === 0 ? <td >{Number(PI.AUD_local).toLocaleString()}</td> :<td style={{ color: 'blue' }}>{Number(PI.AUD_local).toLocaleString()}</td>}
-                            <td>{PI.discount}</td>
-                            <td > <div className="d-flex align-items-center mb-1">
-                                    <Form.Control as="textarea" value={comments[PI.PI_number]} className="me-2"
-                                    onChange={(e) => handleCommentChange(e, PI.PI_number)} 
-                                    />
-                                    
-                                </div>
-                                <Button variant="outline-secondary" size="sm" onClick={() => handleUpdate(PI.PI_number,comments[PI.PI_number])}>Update</Button>
-                            </td>
-                            <td>
-                                <a href={PI.link.startsWith('http') ? PI.link : `https://${PI.link}`} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"> {PI.link}</a></td>
-                            </tr>
+                        <Column 
+                            title="USD" 
+                            dataIndex="USD" 
+                            key="USD" 
+                            render={(text, record) => (
+                                record.discount > 0 
+                                    ? `${Number(record.USD).toLocaleString()} - ${record.discount}`
+                                    : Number(record.USD).toLocaleString()
+                            )}
+                        />
 
-                        ))}
-                        </tbody>
-                        
-                        </Table>
+                        <Column 
+                            title="AUD" 
+                            dataIndex="AUD_local" 
+                            key="AUD_local"
+                            render={(text, record) => (
+                                record.AUD_counted || record.AUD_local === 0 
+                                    ? <span>{Number(record.AUD_local).toLocaleString()}</span> 
+                                    : <span style={{ color: "blue" }}>{Number(record.AUD_local).toLocaleString()}</span>
+                            )}
+                        />
+
+                        <Column title="Discount" dataIndex="discount" key="discount" />
+
+                        <Column 
+                            title="Comment" 
+                            key="comment"
+                            render={(text, record) => (
+                                <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                                    <Input.TextArea 
+                                        value={comments[record.PI_number]}
+                                        onChange={(e) => handleCommentChange(e, record.PI_number)}
+                                        autoSize={{ minRows: 2, maxRows: 4 }} // Allows resizing
+                                    />
+                                    <Button 
+                                        type="primary" 
+                                        size="small" 
+                                        style={{ alignSelf: "flex-center", width: "fit-content" }} // ✅ Ensure button does not stretch
+                                        onClick={() => handleUpdate(record.PI_number, comments[record.PI_number])}
+                                    >
+                                        Update
+                                    </Button>
+                                </div>
+                            )}
+                        />
+
+                        <Column 
+                            title="Link" 
+                            dataIndex="link" 
+                            key="link"
+                            render={(text, record) => (
+                                <a 
+                                    href={record.link.startsWith("http") ? record.link : `https://${record.link}`} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                >
+                                    {record.link.length > 30 
+                                        ? `${record.link.substring(0, 15)}...${record.link.slice(-10)}` 
+                                        : record.link}
+                                </a>
+                            )}
+                        />
+                    </Table>
+
                         <div className="text-center mt-3">
                         <h5>Total USD Value: ${Number(tempUSDAmount.toFixed(2)).toLocaleString()}</h5>
                         {/* <h5>Test: ${tempUSDAmount}</h5>s */}
@@ -530,13 +535,13 @@ export default function PIPage(){
                                     
                                 </Row>
                                 <br />
-                                <Button variant="primary" type="submit" onClick={addNewPI}>
+                                <Button variant="primary" type="primary" onClick={addNewPI}>
                                     ADD
                                 </Button>
                                 </Form>
                             </Offcanvas.Body>
                         </Offcanvas>
-                        <Button onClick={handleShow} >Add new PI</Button>
+                        <Button onClick={handleShow} type="primary" >Add new PI</Button>
                     </div>
                     </Container>
                 </div>

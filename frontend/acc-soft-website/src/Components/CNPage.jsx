@@ -1,7 +1,8 @@
 import { useState,useEffect } from 'react'
-import { Table ,Container, Button, Offcanvas, Form ,Row, Col, Modal} from 'react-bootstrap';
+import {Container, Offcanvas, Form ,Row, Col, Modal} from 'react-bootstrap';
 import FilterBar from './FilterBar';
-
+import { Table ,Button} from "antd";
+import "./styles.css"; // ✅ Import CSS for styling
 import NavBar from './NavBar';
 import { useParams } from 'react-router-dom';
 
@@ -10,6 +11,7 @@ import { useParams } from 'react-router-dom';
 
 export default function CNPage(){
     const {name} = useParams();
+    const { Column } = Table;
     const [flag] = useState(false);//state to control flag showing in filter bar
     const [show, setShow] = useState(false); // State to control offcanvas visibility
     const [errors, setErrors] = useState({});
@@ -186,7 +188,7 @@ export default function CNPage(){
                 })
             }
             try{
-                const response = await fetch("http://127.0.0.1:8000/cn/update" , config);
+                const response = await fetch("https://secusafe-backend-production.up.railway.app/cn/update" , config);
                 const data = await response.json();
                 
                 if (data === undefined || data.length === 0){
@@ -218,7 +220,7 @@ export default function CNPage(){
             },
         }
         try{
-            const response = await fetch (`http://127.0.0.1:8000/supplier?brand=${name}`,config);
+            const response = await fetch (`https://secusafe-backend-production.up.railway.app/supplier?brand=${name}`,config);
             const data = await response.json();
             console.log(11111111,data["suppliers"])
             if (data === undefined || data.length === 0){
@@ -255,7 +257,7 @@ export default function CNPage(){
                 };
 
             try {
-                const response = await fetch("http://127.0.0.1:8000/cn/addCN", config);
+                const response = await fetch("https://secusafe-backend-production.up.railway.app/cn/addCN", config);
                 const data = await response.json();
                 console.log(data);
                 if (data.status === 'success') {
@@ -343,51 +345,74 @@ export default function CNPage(){
                     flag={flag}/>
                     
                     <hr />
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                            <th>Date</th>
-                            <th>Supplier</th>
-                            <th>Description</th>
-                            <th>CN Estimate</th>
-                            <th>Supplier CN </th>
-                            <th>Received</th>
-                            <th>SS CN</th>
-                            <th>Status</th>
-                            {/* <th>Note</th> */}
-                            {/* <th>Cr Type</th> */}
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {filteredCNs.map((CN) => (
-                            CN.status === null || CN.status.length === 0 ?
-                            <tr key={CN.id}> 
-                            <td style={{ whiteSpace: "nowrap" }}>{CN.date}</td>
-                                <td>{CN.supplier}</td>
-                                <td>{CN.description}</td>
-                                <td style={{ whiteSpace: "nowrap" }}>{CN.estimate} {CN.estimate_currency}</td>
-                                {CN.supplier_CN === null || CN.supplier_CN.length===0 ? <td onClick={()=>handleRowClick(CN)}>{CN.supplier_CN}</td> : <td>{CN.supplier_CN}</td>}
-                                {CN.received === null || CN.received.length===0? <td onClick={()=>handleRowClick(CN)}>{CN.received}</td> : <td style={{ whiteSpace: "nowrap" }} >{CN.received} {CN.received_currency}</td> }
-                                {CN.ss_CN === null || CN.ss_CN.length===0 ? <td onClick={()=>handleRowClick(CN)}>{CN.ss_CN}</td> : <td>{CN.ss_CN}</td>}
-                                {CN.status === null || CN.status.length===0? <td onClick={()=>handleRowClick(CN)}>{CN.status}</td> :<td>{CN.status}</td> }
-                            </tr>
-                            :
-                            //when record staus is applied it become grey it will not be allowed to add new data
-                            <tr key={CN.id} style = {{opacity:0.5}}> 
-                            <td style={{ whiteSpace: "nowrap" }}>{CN.date}</td>
-                                <td>{CN.supplier}</td>
-                                <td>{CN.description}</td>
-                                <td style={{ whiteSpace: "nowrap" }}>{CN.estimate} {CN.estimate_currency}</td>
-                                {CN.supplier_CN === null || CN.supplier_CN.length===0 ? <td >{CN.supplier_CN}</td> : <td>{CN.supplier_CN}</td>}
-                                {CN.received === null || CN.received.length===0? <td o>{CN.received}</td> : <td style={{ whiteSpace: "nowrap" }}>{CN.received} {CN.received_currency}</td> }
-                                {CN.ss_CN === null || CN.ss_CN.length===0 ? <td >{CN.ss_CN}</td> : <td>{CN.ss_CN}</td>}
-                                {CN.status === null || CN.status.length===0? <td >{CN.status}</td> :<td>{CN.status}</td> }
-                            </tr>
-                            
-                         ))} 
-                        </tbody>
+                    <Table
+                        dataSource={filteredCNs}
+                        rowKey={(record) => record.id}
+                        bordered
+                        pagination={false}
+                        rowClassName={(record) => (record.status === null || record.status.length === 0 ? "" : "faded-row")}
+                    >
+                        <Column title="Date" dataIndex="date" key="date" />
+                        <Column title="Supplier" dataIndex="supplier" key="supplier" />
+                        <Column title="Description" dataIndex="description" key="description" />
                         
-                        </Table>
+                        <Column
+                            title="CN Estimate"
+                            dataIndex="estimate"
+                            key="estimate"
+                            render={(text, record) => `${Number(record.estimate).toLocaleString()} ${record.estimate_currency}`}
+                        />
+
+                        <Column
+                            title="Supplier CN"
+                            dataIndex="supplier_CN"
+                            key="supplier_CN"
+                            render={(text, record) => 
+                                record.supplier_CN === null || record.supplier_CN.length === 0 ? 
+                                <span onClick={() => handleRowClick(record)}>{record.supplier_CN || "-"}</span> :
+                                record.supplier_CN
+                            }
+                        />
+
+                        <Column
+                            title="Received"
+                            dataIndex="received"
+                            key="received"
+                            render={(text, record) =>
+                                record.received === null || record.received.length === 0 ? (
+                                    <span onClick={() => handleRowClick(record)}>{Number(record.received).toLocaleString()}</span>
+                                ) : (
+                                    <span>{Number(record.received).toLocaleString()} {record.received_currency}</span>
+                                )
+                            }
+                        />
+
+                        <Column
+                            title="SS CN"
+                            dataIndex="ss_CN"
+                            key="ss_CN"
+                            render={(text, record) =>
+                                record.ss_CN === null || record.ss_CN.length === 0 ? (
+                                    <span onClick={() => handleRowClick(record)}>{record.ss_CN || "-"}</span>
+                                ) : (
+                                    record.ss_CN
+                                )
+                            }
+                        />
+
+                        <Column
+                            title="Status"
+                            dataIndex="status"
+                            key="status"
+                            render={(text, record) =>
+                                record.status === null || record.status.length === 0 ? (
+                                    <span onClick={() => handleRowClick(record)}>{record.status || "-"}</span>
+                                ) : (
+                                    record.status
+                                )
+                            }
+                        />
+                    </Table>
 
                         <Row>
                             <Col md={{ span: 2, offset: 2 }}>
@@ -572,13 +597,13 @@ export default function CNPage(){
                                 </Row>
                                 <br />
 
-                                <Button variant="primary" type="submit" onClick={addNewCN}>
+                                <Button variant="primary"  type="primary" onClick={addNewCN}>
                                     ADD
                                 </Button>
                                 </Form>
                             </Offcanvas.Body>
                         </Offcanvas>
-                        <Button onClick={handleShow} >Add new CN </Button>
+                        <Button onClick={handleShow} type="primary">Add new CN </Button>
                     </div> 
                     </Container>
                 </div>
