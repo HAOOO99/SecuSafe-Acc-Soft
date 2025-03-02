@@ -7,7 +7,7 @@ import NavBar from './NavBar';
 import { useParams } from 'react-router-dom';
 
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
-const client = new W3CWebSocket('ws://secusafe-backend-production.up.railway.app:8080/ws/comments/');
+const client = new W3CWebSocket('ws://alert-celebration.railway.internal/ws/comments/');
 
 
 export default function PIPage(){
