@@ -7,7 +7,8 @@ import NavBar from './NavBar';
 import { useParams } from 'react-router-dom';
 
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
-const client = new W3CWebSocket('ws://127.0.0.1:8000/ws/comments/');
+const client = new W3CWebSocket('ws://secusafe-backend-production.up.railway.app:8080/ws/comments/');
+
 
 export default function PIPage(){
     const { Column } = Table;
