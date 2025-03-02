@@ -180,3 +180,9 @@ CSRF_TRUSTED_ORIGINS = [
 # ]
 
 CORS_ALLOW_CREDENTIALS = True
+if os.getenv("DJANGO_ENV") == "production":
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels.layers.InMemoryChannelLayer",
+        }
+    }
