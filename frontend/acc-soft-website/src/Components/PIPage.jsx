@@ -7,7 +7,7 @@ import NavBar from './NavBar';
 import { useParams } from 'react-router-dom';
 
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
-const client = new W3CWebSocket('wss://secusafe-acc-soft-production.up.railway.app/comments/');
+const client = new W3CWebSocket('wss://secusafe-acc-soft-production.up.railway.app/ws/comments/');
 
 
 export default function PIPage(){
@@ -45,7 +45,6 @@ export default function PIPage(){
         link: '',
     })
 
-    
     
     const handleUpdate = (piNumber, comment) => {
         updateComment(piNumber, comment);
