@@ -30,7 +30,7 @@ export default function RemittancePage(){
         brand:name,
         date:"",
         amount:0,
-        currency:"AUD",
+        currency:"",
         status:"",
         bank:""
     })
@@ -104,7 +104,8 @@ export default function RemittancePage(){
     useEffect(() => {
         fetchRe();
         fetchYears();
-    }, [chooseYear,fetchRe,fetchYears]);
+        getCurrency();
+    }, [chooseYear,fetchRe,fetchYears, getCurrency]);
 
     const getAllPos = async () => {
         const config = {
@@ -203,6 +204,45 @@ export default function RemittancePage(){
             }
         }
         
+    }
+
+    async function getCurrency() {
+        const config = {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+
+        try{
+            const response = await fetch("https://secusafe-backend-production.up.railway.app/target?brand=" + name , config);
+            const data = await response.json();
+            if (data === undefined || data.length === 0){
+                alert("Nothing is found");
+                
+                return;
+            } 
+            
+            setFormData({ 
+                brand:name,
+                date:"",
+                amount:0,
+                currency:data.targets[0].defaultCurrency,
+                status:"",
+                bank:""
+                
+            })
+
+            // console.log(formData.estimateCurrency)
+            
+           
+            
+            return data;
+           
+        } catch (e){
+            console.log(e);
+        }
     }
 
     const handleShow = () => (setShow(true));
