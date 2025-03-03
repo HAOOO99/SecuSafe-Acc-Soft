@@ -5,7 +5,7 @@ import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const PORT = process.env.PORT || 3000;  // ✅ Use Render's assigned port
-app.listen(PORT, '0.0.0.0', () => {
+App.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });
 
