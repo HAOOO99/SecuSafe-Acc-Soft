@@ -182,14 +182,19 @@ export default function RemittancePage(){
         // e.preventDefault();
         console.log(row)
         const values = selectedTableRow.map(key => Pos[key]);
-        const pos = values.reduce((list,item) => {list.push(item["po"]);return list},[])
+        // Get currently selected POs
+        const newPOs = values.map(item => item["po"]);  // Extract PO numbers
+        console.log(1231321,newPOs,(row.PO))
+        let prev = (row.PO).slice(1, -1).replace(/'/g, "").split(",");
+        // Merge existing POs with new POs, ensuring no duplicates
+        const updatedPOs = newPOs.concat(prev.map(item => item.trim()).filter(item => item !== ''));
         const config = {
             method: 'POST',
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body:JSON.stringify({brand:name,id:row.id,pos:pos})
+            body:JSON.stringify({brand:name,id:row.id,pos:updatedPOs})
         }
         try{
             const response = await fetch("https://secusafe-backend-production.up.railway.app/remittance/addPo/", config);
