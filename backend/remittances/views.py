@@ -89,8 +89,10 @@ def add_Pos(request):
         res.update(PO=pos)
 
         ci= CI.objects.all().filter(brand=name,PO_no__in=pos)
+        print(11111111111,ci.values())
         for each in ci:
             each.remittance_id = id
+            each.save()
         print(11111111111,ci.values())
         # print(Remittance.objects.filter(id=id))
         response["status"] = "success"
