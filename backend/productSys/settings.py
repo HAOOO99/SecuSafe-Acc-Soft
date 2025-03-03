@@ -170,7 +170,11 @@ CORS_ALLOW_ALL_ORIGINS  = True
 CSRF_TRUSTED_ORIGINS = [
     "https://secusafe-backend-production.up.railway.app",  # ✅ Add your Railway domain
 ]
+CORS_ALLOWED_ORIGINS = [
+    "https://secusafe-acc-soft-production.up.railway.app"
+]
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # CORS_ALLOW_HEADERS = [
 #     'content-type',
 #     'authorization',
