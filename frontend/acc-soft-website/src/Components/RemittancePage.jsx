@@ -130,8 +130,6 @@ export default function RemittancePage(){
 
             // console.log(formData.estimateCurrency)
             
-           
-            
             return data;
            
         } catch (e){
@@ -175,7 +173,6 @@ export default function RemittancePage(){
         } catch (e){
             console.log(e);
         }
-
     }
 
    const addPO = async (row) => {
