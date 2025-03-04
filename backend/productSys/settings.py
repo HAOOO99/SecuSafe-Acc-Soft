@@ -123,7 +123,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -154,6 +153,15 @@ USE_I18N = True
 
 USE_TZ = True
 
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # ✅ Use the correct SMTP server
+EMAIL_PORT = 587  # ✅ Port for TLS
+EMAIL_USE_TLS = True  # ✅ Enable TLS encryption
+EMAIL_USE_SSL = False  # ❌ Do NOT use both TLS and SSL
+EMAIL_HOST_USER = 'yanhao@secusafe.com.au'  # ✅ Your email
+EMAIL_HOST_PASSWORD = 'segr zlob dsbx xowu'  # ✅ Use an App Password (Not your normal password)
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
