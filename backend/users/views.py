@@ -52,19 +52,24 @@ def verify_otp_and_login(request):
     response = {}
     try:
         payload = json.loads(request.body.decode())
-        email =payload['email']
-        otp = payload['otp']
-        print(OTP_STORAGE)
-        if OTP_STORAGE.get(email) == otp:  # ✅ Verify OTP
-            user = User.objects.filter(email=email).values().first()
-            
-            print(user['username'])
-            print(user['password'])
+        email = payload['email']
+        otp = payload.get['otp']
+        
+        if not email or not otp:
+            response["status"] = "failed"
+            response["msg"] = "Email and OTP are required"
+            return JsonResponse(response, status=400)
 
-            user = authenticate(username=user['username'], password=user['password'])
+        # ✅ Verify OTP
+        if OTP_STORAGE.get(email) == otp:
+            # ✅ Fetch user safely
+            user = User.objects.filter(email=email).first()
+            
             if user:
+                # ✅ Authenticate user without password (use Django login)
                 refresh = RefreshToken.for_user(user)
-                del OTP_STORAGE[email]  # ✅ Remove OTP after use
+                
+                del OTP_STORAGE[email]  # ✅ Remove OTP after successful login
 
                 response["status"] = "success"
                 response["msg"] = "Login successful"
@@ -73,16 +78,18 @@ def verify_otp_and_login(request):
 
             else:
                 response["status"] = "failed"
-                response["msg"] = "Invalid username or password"
-            # login(request)
-            
-            return JsonResponse(response, status=200)
+                response["msg"] = "User not found"
+        else:
+            response["status"] = "failed"
+            response["msg"] = "Invalid OTP"
+
+        return JsonResponse(response, status=200)
+
     except Exception as e:
         response["status"] = "failed"
-        response["msg"] = "failed to show"
-        print(e)
+        response["msg"] = "An error occurred"
+        print("Error:", e)
         return JsonResponse(response, status=400)
-
 @csrf_exempt
 @require_http_methods(["POST"])
 def login(request):

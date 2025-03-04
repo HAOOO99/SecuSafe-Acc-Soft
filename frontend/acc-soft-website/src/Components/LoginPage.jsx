@@ -50,33 +50,37 @@ export default function LoginPage() {
           },
         body: JSON.stringify({"email":email,"otp":otp}), // Send form data
       });
-    const data = await response.json();
-    console.log(data)
-    if (data.status == 'failed'){
-      alert("verification code is wrong, please try again");
-      setError(true); // Set error to true
-    }
-    if (data.status === "success") {
-      setError(false); // Reset error if successful
-      handleCancel();
-      console.log('Navigating to / ...');
-      // ✅ Set token with expiration timestamp (30 seconds)
-      const now = new Date();
-      const expiryDate = new Date(now.getTime() + 24*60*60 * 1000); // 30 seconds from now
 
-      localStorage.setItem("access_token", data.token);
-      localStorage.setItem("user", data.user.username);
-      localStorage.setItem("token_expiry", expiryDate.toISOString());
+      const data = await response.json();
+      console.log(data)
 
-      navigate('/');
-      // window.history.replaceState(null, '', '/'); // Replace the current entry in the history stack
-      console.log(localStorage);
-      alert(`Login successful! Welcome, ${data.user.username }`);
-      
-      
-    } else {
-      alert( 'Login failed');
-    }
+      if (data.status === 'failed'){
+        alert("verification code is wrong, please try again");
+        setOTP("")
+        setError(true); // Set error to true
+      }
+
+      else if (data.status === "success") {
+        setError(false); // Reset error if successful
+        handleCancel();
+        console.log('Navigating to / ...');
+        // ✅ Set token with expiration timestamp (30 seconds)
+        const now = new Date();
+        const expiryDate = new Date(now.getTime() + 24*60*60 * 1000); // 30 seconds from now
+
+        localStorage.setItem("access_token", data.token);
+        localStorage.setItem("user", data.user.username);
+        localStorage.setItem("token_expiry", expiryDate.toISOString());
+
+        navigate('/');
+        // window.history.replaceState(null, '', '/'); // Replace the current entry in the history stack
+        console.log(localStorage);
+        alert(`Login successful! Welcome, ${data.user.username }`);
+        
+        
+      } else {
+        alert( 'Login failed');
+      }
     }
     catch(error){
       console.log(error.message);
