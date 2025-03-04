@@ -117,7 +117,7 @@ def login(request):
             fail_silently=False,
         )
 
-        return JsonResponse({"message": "Verification email sent","otp":otp}, status=200)
+        return JsonResponse({"status":"success","message": "Verification email sent","otp":otp}, status=200)
 
 
         
