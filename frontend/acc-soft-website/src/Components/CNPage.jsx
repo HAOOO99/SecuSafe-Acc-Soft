@@ -184,7 +184,7 @@ export default function CNPage(){
                     id:selectedRow.id,
                     supplier:selectedRow.supplier,
                     supplierCN:selectedRow.supplier_CN,
-                    received:selectedRow.received,
+                    received:selectedRow.received, 
                     currency:selectedRow.received_currency,
                     ssCN:selectedRow.ss_CN,
                     status:selectedRow.status,
@@ -387,7 +387,7 @@ export default function CNPage(){
                             key="received"
                             render={(text, record) =>
                                 record.received === null || record.received.length === 0 ? (
-                                    <span onClick={() => handleRowClick(record)}>{Number(record.received).toLocaleString()}</span>
+                                    <span onClick={() => handleRowClick(record)}>{record.received}</span>
                                 ) : (
                                     <span>{Number(record.received).toLocaleString()} {record.received_currency}</span>
                                 )
@@ -400,7 +400,7 @@ export default function CNPage(){
                             key="ss_CN"
                             render={(text, record) =>
                                 record.ss_CN === null || record.ss_CN.length === 0 ? (
-                                    <span onClick={() => handleRowClick(record)}>{record.ss_CN || "-"}</span>
+                                    <span onClick={() => handleRowClick(record)}>{record.ss_CN || ""}</span>
                                 ) : (
                                     record.ss_CN
                                 )
@@ -413,7 +413,7 @@ export default function CNPage(){
                             key="status"
                             render={(text, record) =>
                                 record.status === null || record.status.length === 0 ? (
-                                    <span onClick={() => handleRowClick(record)}>{record.status || "-"}</span>
+                                    <span onClick={() => handleRowClick(record)}>{record.status || ""}</span>
                                 ) : (
                                     record.status
                                 )

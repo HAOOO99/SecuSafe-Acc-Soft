@@ -269,6 +269,7 @@ export default function CIPage(){
         if(formData.Freight.length === 0){
             formData.Freight = 0;
         }
+        
         if (Object.keys(newErrors).length === 0){
         // console.log(form)
             const config = {
