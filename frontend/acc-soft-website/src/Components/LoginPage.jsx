@@ -25,7 +25,7 @@ export default function LoginPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const onChange = (text) => {
+  const handleOTPChange = (text) => {
     console.log('onChange:', text);
     setOTP(text)
     setError(false); // Reset error when the user types
@@ -34,9 +34,14 @@ export default function LoginPage() {
   // const onInput = (value) => {
   //   console.log('onInput:', value);
   // };
-  const sharedProps = {
-    onChange,
-    // onInput,
+  // const sharedProps = {
+  //   onChange,
+  //   // onInput,
+  // };
+
+  const handleCancel = () => {
+    setOTP("");
+    setIsModalOpen(false);
   };
 
   const handleOk = async (e) => {
@@ -87,11 +92,8 @@ export default function LoginPage() {
     
     
   };
-  const handleCancel = () => {
-    setOTP("");
-    onChange("");
-    setIsModalOpen(false);
-  };
+  
+
 
   const handleChange = (e) => {
     const {name, value} = e.target
@@ -100,27 +102,11 @@ export default function LoginPage() {
 
   }
 
-//   const sendVerificationEmail = async (email) => {
-//     const response = await fetch("https://your-backend.com/send-email/", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ email }),
-//     });
-
-//     const data = await response.json();
-//     alert(data.message);
-// };
 
   const handleSubmit = async (e) => {
     try{
       e.preventDefault()
       // Here you would typically handle the login logic
-
-    //   const user = await signInWithEmailAndPassword(
-    //     auth,
-    //     formData.get('email'),
-    //     formData.get('password')
-    // );
     const form = new FormData();
     form.append('username',formData.username);
     form.append('password',formData.password)
@@ -192,7 +178,8 @@ export default function LoginPage() {
 
           <Modal title="Email Verification" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
             <Title level={5}>Please find your verification code in your email Inbox</Title>
-            <Input.OTP length={6} {...sharedProps} status={error ? "error" : ""}/>
+            <Input.OTP length={6} value={otp} // ✅ Ensure OTP field resets
+                onChange={handleOTPChange} status={error ? "error" : ""}/>
             
           </Modal>
               
