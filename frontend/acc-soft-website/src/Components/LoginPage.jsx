@@ -20,6 +20,7 @@ export default function LoginPage() {
   })
   const [email,setEmail] = useState("");
   const [otp, setOTP] = useState("");
+  const [error, setError] = useState(false); // Track error state
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,6 +28,7 @@ export default function LoginPage() {
   const onChange = (text) => {
     console.log('onChange:', text);
     setOTP(text)
+    setError(false); // Reset error when the user types
     
   };
   // const onInput = (value) => {
@@ -38,20 +40,24 @@ export default function LoginPage() {
   };
 
   const handleOk = async (e) => {
-    setIsModalOpen(false);
+    
     console.log(otp);
     try{
-    const response = await fetch('https://secusafe-backend-production.up.railway.app/verify/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        },
-      body: JSON.stringify({"email":email,"otp":otp}), // Send form data
-    });
+      const response = await fetch('https://secusafe-backend-production.up.railway.app/login/verify/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          },
+        body: JSON.stringify({"email":email,"otp":otp}), // Send form data
+      });
     const data = await response.json();
     console.log(data)
-
+    if (data.status == 'failed'){
+      alert("verification code is wrong, please try again");
+      setError(true); // Set error to true
+    }
     if (data.status === "success") {
+      setError(false); // Reset error if successful
       handleCancel();
       console.log('Navigating to / ...');
       // ✅ Set token with expiration timestamp (30 seconds)
@@ -80,6 +86,8 @@ export default function LoginPage() {
     
   };
   const handleCancel = () => {
+    setOTP("");
+    onChange("");
     setIsModalOpen(false);
   };
 
@@ -127,10 +135,9 @@ export default function LoginPage() {
     console.log(data)
 
     if (data.status === "success") {
-      alert("Email Verification send successfully!")
+      alert("Email Verification code send successfully!")
       setEmail(data.email);
       setIsModalOpen(true);
-      
       
     } else {
       alert( 'Login failed');
@@ -142,7 +149,6 @@ export default function LoginPage() {
     }
     
   }
-
 
   return (
     <main className="py-5">
@@ -184,7 +190,7 @@ export default function LoginPage() {
 
           <Modal title="Email Verification" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
             <Title level={5}>Please find your verification code in your email Inbox</Title>
-            <Input.OTP length={6} {...sharedProps} />
+            <Input.OTP length={6} {...sharedProps} status={error ? "error" : ""}/>
             
           </Modal>
               

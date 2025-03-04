@@ -50,35 +50,38 @@ OTP_STORAGE = {}  # ✅ Temporary store OTPs (Consider using Redis for productio
 @require_http_methods(["POST"])
 def verify_otp_and_login(request):
     response = {}
-    payload = json.loads(request.body.decode())
-    email =payload['email']
-    otp = payload['otp']
-    print(OTP_STORAGE)
-    if OTP_STORAGE.get(email) == otp:  # ✅ Verify OTP
-        user = User.objects.filter(email=email).values().first()
-        
-        print(user['username'])
-        print(user['password'])
+    try:
+        payload = json.loads(request.body.decode())
+        email =payload['email']
+        otp = payload['otp']
+        print(OTP_STORAGE)
+        if OTP_STORAGE.get(email) == otp:  # ✅ Verify OTP
+            user = User.objects.filter(email=email).values().first()
+            
+            print(user['username'])
+            print(user['password'])
 
-        user = authenticate(username=user['username'], password=user['password'])
+            user = authenticate(username=user['username'], password=user['password'])
+            if user:
+                refresh = RefreshToken.for_user(user)
+                del OTP_STORAGE[email]  # ✅ Remove OTP after use
 
-        if user:
-            refresh = RefreshToken.for_user(user)
-            del OTP_STORAGE[email]  # ✅ Remove OTP after use
+                response["status"] = "success"
+                response["msg"] = "Login successful"
+                response["user"] = {"id": user.id, "username": user.username, "email": user.email}
+                response["token"] = str(refresh.access_token)
 
-            response["status"] = "success"
-            response["msg"] = "Login successful"
-            response["user"] = {"id": user.id, "username": user.username, "email": user.email}
-            response["token"] = str(refresh.access_token)
-
-        else:
-            response["status"] = "failed"
-            response["msg"] = "Invalid username or password"
-        # login(request)
-        
-        return JsonResponse(response, status=200)
-    
-    return JsonResponse({"error": "Invalid OTP"}, status=400)
+            else:
+                response["status"] = "failed"
+                response["msg"] = "Invalid username or password"
+            # login(request)
+            
+            return JsonResponse(response, status=200)
+    except Exception as e:
+        response["status"] = "failed"
+        response["msg"] = "failed to show"
+        print(e)
+        return JsonResponse(response, status=400)
 
 @csrf_exempt
 @require_http_methods(["POST"])
