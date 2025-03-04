@@ -36,11 +36,11 @@ export default function PIPage(){
         supplier_name: name,
         PI_number: '',
         date: "",
-        USD: "",
+        USD: '',
         // AUD: 0,
-        AUD_local: "",
+        AUD_local: '',
         AUD_counted: false,
-        discount: "",
+        discount: '',
         comment: '',
         link: '',
     })
@@ -224,6 +224,15 @@ export default function PIPage(){
         if (!formData.date)  NewErrors.date="Date is required!";
 
         setError(NewErrors);
+        if(formData.AUD_local.length === 0 ){
+            formData.AUD_local = 0;
+        }
+        if (formData.USD.length === 0){
+            formData.USD = 0;
+        }
+        if (formData.discount.length === 0){
+            formData.discount = 0;
+        }
         // console.log(NewErrors)
         if (Object.keys(NewErrors).length === 0){
             const config = {
@@ -460,8 +469,8 @@ export default function PIPage(){
                                     <Form.Control 
                                     type="number" 
                                     name="USD"  
-                                    placeholder="0"
-                                    value={formData.USD.length ===0?0:formData.USD}
+                                    placeholder='0'
+                                    value={formData.USD}
                                     onChange={handleChange}/></Col>
                                     <Form.Label column md={2}>Discount</Form.Label>
                                     <Col xs={4}>
@@ -469,7 +478,7 @@ export default function PIPage(){
                                     type="number"
                                     name="discount"
                                     placeholder='0' 
-                                    value={formData.discount.length ===0? 0:formData.discount}
+                                    value={formData.discount}
                                     onChange={handleChange}>
 
                                     </Form.Control></Col>
@@ -494,7 +503,7 @@ export default function PIPage(){
                                     type="number" 
                                     name="AUD_local" 
                                     placeholder='0'  
-                                    value={formData.AUD_local.length === 0? 0 : formData.AUD_local}
+                                    value={formData.AUD_local}
                                     onChange={handleChange}/>
                                     </Col>
                                     <Col xs={6}>

@@ -259,6 +259,16 @@ export default function CIPage(){
         
         setError(newErrors);
         // console.log(NewErrors)
+
+        if (formData.AUD.length === 0 ){
+            formData.AUD = 0;
+        }
+        if(formData.USD.length === 0){
+            formData.USD = 0;
+        }
+        if(formData.Freight.length === 0){
+            formData.Freight = 0;
+        }
         if (Object.keys(newErrors).length === 0){
         // console.log(form)
             const config = {
@@ -430,7 +440,7 @@ export default function CIPage(){
                                     type="number" 
                                     name="USD"  
                                     placeholder="0"
-                                    value={formData.USD.length === 0? 0: formData.USD}
+                                    value={formData.USD}
                                     onChange={handleChange}
                                     /></Col>
                                     
@@ -443,7 +453,7 @@ export default function CIPage(){
                                     type="number"
                                     name="AUD"  
                                     placeholder='0' 
-                                    value={formData.AUD.length ===0?0:formData.AUD}
+                                    value={formData.AUD}
                                     onChange={handleChange}
                                     /></Col>
                                 </Row>
@@ -455,7 +465,7 @@ export default function CIPage(){
                                     type="number" 
                                     name="Freight" 
                                     placeholder='0'  
-                                    value={formData.Freight.length === 0 ? 0: formData.Freight}
+                                    value={ formData.Freight}
                                     onChange={handleChange}
                                     />
                                     </Col>

@@ -37,7 +37,7 @@ export default function CNPage(){
     const [selectedRow, setSelectedRow] = useState({
         
         supplier_CN: "",
-        received: "",
+        received: '',
         received_currency: "",
         ss_CN: "",
         status: "",
@@ -47,7 +47,7 @@ export default function CNPage(){
         supplier_name:name,
         date:"",
         description:"",
-        estimateCN:"",
+        estimateCN:'',
         estimateCurrency:"",
         CNType:"Compensation",
     }); // State to store form data
@@ -170,6 +170,9 @@ export default function CNPage(){
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
+            if(selectedRow.received.length === 0){
+                selectedRow.received = 0;
+            }
             const config = {
                 method: 'POST',
                 mode: 'cors',
@@ -246,6 +249,10 @@ export default function CNPage(){
 
         setCheckInput(NewCNErrors);
         if (Object.keys(NewCNErrors).length === 0) {
+
+            if (formData.estimateCN.length === 0) {
+                formData.estimateCN = 0;
+            }
             // console.log(form)
             const config = {
                 method: 'POST',
@@ -557,8 +564,8 @@ export default function CNPage(){
                                     <Form.Control 
                                     type="number" 
                                     name="estimateCN"  
-                                    placeholder="0"
-                                    value={formData.estimateCN.length === 0?0:formData.estimateCN}
+                                    // placeholder="0"
+                                    value={formData.estimateCN}
                                     onChange={handleChangeForm}
                                     className={checkInput.estimate ? "is-invalid" : ""}
                                     />
