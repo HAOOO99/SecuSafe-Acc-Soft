@@ -83,13 +83,12 @@ def verify_otp_and_login(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def login(request):
-    response = {}
     try:
        
         payload = json.loads(request.body.decode())
         print(payload)
-        username = payload.get("username")
-        password = payload.get("password")
+        username = request.POST.get("username")
+        password = request.POST.get("password")
        
         user = authenticate(username=username, password=password)
         if user is not None:
