@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { Container, Form, Button, Card } from 'react-bootstrap'
+import { Container, Form, Card } from 'react-bootstrap'
+import {  Modal, Button, Input, Typography} from 'antd';
+
 // import { auth } from "../firebase-config";
 import { useNavigate } from "react-router-dom";
 
@@ -11,11 +13,75 @@ import { useNavigate } from "react-router-dom";
 // } from "firebase/auth";
 
 export default function LoginPage() {
+  const { Title } = Typography;
   const [formData, setFormData] = useState({
     username: '',
     password: ''
   })
+  const [email,setEmail] = useState("");
+  const [otp, setOTP] = useState("");
   const navigate = useNavigate();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const onChange = (text) => {
+    console.log('onChange:', text);
+    setOTP(text)
+    
+  };
+  // const onInput = (value) => {
+  //   console.log('onInput:', value);
+  // };
+  const sharedProps = {
+    onChange,
+    // onInput,
+  };
+
+  const handleOk = async (e) => {
+    setIsModalOpen(false);
+    console.log(otp);
+    try{
+    const response = await fetch('https://secusafe-backend-production.up.railway.app/verify/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        },
+      body: JSON.stringify({"email":email,"otp":otp}), // Send form data
+    });
+    const data = await response.json();
+    console.log(data)
+
+    if (data.status === "success") {
+      handleCancel();
+      console.log('Navigating to / ...');
+      // ✅ Set token with expiration timestamp (30 seconds)
+      const now = new Date();
+      const expiryDate = new Date(now.getTime() + 24*60*60 * 1000); // 30 seconds from now
+
+      localStorage.setItem("access_token", data.token);
+      localStorage.setItem("user", data.user.username);
+      localStorage.setItem("token_expiry", expiryDate.toISOString());
+
+      navigate('/');
+      // window.history.replaceState(null, '', '/'); // Replace the current entry in the history stack
+      console.log(localStorage);
+      alert(`Login successful! Welcome, ${data.user.username }`);
+      
+      
+    } else {
+      alert( 'Login failed');
+    }
+    }
+    catch(error){
+      console.log(error.message);
+      alert(error.message);
+    }
+    
+    
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   const handleChange = (e) => {
     const {name, value} = e.target
@@ -24,14 +90,16 @@ export default function LoginPage() {
 
   }
 
-//   onAuthStateChanged(auth, (currentUser) => {
-//     if (currentUser !== null){
-//         setUser(currentUser);
-//         console.log(currentUser.email)
-//         // setCookie('email', currentUser.email, { path: '/' });
-//         // setCookie("shoppingCart","",{path:'/'});
-//     } 
-// });
+//   const sendVerificationEmail = async (email) => {
+//     const response = await fetch("https://your-backend.com/send-email/", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ email }),
+//     });
+
+//     const data = await response.json();
+//     alert(data.message);
+// };
 
   const handleSubmit = async (e) => {
     try{
@@ -46,30 +114,26 @@ export default function LoginPage() {
     const form = new FormData();
     form.append('username',formData.username);
     form.append('password',formData.password)
+    console.log(formData)
     const response = await fetch('https://secusafe-backend-production.up.railway.app/login/', {
       method: 'POST',
-      body: form, // Send form data
+      headers: {
+        'Content-Type': 'application/json',
+        },
+      body: JSON.stringify(formData), // Send form data
     });
 
     const data = await response.json();
     console.log(data)
+
     if (data.status === "success") {
-      console.log('Navigating to / ...');
-      // ✅ Set token with expiration timestamp (30 seconds)
-      const now = new Date();
-      const expiryDate = new Date(now.getTime() + 90* 24*60*60 * 1000); // 30 seconds from now
-
-      localStorage.setItem("access_token", data.token);
-      localStorage.setItem("user", data.user.username);
-      localStorage.setItem("token_expiry", expiryDate.toISOString());
-
-      navigate('/');
-      // window.history.replaceState(null, '', '/'); // Replace the current entry in the history stack
-      console.log(localStorage);
-      alert(`Login successful! Welcome, ${data.user.username }`);
+      alert("Email Verification send successfully!")
+      setEmail(data.email);
+      setIsModalOpen(true);
+      
       
     } else {
-      alert(data.msg || 'Login failed');
+      alert( 'Login failed');
     }
     }
     catch(error){
@@ -79,6 +143,7 @@ export default function LoginPage() {
     
   }
 
+
   return (
     <main className="py-5">
     <Container className="d-flex justify-content-center align-items-center">
@@ -87,7 +152,7 @@ export default function LoginPage() {
         <Card.Body>
         <Card.Title style={{textAlign: 'center'}}>Welcome to Account Software</Card.Title>
 
-          <Form onSubmit={handleSubmit}>
+          <Form >
           <Form.Group className="mb-3" controlId="formBasicEmail"  >
             <Form.Label>Username: </Form.Label>
             <Form.Control 
@@ -112,11 +177,17 @@ export default function LoginPage() {
           </Form.Group>
 
           <div style={{display:'flex',justifyContent: 'center'}}>
-            <Button  variant="primary"  type="submit" >
+            <Button variant="primary"   onClick={handleSubmit} >
               Login
             </Button>
           </div>
-          
+
+          <Modal title="Email Verification" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+            <Title level={5}>Please find your verification code in your email Inbox</Title>
+            <Input.OTP length={6} {...sharedProps} />
+            
+          </Modal>
+              
             
           </Form>
         </Card.Body>
