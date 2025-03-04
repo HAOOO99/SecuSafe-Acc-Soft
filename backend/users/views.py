@@ -53,8 +53,8 @@ def verify_otp_and_login(request):
     try:
         payload = json.loads(request.body.decode())
         email = payload['email']
-        otp = payload.get['otp']
-        
+        otp = payload['otp']
+
         if not email or not otp:
             response["status"] = "failed"
             response["msg"] = "Email and OTP are required"

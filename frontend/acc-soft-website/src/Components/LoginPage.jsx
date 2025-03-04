@@ -78,8 +78,6 @@ export default function LoginPage() {
         alert(`Login successful! Welcome, ${data.user.username }`);
         
         
-      } else {
-        alert( 'Login failed');
       }
     }
     catch(error){
