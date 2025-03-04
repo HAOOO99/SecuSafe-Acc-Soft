@@ -168,7 +168,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 STATIC_URL = 'static/'
 # STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-# STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -198,3 +198,15 @@ if os.getenv("DJANGO_ENV") == "production":
             "BACKEND": "channels.layers.InMemoryChannelLayer",
         }
     }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION":"redis://default:ZlBEWKlfgHjOnIvSzpUBrPrMvNWnJBXz@shortline.proxy.rlwy.net:49679",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CONNECTION_POLL_KWARGS": {"max_connections": 30},
+            "PASSWORD": "ZlBEWKlfgHjOnIvSzpUBrPrMvNWnJBXz"
+        }
+    }
+}
