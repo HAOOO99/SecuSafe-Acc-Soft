@@ -1,6 +1,7 @@
 import json
 import random
 import smtplib
+from django.core.cache import cache
 from django.core.mail import send_mail
 
 from django.shortcuts import render
@@ -19,33 +20,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 OTP_STORAGE = {}  # ✅ Temporary store OTPs (Consider using Redis for production)
 
 
-# @csrf_exempt
-# @require_http_methods(["POST"])
-# def send_verification_email(request):
-#     payload = json.loads(request.body.decode())
-#     print(payload)
-#     email = payload['email']
-#     # print(email)
-#     try:
-#         user = User.objects.filter(email=email).values().first()
-        
-#     except user.DoesNotExist:
-#         return JsonResponse({"error": "User not found"}, status=400)
-
-#     otp = str(random.randint(100000, 999999))  # ✅ Generate 6-digit OTP
-#     OTP_STORAGE[email] = otp  # ✅ Store OTP (Use a more secure storage in production)
-#     print(OTP_STORAGE)
-#     send_mail(
-#         'Your Login Verification Code',
-#         f'Your OTP code is {otp}. It is valid for 5 minutes.',
-#         settings.EMAIL_HOST_USER,  # Change to your email
-#         [email],
-#         fail_silently=False,
-#     )
-
-#     return JsonResponse({"message": "Verification email sent","otp":otp}, status=200)
-
-
 @csrf_exempt
 @require_http_methods(["POST"])
 def verify_otp_and_login(request):
@@ -61,7 +35,7 @@ def verify_otp_and_login(request):
             return JsonResponse(response, status=400)
 
         # ✅ Verify OTP
-        if OTP_STORAGE.get(email) == otp:
+        if cache.get(email) == otp:
             # ✅ Fetch user safely
             user = User.objects.filter(email=email).first()
             
@@ -69,12 +43,13 @@ def verify_otp_and_login(request):
                 # ✅ Authenticate user without password (use Django login)
                 refresh = RefreshToken.for_user(user)
                 
-                del OTP_STORAGE[email]  # ✅ Remove OTP after successful login
+                cache.delete(email)
 
                 response["status"] = "success"
                 response["msg"] = "Login successful"
                 response["user"] = {"id": user.id, "username": user.username, "email": user.email}
                 response["token"] = str(refresh.access_token)
+                
 
             else:
                 response["status"] = "failed"
@@ -117,11 +92,16 @@ def login(request):
         #     return JsonResponse({"error": "User not found"}, status=400)
 
         otp = str(random.randint(100000, 999999))  # ✅ Generate 6-digit OTP
-        OTP_STORAGE[email] = otp  # ✅ Store OTP (Use a more secure storage in production)
+
+
+        # Store OTP with expiration time
+        cache.set(email, otp,180)  # Expires in 3 minutes
+
+        # OTP_STORAGE[email] = otp  # ✅ Store OTP (Use a more secure storage in production)
         print(OTP_STORAGE)
         send_mail(
             'Your Login Verification Code',
-            f'Your OTP code is {otp}. It is valid for 5 minutes.',
+            f'Your OTP code is {otp}. It is valid for 3 minutes.',
             settings.EMAIL_HOST_USER,  # Change to your email
             [email],
             fail_silently=False,
