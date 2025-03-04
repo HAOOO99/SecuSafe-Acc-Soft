@@ -88,9 +88,8 @@ def login(request):
         print(request.body.decode())
         payload = json.loads(request.body.decode())
         print(payload)
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-       
+        username = payload["username"]
+        password = payload["password"]
         user = authenticate(username=username, password=password)
         if user is not None:
             user_data = user.__dict__
