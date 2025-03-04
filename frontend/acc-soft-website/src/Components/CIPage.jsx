@@ -37,9 +37,9 @@ export default function CIPage(){
         PO_number:"",
         CI_number:"",
         date:"",
-        USD:0,
-        AUD:0,
-        Freight:0
+        USD:'',
+        AUD:'',
+        Freight:''
     }); // State to store form data
 
     const filteredCIs = CIs.filter((CI) =>
@@ -229,9 +229,9 @@ export default function CIPage(){
             PO_number:"",
             CI_number:"",
             date:"",
-            USD:0,
-            AUD:0,
-            Freight:0,
+            USD:'',
+            AUD:'',
+            Freight:'',
         });
         setError({});
     };
@@ -430,7 +430,7 @@ export default function CIPage(){
                                     type="number" 
                                     name="USD"  
                                     placeholder="0"
-                                    value={formData.USD}
+                                    value={formData.USD.length === 0? 0: formData.USD}
                                     onChange={handleChange}
                                     /></Col>
                                     
@@ -443,7 +443,7 @@ export default function CIPage(){
                                     type="number"
                                     name="AUD"  
                                     placeholder='0' 
-                                    value={formData.AUD}
+                                    value={formData.AUD.length ===0?0:formData.AUD}
                                     onChange={handleChange}
                                     /></Col>
                                 </Row>
@@ -455,7 +455,7 @@ export default function CIPage(){
                                     type="number" 
                                     name="Freight" 
                                     placeholder='0'  
-                                    value={formData.Freight}
+                                    value={formData.Freight.length === 0 ? 0: formData.Freight}
                                     onChange={handleChange}
                                     />
                                     </Col>

@@ -7,8 +7,8 @@ import NavBar from './NavBar';
 import { useParams } from 'react-router-dom';
 
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
-const client = new W3CWebSocket('wss://secusafe-acc-soft-production.up.railway.app/ws/comments/');
 
+const client = new W3CWebSocket('wss://secusafe-acc-soft-production.up.railway.app/ws/comments/');
 
 export default function PIPage(){
     const { Column } = Table;
@@ -36,11 +36,11 @@ export default function PIPage(){
         supplier_name: name,
         PI_number: '',
         date: "",
-        USD: 0,
+        USD: "",
         // AUD: 0,
-        AUD_local: 0,
+        AUD_local: "",
         AUD_counted: false,
-        discount: 0,
+        discount: "",
         comment: '',
         link: '',
     })
@@ -258,12 +258,12 @@ export default function PIPage(){
             company_name: name,
             supplier_name: name,
             PI_number: '',
-            date: "",
-            USD: 0,
+            date: '',
+            USD: '',
             // AUD: 0,
-            AUD_local: 0,
+            AUD_local: '',
             AUD_counted: false,
-            discount: 0,
+            discount: '',
             comment: '',
             link: '',
         });
@@ -461,7 +461,7 @@ export default function PIPage(){
                                     type="number" 
                                     name="USD"  
                                     placeholder="0"
-                                    value={formData.USD}
+                                    value={formData.USD.length ===0?0:formData.USD}
                                     onChange={handleChange}/></Col>
                                     <Form.Label column md={2}>Discount</Form.Label>
                                     <Col xs={4}>
@@ -469,7 +469,7 @@ export default function PIPage(){
                                     type="number"
                                     name="discount"
                                     placeholder='0' 
-                                    value={formData.discount}
+                                    value={formData.discount.length ===0? 0:formData.discount}
                                     onChange={handleChange}>
 
                                     </Form.Control></Col>
@@ -494,7 +494,7 @@ export default function PIPage(){
                                     type="number" 
                                     name="AUD_local" 
                                     placeholder='0'  
-                                    value={formData.AUD_local}
+                                    value={formData.AUD_local.length === 0? 0 : formData.AUD_local}
                                     onChange={handleChange}/>
                                     </Col>
                                     <Col xs={6}>

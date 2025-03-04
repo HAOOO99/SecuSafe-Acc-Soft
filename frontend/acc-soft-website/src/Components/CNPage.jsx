@@ -557,8 +557,8 @@ export default function CNPage(){
                                     <Form.Control 
                                     type="number" 
                                     name="estimateCN"  
-                                    // placeholder="0"
-                                    value={formData.estimateCN}
+                                    placeholder="0"
+                                    value={formData.estimateCN.length === 0?0:formData.estimateCN}
                                     onChange={handleChangeForm}
                                     className={checkInput.estimate ? "is-invalid" : ""}
                                     />
