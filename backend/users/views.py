@@ -87,6 +87,7 @@ def login(request):
     try:
        
         payload = json.loads(request.body.decode())
+        print(payload)
         username = payload.get("username")
         password = payload.get("password")
        
