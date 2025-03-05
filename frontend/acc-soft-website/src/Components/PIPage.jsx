@@ -211,7 +211,7 @@ export default function PIPage(){
         ...formData,
         [name]: type === 'checkbox' ? checked : value,
         });
-        
+        console.log(formData);
     }
 
     // Function to handle adding a new PI
@@ -233,6 +233,7 @@ export default function PIPage(){
         if (formData.discount.length === 0){
             formData.discount = 0;
         }
+        console.log(formData);
         // console.log(NewErrors)
         if (Object.keys(NewErrors).length === 0){
             const config = {

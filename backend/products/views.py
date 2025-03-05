@@ -202,23 +202,7 @@ def add_PI(request):
             discount = payload["discount"]
             comment = payload["comment"]
             link = payload["link"]
-        else:
-            company_name = request.POST.get("company_name")
-            supplier_name = request.POST.get("supplier_name")
-            PI_number = request.POST.get("PI_number")
-            date = request.POST.get("date")
-            USD = request.POST.get("USD")
-            # AUD = request.POST.get("AUD")
-            AUD_local = request.POST.get("AUD_local")
-            AUD_counted = request.POST.get("AUD_counted")
-            if AUD_counted == "true":
-                AUD_counted = True
-            else:
-                AUD_counted = False
-            discount = request.POST.get("discount")
-            comment = request.POST.get("comment")
-            link = request.POST.get("link")
-
+        print(AUD_counted)
         print(PI_number)
 
         PI.objects.create(
