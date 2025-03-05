@@ -196,10 +196,7 @@ def add_PI(request):
             AUD_local = payload["AUD_local"]
             AUD_counted = payload["AUD_counted"]
             print(AUD_counted)
-            if AUD_counted == 'true':
-                AUD_counted = True
-            else:
-                AUD_counted = False
+            
             discount = payload["discount"]
             comment = payload["comment"]
             link = payload["link"]
