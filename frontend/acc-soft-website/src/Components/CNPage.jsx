@@ -421,8 +421,8 @@ export default function CNPage(){
                                     return {
                                         onClick: (event) => {
                                             // Prevent click event if clicking on the "Status" column
-                                            if (event.target.closest(".status-column")) {
-                                                event.stopPropagation();
+                                            if (event.target.closest(".status-column")||event.target.closest(".status-dropdown") ) {
+                                                event.stopPropagation(); // ✅ Stop row click event when selecting dropdown
                                                 return;
                                             }
                                             // Otherwise, handle row click
@@ -434,7 +434,7 @@ export default function CNPage(){
                         }}
                         rowClassName={(record) => (record.status === null || record.status === "Pending" ? "" : "faded-row")}
                     >
-                        <Column title="Date" dataIndex="date" key="date" />
+                        <Column title="Date" dataIndex="date" key="date" style={{ whiteSpace: "nowrap" }}/>
                         <Column title="Supplier" dataIndex="supplier" key="supplier" />
                         <Column title="Description" dataIndex="description" key="description" />
                         <Column
@@ -498,7 +498,9 @@ export default function CNPage(){
                                     value={record.status || "Pending"}
                                     onChange={(value) => handleStatusChange(value, record)}
                                     disabled={record.status !== "Pending" }
+                                    className="status-dropdown"
                                     style={{ width: 110 }}
+                                    onClick={(e) => e.stopPropagation()} // ✅ Prevent row click from dropdown
                                 >
                                     <Select.Option value="Pending">Pending</Select.Option>
                                     <Select.Option value="Approved">Approved</Select.Option>
