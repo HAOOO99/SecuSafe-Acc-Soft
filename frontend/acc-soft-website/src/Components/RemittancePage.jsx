@@ -29,7 +29,7 @@ export default function RemittancePage(){
     const [formData,setFormData] = useState({
         brand:name,
         date:"",
-        amount:0,
+        amount:'',
         currency:"",
         status:"",
         bank:""
@@ -121,7 +121,7 @@ export default function RemittancePage(){
             setFormData({ 
                 brand:name,
                 date:"",
-                amount:0,
+                amount:'',
                 currency:data.targets[0].defaultCurrency,
                 status:"",
                 bank:""
@@ -255,7 +255,7 @@ export default function RemittancePage(){
                                 setselectedTableRow([]);
                                 setFormData({ brand:name,
                                     date:"",
-                                    amount:0,
+                                    amount:'',
                                     currency:"",
                                     status:"",
                                     bank:""});};
@@ -396,7 +396,7 @@ export default function RemittancePage(){
                             <br />
                             <Row>
                                 <Form.Label column md={4}>Amount</Form.Label>
-                                <Col xs={4}>
+                                <Col xs={5}>
                                 <Form.Control 
                                 type="number" 
                                 name="amount"  
