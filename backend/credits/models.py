@@ -6,8 +6,8 @@ from django.core.exceptions import ObjectDoesNotExist
 class CN(models.Model):
 
     ALL_STATUS = {
-        "Bank Transfer" : "Bank Transfer",
-        "Offset Statement" : "Offset Statement",
+        "Cancelled" : "Cancelled",
+        "Approved" : "Approved",
         "Pending" : "Pending",
     }
     CURRENCYS = {
@@ -19,6 +19,8 @@ class CN(models.Model):
         "Marketing":"Marketing",
         "Compensation":"Compensation",
         "Discount":"Discount",
+        "Bank Transfer" : "Bank Transfer",
+        "Offset Statement" : "Offset Statement",
     }
     HARDCODED_CHOICES = [("AJAX", "AJAX")]
     brand = models.CharField(max_length=100,choices=HARDCODED_CHOICES, default="AJAX")

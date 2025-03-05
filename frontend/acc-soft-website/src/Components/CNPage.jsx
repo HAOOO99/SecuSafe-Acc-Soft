@@ -1,7 +1,7 @@
 import { useState,useEffect } from 'react'
 import {Container, Offcanvas, Form ,Row, Col, Modal} from 'react-bootstrap';
 import FilterBar from './FilterBar';
-import { Table ,Button} from "antd";
+import { Table ,Button, Select } from "antd";
 import "./styles.css"; // ✅ Import CSS for styling
 import NavBar from './NavBar';
 import { useParams } from 'react-router-dom';
@@ -40,16 +40,17 @@ export default function CNPage(){
         received: '',
         received_currency: "",
         ss_CN: "",
-        status: "",
+        // status: "",
     });
     const [formData, setFormData] = useState({
-        company_name:name,
+        brand:name,
         supplier_name:name,
         date:"",
         description:"",
         estimateCN:'',
         estimateCurrency:"",
         CNType:"Compensation",
+        status: "Pending",
     }); // State to store form data
 
     useEffect(() => {
@@ -66,11 +67,32 @@ export default function CNPage(){
         CN.description.toLowerCase().includes(searchQuery.toLowerCase()) 
     );
     
-    const tempUSDEstimate = filteredCNs.reduce((sum,CN)=> sum + (CN.estimate_currency.trim() === "USD" && CN.estimate != null? parseFloat(CN.estimate): 0),0);
-    const tempAUDEstimate = filteredCNs.reduce((sum, CN) => sum + (CN.estimate_currency.trim() === "AUD" && CN.estimate != null ? parseFloat(CN.estimate):0),0);
+    const tempUSDEstimate = filteredCNs.reduce((sum,CN)=> 
+        (CN.estimate_currency && CN.estimate_currency.trim() === "USD" && CN.estimate != null)
+            ? (CN.status === "Cancelled" ? sum : sum + parseFloat(CN.estimate)) 
+                : sum,
+            0
+        );
 
-    const tempUSDReceived = filteredCNs.reduce((sum,CN)=> sum + (CN.received_currency !== null ? (CN.received_currency.trim() === "USD" && CN.received != null? parseFloat(CN.received): 0) :0),0);
-    const tempAUDReceived = filteredCNs.reduce((sum, CN) => sum + (CN.received_currency !== null ? (CN.received_currency.trim() === "AUD"&& CN.received != null ? parseFloat(CN.received):0):0),0);   
+    const tempAUDEstimate = filteredCNs.reduce((sum, CN) => 
+        (CN.estimate_currency && CN.estimate_currency.trim() === "AUD" && CN.estimate != null)
+            ? (CN.status === "Cancelled" ? sum : sum + parseFloat(CN.estimate)) 
+                : sum,
+            0
+        );
+
+    const tempUSDReceived = filteredCNs.reduce((sum,CN)=> 
+        (CN.received_currency !== null && CN.received_currency.trim() === "USD" && CN.received != null)
+            ? (CN.status === "Cancelled" ? sum : sum + parseFloat(CN.received)) 
+                : sum,
+            0
+        );
+    const tempAUDReceived = filteredCNs.reduce((sum, CN) => 
+        (CN.received_currency !== null && CN.received_currency.trim() === "AUD" && CN.received != null)
+            ? (CN.status === "Cancelled" ? sum : sum + parseFloat(CN.received)) 
+                : sum,
+            0
+        );
     
     async function fetchCNs() {
         const config = {
@@ -138,7 +160,7 @@ export default function CNPage(){
                 return;
             } 
             
-            setFormData({company_name:name,
+            setFormData({brand:name,
                 supplier_name:name,
                 date:"",
                 description:"",
@@ -187,7 +209,7 @@ export default function CNPage(){
                     received:selectedRow.received, 
                     currency:selectedRow.received_currency,
                     ssCN:selectedRow.ss_CN,
-                    status:selectedRow.status,
+                    // status:selectedRow.status,
                 })
             }
             try{
@@ -200,6 +222,7 @@ export default function CNPage(){
                 }
                 console.log(data);
                 setShowModal(false);
+                
                 if(data["status"] === "failed"){
                     alert("CN fail to be updated");
                 }
@@ -242,7 +265,7 @@ export default function CNPage(){
         e.preventDefault();
 
         let NewCNErrors = {};
-        e.preventDefault();
+        
 
         if (!formData.estimateCN)  NewCNErrors.estimate="Estimate CN is required!";
         if (!formData.date)  NewCNErrors.date="Date is required!";
@@ -317,9 +340,9 @@ export default function CNPage(){
         setSelectedRow({ ...selectedRow, status: e.target.value });
     }
 
-    const handleClose = () => {setShow(false);
+    const handleClose = () => {
                 setFormData({
-                    company_name:name,
+                    brand:name,
                     supplier_name:name,
                     description:"",
                     date:"",
@@ -328,12 +351,47 @@ export default function CNPage(){
                     CNType:"Compensation"
                 });
                 setErrors({});
-                setCheckInput({});};
+                setCheckInput({});
+                setShow(false);};
 
     const handleShow = () => {setShow(true);showSuppliers();};
     const handleRowClick = (row) => {
         setSelectedRow(row);
         setShowModal(true);
+    };
+
+///drop down test
+    const handleStatusChange = (value, record) => {
+        console.log(`Status changed for ID ${record.id}: ${value}`);
+        // Call API or update state
+        updateStatus(record.id, value);
+        // const updatedData = filteredCNs.map((item) =>
+        //     item.id === record.id ? { ...item, status: value } : item
+        // );
+        // setCNs(updatedData);
+    };
+    
+    const updateStatus = async (id, newStatus) => {
+        // Update the status in the table's state
+   
+        // e.preventDefault();
+        try {
+            const response = await fetch(`https://secusafe-backend-production.up.railway.app/cn/status/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({"brand":name,"id":id, "status": newStatus }),
+            });
+            
+            if (!response.ok) {
+                throw new Error("Failed to update status");
+            }
+    
+            console.log(`Status updated to ${newStatus} for ID ${id}`);
+        } catch (error) {
+            console.error("Error updating status:", error);
+        }
     };
 
     return (
@@ -357,11 +415,34 @@ export default function CNPage(){
                         rowKey={(record) => record.id}
                         bordered
                         pagination={false}
-                        rowClassName={(record) => (record.status === null || record.status.length === 0 ? "" : "faded-row")}
+                        onRow={
+                            (record) => {
+                                if (record.status === "Pending" || record.status === null) {
+                                    return {
+                                        onClick: (event) => {
+                                            // Prevent click event if clicking on the "Status" column
+                                            if (event.target.closest(".status-column")) {
+                                                event.stopPropagation();
+                                                return;
+                                            }
+                                            // Otherwise, handle row click
+                                            handleRowClick(record);
+                                        },
+                                    };
+                                }
+                                return {}; // Default empty object for non-clickable rows
+                        }}
+                        rowClassName={(record) => (record.status === null || record.status === "Pending" ? "" : "faded-row")}
                     >
                         <Column title="Date" dataIndex="date" key="date" />
                         <Column title="Supplier" dataIndex="supplier" key="supplier" />
                         <Column title="Description" dataIndex="description" key="description" />
+                        <Column
+                            title="Type"
+                            dataIndex="type"
+                            key="type"
+                            
+                        />
                         
                         <Column
                             title="CN Estimate"
@@ -376,7 +457,7 @@ export default function CNPage(){
                             key="supplier_CN"
                             render={(text, record) => 
                                 record.supplier_CN === null || record.supplier_CN.length === 0 ? 
-                                <span onClick={() => handleRowClick(record)}>{record.supplier_CN || "-"}</span> :
+                                <span onClick={() => handleRowClick(record)}>{""}</span> :
                                 record.supplier_CN
                             }
                         />
@@ -411,13 +492,19 @@ export default function CNPage(){
                             title="Status"
                             dataIndex="status"
                             key="status"
-                            render={(text, record) =>
-                                record.status === null || record.status.length === 0 ? (
-                                    <span onClick={() => handleRowClick(record)}>{record.status || ""}</span>
-                                ) : (
-                                    record.status
-                                )
-                            }
+                            className="status-column"
+                            render={(text, record) => (
+                                <Select
+                                    value={record.status || "Pending"}
+                                    onChange={(value) => handleStatusChange(value, record)}
+                                    disabled={record.status !== "Pending" }
+                                    style={{ width: 100 }}
+                                >
+                                    <Select.Option value="Pending">Pending</Select.Option>
+                                    <Select.Option value="Approved">Approved</Select.Option>
+                                    <Select.Option value="Cancelled">Cancelled</Select.Option>
+                                </Select>
+                            )}
                         />
                     </Table>
 
@@ -439,7 +526,7 @@ export default function CNPage(){
                             </Col>
                         </Row>
 
-                        <Modal show={showModal} onHide={() => setShowModal(false)}>
+                        <Modal show={showModal} onHide={() => (setShowModal(false),setErrors({}))}>
                             <Modal.Header closeButton>
                                 <Modal.Title>Item Details</Modal.Title>
                             </Modal.Header>
@@ -488,15 +575,16 @@ export default function CNPage(){
                                         placeholder="Secusafe Credit Number" 
                                         onChange={(e)=>handleChangeSS(e)} value={selectedRow.ss_CN}/>  
                                         </div>
-                                        <p><strong>Status:</strong> 
-                                            <Form.Select required defaultValue={""} name='status' value={selectedRow.status}
+                                        {/* <p><strong>Status:</strong> 
+                                            <Form.Select required defaultValue={"Pending"} name='status' value={selectedRow.status}
                                                         onChange={(e)=>handleChangeStatus(e)} >
                                                     <option key={0} value="">-------</option>
                                                     <option key={1} value="Bank Transfer">Bank Transfer</option>
                                                     <option key={2} value="Offset Statement">Offset Statement</option>
                                                     <option key={3} value="Pending">Pending</option>
+                                                    <option key={4} value="Cancelled">Cancelled</option>
                                                  </Form.Select>
-                                            </p>
+                                            </p> */}
                                     </>
                                 ) : (
                                     <p>No item selected.</p>
@@ -598,6 +686,8 @@ export default function CNPage(){
                                     <option key={0} value="Compensation">Compensation</option>
                                     <option key={1} value="Marketing">Marketing</option>                                    
                                     <option key={2} value="Discount">Discount</option>
+                                    <option key={4} value="BankTransfer">Bank Transfer</option>
+                                    <option key={5} value="OffsetStatement">Offset Statement</option>
                                     </Form.Select>
                                 </Col>
                                 

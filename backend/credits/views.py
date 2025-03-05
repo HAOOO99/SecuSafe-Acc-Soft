@@ -90,11 +90,11 @@ def updateCN(request):
         received_amount = payload["received"]
         currency = payload["currency"]
         ss_cn = payload["ssCN"]
-        status = payload["status"]
+        # status = payload["status"]
 
         cn = CN.objects.filter(brand=current_brand,id=id,supplier=supplier)
         
-        cn.update(supplier_CN=supplier_cn,received=received_amount,received_currency=currency,ss_CN=ss_cn, status=status)
+        cn.update(supplier_CN=supplier_cn,received=received_amount,received_currency=currency,ss_CN=ss_cn)
         print(cn.values())
         response["status"] = "success"
         # response["msg"] = json.dumps(cn.values())
@@ -106,6 +106,32 @@ def updateCN(request):
     print(response)
     return JsonResponse(response)
 
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def updateStatus(request):
+    response={}
+    try:
+        payload = json.loads(request.body.decode())
+        print(request.body.decode())
+        current_brand=payload["brand"]
+        id = payload["id"]
+        status = payload["status"]
+
+        cn = CN.objects.filter(brand=current_brand,id=id)
+        
+        cn.update(status=status)
+        print(cn.values())
+        response["status"] = "success"
+        # response["msg"] = json.dumps(cn.values())
+    except Exception as e:
+        response["status"] = "failed"
+        response["msg"] = "failed to show"
+        print(e)
+
+    print(response)
+    return JsonResponse(response)
 
 @csrf_exempt
 @require_http_methods(["POST"])
