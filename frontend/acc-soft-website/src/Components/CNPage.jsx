@@ -334,11 +334,11 @@ export default function CNPage(){
         // setSSCN(e.target.value)
         setSelectedRow({ ...selectedRow, ss_CN: e.target.value });
     }
-    const handleChangeStatus = (e) => {
-        console.log(e.target.value)
-        // setStatus(e.target.value)
-        setSelectedRow({ ...selectedRow, status: e.target.value });
-    }
+    // const handleChangeStatus = (e) => {
+    //     console.log(e.target.value)
+    //     // setStatus(e.target.value)
+    //     setSelectedRow({ ...selectedRow, status: e.target.value });
+    // }
 
     const handleClose = () => {
                 setFormData({
@@ -526,7 +526,7 @@ export default function CNPage(){
                             </Col>
                         </Row>
 
-                        <Modal show={showModal} onHide={() => (setShowModal(false),setErrors({}))}>
+                        <Modal show={showModal} onHide={() => {setShowModal(false);setErrors({})}}>
                             <Modal.Header closeButton>
                                 <Modal.Title>Item Details</Modal.Title>
                             </Modal.Header>
