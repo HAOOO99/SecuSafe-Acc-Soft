@@ -17,7 +17,6 @@ export default function CNPage(){
     const [errors, setErrors] = useState({});
     const [suppliers,setSuppliers] = useState([]);
     const [checkInput,setCheckInput] = useState({});
-    const [filteredCIs,setFilteredCIs] = useState([]);
 
 
     const [searchQuery, setSearchQuery] = useState(''); // State to store search query
