@@ -15,8 +15,9 @@ export default function CNPage(){
     const [flag] = useState(false);//state to control flag showing in filter bar
     const [show, setShow] = useState(false); // State to control offcanvas visibility
     const [errors, setErrors] = useState({});
-    const [suppliers,setSuppliers] = useState([])
-    const [checkInput,setCheckInput] = useState({})
+    const [suppliers,setSuppliers] = useState([]);
+    const [checkInput,setCheckInput] = useState({});
+    const [filteredCIs,setFilteredCIs] = useState([]);
 
 
     const [searchQuery, setSearchQuery] = useState(''); // State to store search query
@@ -50,7 +51,7 @@ export default function CNPage(){
         estimateCN:'',
         estimateCurrency:"",
         CNType:"Compensation",
-        status: "Pending",
+        // status: "Pending",
     }); // State to store form data
 
     useEffect(() => {
@@ -213,7 +214,7 @@ export default function CNPage(){
                 })
             }
             try{
-                const response = await fetch("https://secusafe-backend-production.up.railway.app/cn/update" , config);
+                const response = await fetch("https://secusafe-backend-production.up.railway.app/cn/update/" , config);
                 const data = await response.json();
                 
                 if (data === undefined || data.length === 0){
@@ -287,7 +288,7 @@ export default function CNPage(){
                 };
 
             try {
-                const response = await fetch("https://secusafe-backend-production.up.railway.app/cn/addCN", config);
+                const response = await fetch("https://secusafe-backend-production.up.railway.app/cn/addCN/", config);
                 const data = await response.json();
                 console.log(data);
                 if (data.status === 'success') {
@@ -365,10 +366,10 @@ export default function CNPage(){
         console.log(`Status changed for ID ${record.id}: ${value}`);
         // Call API or update state
         updateStatus(record.id, value);
-        // const updatedData = filteredCNs.map((item) =>
-        //     item.id === record.id ? { ...item, status: value } : item
-        // );
-        // setCNs(updatedData);
+        const updatedData = CNs.map((item) =>
+            item.id === record.id ? { ...item, status: value } : item
+        );
+        setCNs(updatedData);
     };
     
     const updateStatus = async (id, newStatus) => {
@@ -416,7 +417,7 @@ export default function CNPage(){
                         bordered
                         pagination={false}
                         onRow={
-                            (record) => {
+                            (record) => { 
                                 if (record.status === "Pending" || record.status === null) {
                                     return {
                                         onClick: (event) => {
@@ -498,7 +499,7 @@ export default function CNPage(){
                                     value={record.status || "Pending"}
                                     onChange={(value) => handleStatusChange(value, record)}
                                     disabled={record.status !== "Pending" }
-                                    style={{ width: 100 }}
+                                    style={{ width: 110 }}
                                 >
                                     <Select.Option value="Pending">Pending</Select.Option>
                                     <Select.Option value="Approved">Approved</Select.Option>

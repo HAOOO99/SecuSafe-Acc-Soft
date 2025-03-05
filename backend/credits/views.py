@@ -143,7 +143,7 @@ def add_CN(request):
             payload = json.loads(request.body.decode())
         
        
-            company_name = payload["company_name"]
+            company_name = payload["brand"]
             supplier_name = payload["supplier_name"]
             date = payload["date"]
             description =payload["description"]
@@ -165,10 +165,7 @@ def add_CN(request):
         # print(CN.objects.all().filter(company_name = company_name, date__year = date).order_by('date'))
         response["status"] = "success"
         response["msg"] = "CN added"
-    except json.JSONDecodeError as e:
-        response["status"] = "failed"
-        response["msg"] = "Invalid JSON"
-        print("JSONDecodeError:", e)
+
     except Exception as e:
         response["status"] = "failed"
         response["msg"] = "failed to add CN"

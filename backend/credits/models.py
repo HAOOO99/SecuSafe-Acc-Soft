@@ -45,7 +45,7 @@ class CN(models.Model):
     received_currency = models.CharField(max_length=100,null=True, default="AUD",choices=CURRENCYS,blank=True)
 
     ss_CN = models.CharField(max_length=100,null=True,blank=True)
-    status = models.CharField(max_length=100,null=True,choices=ALL_STATUS,blank=True)
+    status = models.CharField(max_length=100,null=True,choices=ALL_STATUS,default="Pending",blank=True)
     
 
     def __str__(self):
