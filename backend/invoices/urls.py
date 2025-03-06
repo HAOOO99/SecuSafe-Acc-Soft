@@ -10,4 +10,5 @@ urlpatterns = [
     path('cis',views.category_cis,name='getCIs'),
     path('select',views.select_cis,name="getSelectedCis"),
     path('addCI',views.add_CI,name='addNewCI'),
+    path('updatePO',views.updatePO,name="updatePO"),
 ]

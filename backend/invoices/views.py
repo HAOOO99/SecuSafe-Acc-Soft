@@ -214,18 +214,6 @@ def add_CI(request):
             USD = payload["USD"]
             AUD = payload["AUD"]
             freight = payload["Freight"]
-            
-        else:
-            company_name = request.POST.get("company_name")
-            supplier_name = request.POST.get("supplier_name")
-            PO_number = request.POST.get("PO_number")
-            CI_number = request.POST.get("CI_number")
-            date = request.POST.get("date")
-            USD = request.POST.get("USD")
-            AUD = request.POST.get("AUD")
-            freight = request.POST.get("Freight")
-           
-
 
         CI.objects.create(
             brand=company_name,
@@ -245,6 +233,42 @@ def add_CI(request):
         response["status"] = "failed"
         response["msg"] = "Invalid JSON"
         print("JSONDecodeError:", e)
+    except Exception as e:
+        response["status"] = "failed"
+        response["msg"] = "failed to add CI"
+        print(e)
+
+    print(response)
+    return JsonResponse(response)
+
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def updatePO(request):
+    response = {}
+    try:
+        if not request.body:
+            response["status"] = "failed"
+            response["msg"] = "Empty request body"
+            return JsonResponse(response)
+        if request.content_type == 'application/json':
+            payload = json.loads(request.body.decode())
+        
+            print("Payload:", payload)  # Debugging statement
+
+            id = payload["id"]
+            po = payload["PO_number"]
+
+            ci = CI.objects.filter(id = id)
+            ci.update(PO_no = po)
+
+
+        
+        print(CI.objects.filter(id = id).values())
+        response["status"] = "success"
+        response["msg"] = "CI updated"
+
     except Exception as e:
         response["status"] = "failed"
         response["msg"] = "failed to add CI"

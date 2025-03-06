@@ -305,7 +305,7 @@ export default function RemittancePage(){
                 flag={flag}/>
                 <hr />
                 <Table dataSource={filteredREs}
-                    rowKey={(record) => (record.id)} // ✅ Ensure each row has a unique ke
+                    rowKey={(record) => (record.id)} // ✅ Ensure each row has a unique key
                     onRow={(record) => (
                         // record.status !== 'paid' ? 
                         { onClick: () => handleRowClick(record), } 
@@ -320,9 +320,7 @@ export default function RemittancePage(){
                         ),
                         rowExpandable: (record) => record.PO !== '',
                     }}
-                    pagination={{
-                        position: ['none', 'none'],
-                      }}
+                    pagination={false}
                     >
                     <Column title="Date" dataIndex="date" key="date" style={{ whiteSpace: "nowrap" }}/>
                     <Column title="Bank Account" dataIndex="bank" key="bank" />

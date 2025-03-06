@@ -1,6 +1,6 @@
 import { useState,useEffect } from 'react'
 import { Container,  Offcanvas, Form ,Row, Col,  } from 'react-bootstrap';
-import {Table,Button} from "antd";
+import {Table,Button,Input } from "antd";
 import FilterBar from './FilterBar';
 
 import NavBar from './NavBar';
@@ -12,6 +12,10 @@ import "./styles.css"; // ✅ Import the CSS file
 
 export default function CIPage(){
     const {Column} = Table;
+
+    const [editingRow, setEditingRow] = useState(null);
+    const [editedPO, setEditedPO] = useState({});
+
     const {name} = useParams();
     const [flag] = useState(true);//state to control flag showing in filter bar
     const [show, setShow] = useState(false); // State to control offcanvas visibility
@@ -253,7 +257,7 @@ export default function CIPage(){
 
         e.preventDefault();
         let newErrors ={}
-        if (!formData.PO_number)  newErrors.po="PO is required!";
+        // if (!formData.PO_number)  newErrors.po="PO is required!";
         if (!formData.date)  newErrors.date="Date is required!";
         if (!formData.CI_number) newErrors.ci = "CI is required";
         
@@ -298,6 +302,26 @@ export default function CIPage(){
                 }
         }
   };
+
+  // ✅ Handle Input Change
+    const handleInputChange = (e, record) => {
+        setEditedPO({
+            ...editedPO,
+            [record.id]: e.target.value,
+        });
+    };
+
+    // ✅ Save Changes
+    const handleSave = (record) => {
+        if (editedPO[record.id] !== undefined) {
+            updatePO(record.id, editedPO[record.id]); // Call API or update function
+        }
+        setEditingRow(null);
+    };
+    const updatePO = async () => {
+
+    };
+
  
     return (
         <main className="py-1">
@@ -320,16 +344,40 @@ export default function CIPage(){
 
                     <Table 
                         dataSource={filteredCIs} 
-                        rowKey={(record) => record.PO_no} 
+                        rowKey={(record) => record.PO_no+"-"+record.id} 
                         bordered
                         pagination={false} // Disable pagination if not needed
                         rowClassName={(record) => (record.remittance_id === null ? "" : "faded-row")} // ✅ Apply class if remittance_id is not null
                     >
-                        <Column title="PO Number" dataIndex="PO_no" key="PO_no" />
+                        <Column
+                            title="PO Number"
+                            dataIndex="PO_no"
+                            key="PO_no"
+                            render={(text, record) => (
+                                <div 
+                                    onClick={() => setEditingRow(record.id)}
+                                    style={{ padding: "2px", cursor: "pointer", minHeight: "35px", display: "flex", alignItems: "center"
+                                     }}
+                                >
+                                    {editingRow === record.id ? (
+                                        <Input
+                                            value={editedPO[record.id] ?? text}
+                                            onChange={(e) => handleInputChange(e, record)}
+                                            onBlur={() => handleSave(record)}
+                                            onPressEnter={() => handleSave(record)}
+                                            autoFocus
+                                            style={{ width: "100%" }}
+                                        />
+                                    ) : (
+                                        <span>{text}</span>
+                                    )}
+                                </div>
+                            )}
+                        />
                         <Column title="Reference(CI Number)" dataIndex="CI_no" key="CI_no" />
                         <Column title="Supplier Name" dataIndex="supplier" key="supplier" />
                         <Column title="Date" dataIndex="date" key="date" />
-                        
+                          
                         <Column 
                             title="Value (USD)" 
                             dataIndex="value_USD" 
@@ -343,7 +391,7 @@ export default function CIPage(){
                             key="value_AUD"
                             render={(text) => Number(text).toLocaleString()} // ✅ Format number
                         />
-                        
+                         
                         <Column title="Freight" dataIndex="freight" key="freight" />
                     </Table>
                         <Row>
@@ -398,9 +446,10 @@ export default function CIPage(){
                                         name='PO_number' 
                                         placeholder="Enter PO number" 
                                         value={formData.PO_number}
-                                        className={error.po ? "is-invalid" : ""}
+                                        // className={error.po ? "is-invalid" : ""}
                                         onChange={handleChange}
-                                        />{error.po && <div className="invalid-feedback">{error.po}</div>} 
+                                        />
+                                        {/* {error.po && <div className="invalid-feedback">{error.po}</div>}  */}
                                     </Col>
                                     
                                 </Row>
