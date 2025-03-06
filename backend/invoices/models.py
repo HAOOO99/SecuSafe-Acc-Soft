@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 # Create your models here.
 class CI(models.Model):
-
+    id = models.AutoField(primary_key=True)
     HARDCODED_CHOICES = [("AJAX", "AJAX")]
     brand = models.CharField(max_length=100,choices=HARDCODED_CHOICES, default="AJAX")
 
@@ -18,7 +18,8 @@ class CI(models.Model):
         except ObjectDoesNotExist:
             pass  # If no data, avoid breaking
     
-    PO_no = models.CharField(primary_key=True, unique = True,max_length=100)
+    
+    PO_no = models.CharField(max_length=100)
     CI_no = models.CharField(max_length=100)
     supplier = models.CharField(max_length=100)
     date = models.DateField()
@@ -36,5 +37,5 @@ class CI(models.Model):
     )
           
     def __str__(self):
-        return f"{self.brand} - {self.CI_no}"
+        return f"{self.brand} - {self.CI_no}-{self.id}"
     

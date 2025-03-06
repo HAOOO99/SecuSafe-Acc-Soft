@@ -164,9 +164,11 @@ export default function RemittancePage(){
             let arrays = data.CIwithPOs
             const POarrays = arrays.map((item, index) => ({
                 key: index, // Key starts from 1
-                po: item.PO_no
+                po: item.PO_no,
+                amount: item.value_USD || item.value_AUD
               }))
-
+            
+              console.log(POarrays)
             setPos(POarrays)
             
             return data;
@@ -304,9 +306,11 @@ export default function RemittancePage(){
                 <hr />
                 <Table dataSource={filteredREs}
                     rowKey={(record) => (record.id)} // ✅ Ensure each row has a unique ke
-                    onRow={(record) => ({
-                        onClick: () => handleRowClick(record), 
-                    })}
+                    onRow={(record) => (
+                        // record.status !== 'paid' ? 
+                        { onClick: () => handleRowClick(record), } 
+                        // :    {}
+                )}
                     small
                     expandable={{
                         expandedRowRender: (record) => (
@@ -323,7 +327,7 @@ export default function RemittancePage(){
                     <Column title="Date" dataIndex="date" key="date" style={{ whiteSpace: "nowrap" }}/>
                     <Column title="Bank Account" dataIndex="bank" key="bank" />
                     <Column title="Amount" dataIndex="amount" key="amount" 
-                    render={(text) => Number(text).toLocaleString('en-AU', { minimumFractionDigits: 2 })}/>
+                        render={(text) => Number(text).toLocaleString('en-AU', { minimumFractionDigits: 2 })}/>
                     <Column title="Currency" dataIndex="currency" key="currency" />
                     <Column title="Status" dataIndex="status" key="status" />
                     
@@ -334,16 +338,18 @@ export default function RemittancePage(){
                     {selectedRow ? (
                         <Modal show={showModal} onHide={() => setShowModal(false)}>
                             <Modal.Header closeButton>
-                                <Modal.Title>Item Details</Modal.Title>
+                                <Modal.Title>Select Related POs</Modal.Title>
+                                
                             </Modal.Header>
                             <Modal.Body>
                                 
                                     <>
-                                        <p><strong>Description:</strong> {selectedRow.status}</p>
+                                        {/* <p><strong>Description:</strong> {selectedRow.status}</p> */}
                                         <div>
-                                            {selectedRow.id}
+                                            {/* {selectedRow.id} */}
                                             <Table dataSource={Pos} rowSelection={rowSelection}  >
                                             <Column title="PO Number" dataIndex="po" key="po" style={{ whiteSpace: "nowrap" }}/>
+                                            <Column title="Amount" dataIndex="amount" key="amount"/>
                                             </Table>
                                         </div>
                                     </>

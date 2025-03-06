@@ -269,7 +269,7 @@ export default function CIPage(){
         if(formData.Freight.length === 0){
             formData.Freight = 0;
         }
-        
+
         if (Object.keys(newErrors).length === 0){
         // console.log(form)
             const config = {
@@ -326,7 +326,7 @@ export default function CIPage(){
                         rowClassName={(record) => (record.remittance_id === null ? "" : "faded-row")} // ✅ Apply class if remittance_id is not null
                     >
                         <Column title="PO Number" dataIndex="PO_no" key="PO_no" />
-                        <Column title="CI Number" dataIndex="CI_no" key="CI_no" />
+                        <Column title="Reference(CI Number)" dataIndex="CI_no" key="CI_no" />
                         <Column title="Supplier Name" dataIndex="supplier" key="supplier" />
                         <Column title="Date" dataIndex="date" key="date" />
                         
