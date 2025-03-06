@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 # Create your models here.
 class CI(models.Model):
     id = models.AutoField(primary_key=True)
+    
     HARDCODED_CHOICES = [("AJAX", "AJAX")]
     brand = models.CharField(max_length=100,choices=HARDCODED_CHOICES, default="AJAX")
 
