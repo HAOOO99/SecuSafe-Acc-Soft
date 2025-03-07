@@ -118,15 +118,14 @@ export default function CIPage(){
             },
         }
         try{
-            console.log(123123,chooseCi)
-            const response = await fetch("https://secusafe-backend-production.up.railway.app/ci?brand="+name+"&year="+chooseYear+"&CI_no="+chooseCi, config);
+            const response = await fetch(`https://secusafe-backend-production.up.railway.app/ci?brand=${name}&year=${chooseYear}&CI_no=${encodeURIComponent(chooseCi)}`, config);
             const data = await response.json();
             
             if (data === undefined || data.length === 0){
                 alert("Nothing is found");
                 return;
             }
-            console.log(data)
+            console.log(data);
 
             setCIs(data.CIs);
             
