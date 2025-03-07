@@ -15,6 +15,7 @@ export default function CIPage(){
 
     const [editingRow, setEditingRow] = useState(null);
     const [editedPO, setEditedPO] = useState({});
+    const [mergedData, setMergedData] = useState([]); // merge same data as opne row
 
     const {name} = useParams();
     const [flag] = useState(true);//state to control flag showing in filter bar
@@ -46,15 +47,8 @@ export default function CIPage(){
         Freight:''
     }); // State to store form data
 
-    const filteredCIs = CIs.filter((CI) =>
-        CI.supplier.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        CI.PO_no.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        // CI.date.toLowerCase().includes(searchQuery.toLowerCase())  ||
-        CI.CI_no.toLowerCase().includes(searchQuery.toLowerCase()) 
-    );
-
-    const tempUSDCI = filteredCIs.reduce((sum,CI)=> sum + parseFloat(CI.value_USD),0);
-    const tempAUDCI = filteredCIs.reduce((sum, CI) => sum + parseFloat(CI.value_AUD),0);
+    
+    
 
     useEffect(() => {
         fetchCIs();
@@ -63,7 +57,36 @@ export default function CIPage(){
         showYears();
         selectCIs();
         // eslint-disable-next-line react-hooks/exhaustive-deps
+
+        // const rowSpans = {};
+        // CIs.forEach((row, index) => {
+        //     if (index === 0 || row.freight !== CIs[index - 1].freight) {
+        //         let count = 1;
+        //         for (let i = index + 1; i < CIs.length; i++) {
+        //             if (CIs[i].freight === row.freight) {
+        //                 count++;
+        //             } else {
+        //                 break;
+        //             }
+        //         }
+        //         rowSpans[row.freight] = count; // Set rowSpan count
+        //     } else {
+        //         rowSpans[row.freight] = 0; // Hide duplicate rows
+        //     }
+        // });
+
+        // // ✅ Assign rowSpan to each row
+        // const updatedData = CIs.map((row) => ({
+        //     ...row,
+        //     rowSpan: rowSpans[row.freight],
+        // }));
+        
+
+        // setMergedData(updatedData);
+        
     }, [chooseYear,chooseCi]);
+
+    
 
     async function showYears(){
         const config = {
@@ -124,6 +147,7 @@ export default function CIPage(){
             },
         }
         try{
+            console.log(123123,chooseCi)
             const response = await fetch("https://secusafe-backend-production.up.railway.app/ci?brand="+name+"&year="+chooseYear+"&CI_no="+chooseCi, config);
             const data = await response.json();
             
@@ -303,7 +327,7 @@ export default function CIPage(){
         }
   };
 
-  // ✅ Handle Input Change
+  // ✅ Handle Input Change for PO number
     const handleInputChange = (e, record) => {
         setEditedPO({
             ...editedPO,
@@ -311,17 +335,48 @@ export default function CIPage(){
         });
     };
 
-    // ✅ Save Changes
+    // ✅ Save Changes for PO number
     const handleSave = (record) => {
         if (editedPO[record.id] !== undefined) {
             updatePO(record.id, editedPO[record.id]); // Call API or update function
+            const updatedData = CIs.map((item) =>
+                item.id === record.id ? { ...item, PO_no: editedPO[record.id] } : item
+            );
+            console.log(updatedData);
+            setCIs(updatedData)
         }
+        
         setEditingRow(null);
+        
     };
-    const updatePO = async () => {
-
+    const updatePO = async (id,po) => {
+        try {
+            const response = await fetch(`https://secusafe-backend-production.up.railway.app/ci/updatePO`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({"id":id, "PO_number": po }),
+            });
+            
+            if (!response.ok) {
+                throw new Error("Failed to update status");
+            }
+    
+            console.log(`Status updated to ${po} for ID ${id}`);
+        } catch (error) {
+            console.error("Error updating status:", error);
+        }
     };
+    const filteredCIs = CIs.filter((CI) =>
+        CI.supplier.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        CI.PO_no.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        // CI.date.toLowerCase().includes(searchQuery.toLowerCase())  ||
+        CI.CI_no.toLowerCase().includes(searchQuery.toLowerCase()) 
+    );
 
+    const tempUSDCI = filteredCIs.reduce((sum,CI)=> sum + parseFloat(CI.value_USD),0);
+    const tempAUDCI = filteredCIs.reduce((sum, CI) => sum + parseFloat(CI.value_AUD),0);
  
     return (
         <main className="py-1">
@@ -334,7 +389,7 @@ export default function CIPage(){
                     years = {years} 
                     chooseYear={chooseYear} 
                     CIs={ciFilters}
-                    chooseCI={chooseCi}
+                    // chooseCI={chooseCi}
                     setChooseYear={setChooseYear}
                     setChooseCi={setChooseCi}
                     searchQuery={searchQuery} 
@@ -364,7 +419,7 @@ export default function CIPage(){
                                             value={editedPO[record.id] ?? text}
                                             onChange={(e) => handleInputChange(e, record)}
                                             onBlur={() => handleSave(record)}
-                                            onPressEnter={() => handleSave(record)}
+                                            onPressEnter={(value) => handleSave(record,value)}
                                             autoFocus
                                             style={{ width: "100%" }}
                                         />
@@ -392,7 +447,10 @@ export default function CIPage(){
                             render={(text) => Number(text).toLocaleString()} // ✅ Format number
                         />
                          
-                        <Column title="Freight" dataIndex="freight" key="freight" />
+                        <Column title="Freight" dataIndex="freight" key="freight" 
+                        onCell={(record) => ({
+                            rowSpan: record.rowSpan, // ✅ Merge rows dynamically
+                        })}/>
                     </Table>
                         <Row>
                             <Col md={{ span: 2, offset: 2 }}>
