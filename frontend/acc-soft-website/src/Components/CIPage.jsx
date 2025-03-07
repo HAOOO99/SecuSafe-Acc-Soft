@@ -1,4 +1,4 @@
-import { useState,useEffect } from 'react'
+import { useState,useEffect, useCallback } from 'react'
 import { Container,  Offcanvas, Form ,Row, Col,  } from 'react-bootstrap';
 import {Table,Button,Input } from "antd";
 import FilterBar from './FilterBar';
@@ -15,7 +15,7 @@ export default function CIPage(){
 
     const [editingRow, setEditingRow] = useState(null);
     const [editedPO, setEditedPO] = useState({});
-    const [mergedData, setMergedData] = useState([]); // merge same data as opne row
+    // const [mergedData, setMergedData] = useState([]); // merge same data as opne row
 
     const {name} = useParams();
     const [flag] = useState(true);//state to control flag showing in filter bar
@@ -49,46 +49,17 @@ export default function CIPage(){
 
     
     
+    const filteredCIs = CIs.filter((CI) =>
+        CI.supplier.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        CI.PO_no.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        // CI.date.toLowerCase().includes(searchQuery.toLowerCase())  ||
+        CI.CI_no.toLowerCase().includes(searchQuery.toLowerCase()) 
+    );
 
-    useEffect(() => {
-        fetchCIs();
-        fetchCIValues();
-        getPIValues();
-        showYears();
-        selectCIs();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    const tempUSDCI = filteredCIs.reduce((sum,CI)=> sum + parseFloat(CI.value_USD),0);
+    const tempAUDCI = filteredCIs.reduce((sum, CI) => sum + parseFloat(CI.value_AUD),0);
 
-        // const rowSpans = {};
-        // CIs.forEach((row, index) => {
-        //     if (index === 0 || row.freight !== CIs[index - 1].freight) {
-        //         let count = 1;
-        //         for (let i = index + 1; i < CIs.length; i++) {
-        //             if (CIs[i].freight === row.freight) {
-        //                 count++;
-        //             } else {
-        //                 break;
-        //             }
-        //         }
-        //         rowSpans[row.freight] = count; // Set rowSpan count
-        //     } else {
-        //         rowSpans[row.freight] = 0; // Hide duplicate rows
-        //     }
-        // });
-
-        // // ✅ Assign rowSpan to each row
-        // const updatedData = CIs.map((row) => ({
-        //     ...row,
-        //     rowSpan: rowSpans[row.freight],
-        // }));
-        
-
-        // setMergedData(updatedData);
-        
-    }, [chooseYear,chooseCi]);
-
-    
-
-    async function showYears(){
+    const showYears = useCallback(async () => {
         const config = {
             method: 'GET',
             mode: 'cors',
@@ -110,10 +81,10 @@ export default function CIPage(){
         } catch (e){
             console.log(e);
         }
-    }
+    },[name])
 
     //CIS in filter bar
-    async function selectCIs(){
+    const selectCIs= useCallback(async () =>{
         const config = {
             method: 'GET',
             mode: 'cors',
@@ -135,10 +106,10 @@ export default function CIPage(){
         } catch (e){
             console.log(e);
         }
-    }
+    },[name,chooseYear])
 
     //all CIs
-    async function fetchCIs(){
+    const fetchCIs= useCallback( async () =>{
         const config = {
             method: 'GET',
             mode: 'cors',
@@ -164,9 +135,9 @@ export default function CIPage(){
             console.log(e);
         }
 
-    };
+    },[name,chooseYear,chooseCi]);
 
-    async function getPIValues(){
+    const getPIValues = useCallback( async ()=> {
         const config = {
             method: 'GET',
             mode: 'cors',
@@ -196,9 +167,9 @@ export default function CIPage(){
         } catch (e){
             console.log(e);
         }
-    }
+    },[name,chooseYear]);
 
-    async function fetchCIValues(){
+    const fetchCIValues = useCallback( async () => {
         const config = {
             method: 'GET',
             mode: 'cors',
@@ -224,7 +195,7 @@ export default function CIPage(){
         } catch (e){
             console.log(e);
         }
-    }
+    },[name,chooseYear]);
 
     async function showSuppliers() {
         const config = {
@@ -368,15 +339,16 @@ export default function CIPage(){
             console.error("Error updating status:", error);
         }
     };
-    const filteredCIs = CIs.filter((CI) =>
-        CI.supplier.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        CI.PO_no.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        // CI.date.toLowerCase().includes(searchQuery.toLowerCase())  ||
-        CI.CI_no.toLowerCase().includes(searchQuery.toLowerCase()) 
-    );
 
-    const tempUSDCI = filteredCIs.reduce((sum,CI)=> sum + parseFloat(CI.value_USD),0);
-    const tempAUDCI = filteredCIs.reduce((sum, CI) => sum + parseFloat(CI.value_AUD),0);
+    useEffect(() => {
+        fetchCIs();
+        fetchCIValues();
+        getPIValues();
+        showYears();
+        selectCIs();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    }, [chooseYear,chooseCi,fetchCIs,fetchCIValues,getPIValues,showYears,selectCIs]);
  
     return (
         <main className="py-1">
