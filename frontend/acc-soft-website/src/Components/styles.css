@@ -1,0 +1,7 @@
+.faded-row {
+    opacity: 0.5; /* ✅ Make row semi-transparent */
+}
+/* Optional: Add hover effect */
+.faded-row:hover {
+    opacity: 0.8;  /* Increase visibility slightly when hovered */
+}
